@@ -54,6 +54,23 @@ sub _h1 {
   any { $_->{type} eq 'command' and $_->{content} =~ /^\Q$name$/m } @_;
 }
 
+=method munge_pod_string
+
+  my $new_content = Pod::Weaver->munge_pod_string($string, \%arg);
+
+Right now, this is the only method.  You feed it a string containing a
+POD-riddled document and it returns a woven form.  Right now, you can't really
+do much configuration of the loom.
+
+Valid arguments are:
+
+  filename - the name of the document file being rewritten (for errors)
+  version  - the version of the document
+  authors  - an arrayref of document authors (provided as strings)
+  license  - the license of the document (a Software::License object)
+
+=cut
+
 sub munge_pod_string {
   my ($self, $content, $arg) = @_;
   $arg ||= {};
