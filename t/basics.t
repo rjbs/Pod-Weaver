@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use Test::More 'no_plan';
-use Test::LongString;
+use Test::Differences;
 use Pod::Weaver;
 
 my $pod = <<'END_DOC';
@@ -80,5 +80,5 @@ END_DOC
 
 my $woven = Pod::Weaver->munge_pod_string($pod);
 
-is_string($woven, $want, 'we rewrote as expected');
+eq_or_diff($woven, $want, 'we rewrote as expected');
 
