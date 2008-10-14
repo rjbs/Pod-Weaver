@@ -1,5 +1,8 @@
 Revision history for Pod-Weaver
 
+1.002     2008-10-13
+          add missing prereq (PPI)
+
 1.001     2008-10-12
           fix prereq for testing
 
