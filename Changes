@@ -1,5 +1,8 @@
 Revision history for Pod-Weaver
 
+1.003     2008-10-??
+          use $doc->serialize instead of "$doc" to work with here-docs
+
 1.002     2008-10-13
           add missing prereq (PPI)
 

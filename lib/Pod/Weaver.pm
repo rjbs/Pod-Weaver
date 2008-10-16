@@ -3,6 +3,8 @@ package Pod::Weaver;
 use Moose::Autobox;
 use List::MoreUtils qw(any);
 
+sub log { print "@_\n" }
+
 =head1 WARNING
 
 This code is really, really sketchy.  It's crude and brutal and will probably
@@ -82,17 +84,11 @@ sub munge_pod_string {
   my @pod_tokens = map {"$_"} @{ $doc->find('PPI::Token::Pod') || [] };
   $doc->prune('PPI::Token::Pod');
 
-  if (@{ $doc->find('PPI::Token::HereDoc') || [] }) {
-    $self->log(
-      sprintf "can't invoke %s on %s: PPI can't munge code with here-docs",
-        'Pod::Weaver', $arg->{filename} # XXX
-    );
-    return;
-  }
-
   my $pe = 'Pod::Weaver::_Eventual';
 
-  if ($pe->new->read_string("$doc")->length) {
+  my $podless_doc_str = $doc->serialize;
+
+  if ($pe->new->read_string($podless_doc_str)->length) {
     $self->log(
       sprintf "can't invoke %s on %s: there is POD inside string literals",
         'Pod::Weaver', $arg->{filename} # XXX
@@ -116,7 +112,7 @@ sub munge_pod_string {
     my $package = $pkg_node->namespace;
 
     $self->log("couldn't find abstract in $arg->{filename}")
-      unless my ($abstract) = $doc =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
+      unless my ($abstract) = $podless_doc_str =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
 
     my $name = $package;
     $name .= " - $abstract" if $abstract;
@@ -167,7 +163,8 @@ sub munge_pod_string {
   $doc->prune('PPI::Statement::End');
   $doc->prune('PPI::Statement::Data');
 
-  $content = $end ? "$doc\n\n$newpod\n\n$end" : "$doc\n__END__\n$newpod\n";
+  $content = $end ? "$podless_doc_str\n\n$newpod\n\n$end"
+                  : "$podless_doc_str\n__END__\n$newpod\n";
 
   return $content;
 }
