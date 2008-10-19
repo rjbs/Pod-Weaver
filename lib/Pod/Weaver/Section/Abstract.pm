@@ -5,11 +5,13 @@ with 'Pod::Weaver::Role::Section';
 sub weave_section {
   my ($self) = @_;
 
-  #unless (_h1(NAME => @pod)) {
-  #  Carp::croak "couldn't find package declaration in document"
-  #    unless my $pkg_node = $doc->find_first('PPI::Statement::Package');
-  #  my $package = $pkg_node->namespace;
+  my $pkg_node = $self->weaver->perl->find_first('PPI::Statement::Package');
 
+  Carp::croak "couldn't find package declaration in document" unless $pkg_node;
+
+  my $package = $pkg_node->namespace;
+
+  #unless (_h1(NAME => @pod)) {
   #  $self->log("couldn't find abstract in $arg->{filename}")
   #    unless my ($abstract) = $podless_doc_str =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
 
