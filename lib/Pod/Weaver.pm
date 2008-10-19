@@ -6,7 +6,9 @@ use List::MoreUtils qw(any);
 use Moose::Autobox;
 use PPI;
 use Pod::Weaver::Parser;
+use Pod::Weaver::Role::Plugin;
 use String::Flogger;
+use String::RewritePrefix;
 
 =head1 WARNING
 
@@ -27,12 +29,13 @@ reconstructs it as boring old real POD.
 {
   package
     Pod::Weaver::_Logger;
-  sub log { printf "%s\n", String::Flogger->($_[1]) }
+  sub log { printf "%s\n", String::Flogger->flog($_[1]) }
+  sub new { bless {} => $_[0] }
 }
 
 has logger => (
   lazy    => 1,
-  default => sub { bless {} => 'Pod::Weaver::_Logger' },
+  default => sub { Pod::Weaver::_Logger->new },
   handles => [ qw(log) ]
 );
 
@@ -62,9 +65,18 @@ sub _events_to_string {
   return $str;
 }
 
-has pod => (
+has input_pod => (
   is   => 'rw',
   isa  => 'ArrayRef[HashRef]',
+);
+
+has output_pod => (
+  is   => 'ro',
+  isa  => 'ArrayRef[HashRef]',
+  lazy => 1,
+  required => 1,
+  init_arg => undef,
+  default  => sub { [] },
 );
 
 has perl => (
@@ -72,8 +84,9 @@ has perl => (
   isa  => 'PPI::Document',
 );
 
-has parser_class => (
+has parser => (
   is   => 'ro',
+  isa  => 'Str|Object',
   required => 1,
   default  => 'Pod::Weaver::Parser',
 );
@@ -95,6 +108,39 @@ Valid arguments are:
 
 =cut
 
+has plugins => (
+  is  => 'ro',
+  isa => 'ArrayRef[Pod::Weaver::Role::Plugin]',
+  required => 1,
+  lazy     => 1,
+  init_arg => undef,
+  default  => sub { [] },
+);
+
+has _config => (
+  is  => 'ro',
+  isa => 'ArrayRef',
+  default => sub {
+    my @plugins = String::RewritePrefix->rewrite(
+      { '' => 'Pod::Weaver::Plugin::', '=', '' },
+      qw(Abstract Version Methods Authors License),
+    );
+    return [ map { $_ => { '=name' => $_ } } @plugins ];
+  },
+);
+
+sub BUILD {
+  my ($self) = @_;
+
+  for my $entry ($self->_config) {
+    my ($plugin_class, $config) = @$entry;
+    eval "require $plugin_class; 1" or die;
+    $self->plugins->push(
+      $plugin_class->new( $config->merge({ weaver  => $self }) )
+    );
+  }
+}
+
 sub munge_pod_string {
   my ($self, $content, $arg) = @_;
   $arg ||= {};
@@ -108,7 +154,7 @@ sub munge_pod_string {
 
   my $podless_doc_str = $self->perl->serialize;
 
-  if ($self->parser_class->new->read_string($podless_doc_str)->length) {
+  if ($self->parser->read_string($podless_doc_str)->length) {
     $self->log(
       sprintf "can't invoke %s on %s: there is POD inside string literals",
         'Pod::Weaver', $arg->{filename} # XXX
@@ -116,24 +162,24 @@ sub munge_pod_string {
     return;
   }
 
-  $self->pod( $self->parser_class->new->read_string(join "\n", @pod_tokens) );
+  $self->input_pod( $self->parser->read_string(join "\n", @pod_tokens) );
 
-  # version was here
+  for my $plugin ($self->plugins->flatten) {
+    $self->log([ 'invoking plugin %s', $plugin->plugin_name ]);
+    $plugin->munge_pod;
+  }
 
-  # abstract was here
+  $self->output_pod->push($self->input_pod->grep(sub {
+    grep { $_->{type} ne 'command' or $_->{command} ne 'cut' }
+  })->flatten);
 
-  # methods and attributes were here
+  $self->output_pod->push({
+    type    => 'command',
+    command => 'cut',
+    content => "\n",
+  });
 
-  # author was here
-
-  # license was here
-
-  @{ $self->pod } = grep { $_->{type} ne 'command' or $_->{command} ne 'cut' }
-                    @{ $self->pod };
-
-  $self->pod->push({ type => 'command', command => 'cut', content => "\n" });
-
-  my $newpod = $self->_events_to_string($self->pod);
+  my $newpod = $self->_events_to_string($self->output_pod);
 
   my $end = do {
     my $end_elem = $self->perl->find('PPI::Statement::Data')
