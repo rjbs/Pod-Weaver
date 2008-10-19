@@ -4,6 +4,7 @@ use Moose;
 
 use List::MoreUtils qw(any);
 use Moose::Autobox;
+use PPI;
 use Pod::Weaver::Parser;
 use String::Flogger;
 
@@ -61,6 +62,22 @@ sub _events_to_string {
   return $str;
 }
 
+has pod => (
+  is   => 'rw',
+  isa  => 'ArrayRef[HashRef]',
+);
+
+has perl => (
+  is   => 'rw',
+  isa  => 'PPI::Document',
+);
+
+has parser_class => (
+  is   => 'ro',
+  required => 1,
+  default  => 'Pod::Weaver::Parser',
+);
+
 =method munge_pod_string
 
   my $new_content = Pod::Weaver->munge_pod_string($string, \%arg);
@@ -84,16 +101,14 @@ sub munge_pod_string {
   $arg->{authors}  ||= [];
   $arg->{filename} ||= 'document';
 
-  require PPI;
-  my $doc = PPI::Document->new(\$content);
-  my @pod_tokens = map {"$_"} @{ $doc->find('PPI::Token::Pod') || [] };
-  $doc->prune('PPI::Token::Pod');
+  $self->perl( PPI::Document->new(\$content) );
 
-  my $parser = 'Pod::Weaver::Parser';
+  my @pod_tokens = map {"$_"} @{ $self->perl->find('PPI::Token::Pod') || [] };
+  $self->perl->prune('PPI::Token::Pod');
 
-  my $podless_doc_str = $doc->serialize;
+  my $podless_doc_str = $self->perl->serialize;
 
-  if ($parser->new->read_string($podless_doc_str)->length) {
+  if ($self->parser_class->new->read_string($podless_doc_str)->length) {
     $self->log(
       sprintf "can't invoke %s on %s: there is POD inside string literals",
         'Pod::Weaver', $arg->{filename} # XXX
@@ -101,7 +116,7 @@ sub munge_pod_string {
     return;
   }
 
-  my @pod = $parser->new->read_string(join "\n", @pod_tokens)->flatten;
+  $self->pod( $self->parser_class->new->read_string(join "\n", @pod_tokens) );
 
   # version was here
 
@@ -113,19 +128,21 @@ sub munge_pod_string {
 
   # license was here
 
-  @pod = grep { $_->{type} ne 'command' or $_->{command} ne 'cut' } @pod;
-  push @pod, { type => 'command', command => 'cut', content => "\n" };
+  @{ $self->pod } = grep { $_->{type} ne 'command' or $_->{command} ne 'cut' }
+                    @{ $self->pod };
 
-  my $newpod = $self->_events_to_string(\@pod);
+  $self->pod->push({ type => 'command', command => 'cut', content => "\n" });
+
+  my $newpod = $self->_events_to_string($self->pod);
 
   my $end = do {
-    my $end_elem = $doc->find('PPI::Statement::Data')
-                || $doc->find('PPI::Statement::End');
+    my $end_elem = $self->perl->find('PPI::Statement::Data')
+                || $self->perl->find('PPI::Statement::End');
     join q{}, @{ $end_elem || [] };
   };
 
-  $doc->prune('PPI::Statement::End');
-  $doc->prune('PPI::Statement::Data');
+  $self->perl->prune('PPI::Statement::End');
+  $self->perl->prune('PPI::Statement::Data');
 
   $content = $end ? "$podless_doc_str\n\n$newpod\n\n$end"
                   : "$podless_doc_str\n__END__\n$newpod\n";

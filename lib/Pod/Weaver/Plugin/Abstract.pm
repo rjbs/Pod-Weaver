@@ -1,3 +1,10 @@
+package Pod::Weaver::Plugin::Abstract;
+use Moose;
+with 'Pod::Weaver::Role::Plugin';
+
+sub munge_pod {
+  my ($self) = @_;
+
   unless (_h1(NAME => @pod)) {
     Carp::croak "couldn't find package declaration in document"
       unless my $pkg_node = $doc->find_first('PPI::Statement::Package');
@@ -14,3 +21,8 @@
       { type => 'text',                        content => "$name\n" },
     );
   }
+}
+
+__PACKAGE__->meta->make_immutable;
+no Moose;
+1;

@@ -43,7 +43,7 @@ Test::Example::Pod - this is just a test
 
 END_DOC
 
-my $woven = Pod::Weaver->munge_pod_string($pod);
+my $woven = Pod::Weaver->new->munge_pod_string($pod);
 
 eq_or_diff($woven, $want, 'we rewrote as expected');
 
