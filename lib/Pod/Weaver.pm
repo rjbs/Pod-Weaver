@@ -1,9 +1,11 @@
 package Pod::Weaver;
+use Moose;
 # ABSTRACT: do horrible things to POD, producing better docs
-use Moose::Autobox;
-use List::MoreUtils qw(any);
 
-sub log { print "@_\n" }
+use List::MoreUtils qw(any);
+use Moose::Autobox;
+use Pod::Weaver::Parser;
+use String::Flogger;
 
 =head1 WARNING
 
@@ -23,12 +25,15 @@ reconstructs it as boring old real POD.
 
 {
   package
-    Pod::Weaver::_Eventual;
-  use Pod::Eventual::Simple;
-  our @ISA = 'Pod::Eventual::Simple';
-
-  sub handle_nonpod {}
+    Pod::Weaver::_Logger;
+  sub log { printf "%s\n", String::Flogger->($_[1]) }
 }
+
+has logger => (
+  lazy    => 1,
+  default => sub { bless {} => 'Pod::Weaver::_Logger' },
+  handles => [ qw(log) ]
+);
 
 sub _h1 {
   my $name = shift;
@@ -84,11 +89,11 @@ sub munge_pod_string {
   my @pod_tokens = map {"$_"} @{ $doc->find('PPI::Token::Pod') || [] };
   $doc->prune('PPI::Token::Pod');
 
-  my $pe = 'Pod::Weaver::_Eventual';
+  my $parser = 'Pod::Weaver::Parser';
 
   my $podless_doc_str = $doc->serialize;
 
-  if ($pe->new->read_string($podless_doc_str)->length) {
+  if ($parser->new->read_string($podless_doc_str)->length) {
     $self->log(
       sprintf "can't invoke %s on %s: there is POD inside string literals",
         'Pod::Weaver', $arg->{filename} # XXX
@@ -96,58 +101,17 @@ sub munge_pod_string {
     return;
   }
 
-  my @pod = $pe->new->read_string(join "\n", @pod_tokens)->flatten;
+  my @pod = $parser->new->read_string(join "\n", @pod_tokens)->flatten;
 
-  if ($arg->{version} and not _h1(VERSION => @pod)) {
-    unshift @pod, (
-      { type => 'command', command => 'head1', content => "VERSION\n"  },
-      { type => 'text',   
-        content => sprintf "version %s\n", $arg->{version} }
-    );
-  }
+  # version was here
 
-  unless (_h1(NAME => @pod)) {
-    Carp::croak "couldn't find package declaration in document"
-      unless my $pkg_node = $doc->find_first('PPI::Statement::Package');
-    my $package = $pkg_node->namespace;
+  # abstract was here
 
-    $self->log("couldn't find abstract in $arg->{filename}")
-      unless my ($abstract) = $podless_doc_str =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
+  # methods and attributes were here
 
-    my $name = $package;
-    $name .= " - $abstract" if $abstract;
+  # author was here
 
-    unshift @pod, (
-      { type => 'command', command => 'head1', content => "NAME\n"  },
-      { type => 'text',                        content => "$name\n" },
-    );
-  }
-
-  my (@methods, $in_method);
-
-  $self->_regroup($_->[0] => $_->[1] => \@pod)
-    for ( [ attr => 'ATTRIBUTES' ], [ method => 'METHODS' ] );
-
-  if (
-    $arg->{authors}->length
-    and ! (_h1(AUTHOR => @pod) or _h1(AUTHORS => @pod))
-  ) {
-    my $name = $arg->{authors}->length > 1 ? 'AUTHORS' : 'AUTHOR';
-
-    push @pod, (
-      { type => 'command',  command => 'head1', content => "$name\n" },
-      { type => 'verbatim', content => $arg->{authors}->join("\n") . "\n"
-      }
-    );
-  }
-
-  if ($arg->{license} and ! (_h1(COPYRIGHT => @pod) or _h1(LICENSE => @pod))) {
-    push @pod, (
-      { type => 'command', command => 'head1',
-        content => "COPYRIGHT AND LICENSE\n" },
-      { type => 'text', content => $arg->{license}->notice }
-    );
-  }
+  # license was here
 
   @pod = grep { $_->{type} ne 'command' or $_->{command} ne 'cut' } @pod;
   push @pod, { type => 'command', command => 'cut', content => "\n" };
@@ -211,4 +175,6 @@ sub _regroup {
   }
 }
 
+__PACKAGE__->meta->make_immutable;
+no Moose;
 1;
