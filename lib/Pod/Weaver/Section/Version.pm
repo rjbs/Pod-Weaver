@@ -1,7 +1,8 @@
-package Pod::Weaver::Plugin::Version;
+package Pod::Weaver::Section::Version;
 use Moose;
-with 'Pod::Weaver::Role::Plugin';
+with 'Pod::Weaver::Role::Section';
 
+sub weave_section {
 #  if ($arg->{version} and not _h1(VERSION => @pod)) {
 #    unshift @pod, (
 #      { type => 'command', command => 'head1', content => "VERSION\n"  },
@@ -9,6 +10,7 @@ with 'Pod::Weaver::Role::Plugin';
 #        content => sprintf "version %s\n", $arg->{version} }
 #    );
 #  }
+}
 
 __PACKAGE__->meta->make_immutable;
 no Moose;

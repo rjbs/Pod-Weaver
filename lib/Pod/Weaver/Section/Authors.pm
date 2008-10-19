@@ -1,7 +1,8 @@
-package Pod::Weaver::Plugin::Authors;
+package Pod::Weaver::Section::Authors;
 use Moose;
-with 'Pod::Weaver::Role::Plugin';
+with 'Pod::Weaver::Role::Section';
 
+sub weave_section {
 #  if (
 #    $arg->{authors}->length
 #    and ! (_h1(AUTHOR => @pod) or _h1(AUTHORS => @pod))
@@ -14,6 +15,7 @@ with 'Pod::Weaver::Role::Plugin';
 #      }
 #    );
 #  }
+}
 
 __PACKAGE__->meta->make_immutable;
 no Moose;

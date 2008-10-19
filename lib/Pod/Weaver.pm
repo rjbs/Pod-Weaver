@@ -122,8 +122,12 @@ has _config => (
   isa => 'ArrayRef',
   default => sub {
     my @plugins = String::RewritePrefix->rewrite(
-      { '' => 'Pod::Weaver::Plugin::', '=', '' },
-      qw(Abstract Version Methods Authors License),
+      {
+        '=' => '',
+        ''  => 'Pod::Weaver::Plugin::',
+        '$' => 'Pod::Weaver::Section::',
+      },
+      qw($Abstract $Version $Methods $Authors $License),
     );
     return [ map { $_ => { '=name' => $_ } } @plugins ];
   },
@@ -139,6 +143,15 @@ sub BUILD {
       $plugin_class->new( $config->merge({ weaver  => $self }) )
     );
   }
+}
+
+sub plugins_with {
+  my ($self, $role) = @_;
+
+  $role =~ s/^-/Dist::Zilla::Role::/;
+  my $plugins = $self->plugins->grep(sub { $_->does($role) });
+
+  return $plugins;
 }
 
 sub munge_pod_string {
@@ -164,13 +177,13 @@ sub munge_pod_string {
 
   $self->input_pod( $self->parser->read_string(join "\n", @pod_tokens) );
 
-  for my $plugin ($self->plugins->flatten) {
+  for my $plugin ($self->plugins_with(-Section)->flatten) {
     $self->log([ 'invoking plugin %s', $plugin->plugin_name ]);
-    $plugin->munge_pod;
+    $plugin->weave_section;
   }
 
   $self->output_pod->push($self->input_pod->grep(sub {
-    grep { $_->{type} ne 'command' or $_->{command} ne 'cut' }
+    $_->{type} ne 'command' or $_->{command} ne 'cut'
   })->flatten);
 
   $self->output_pod->push({

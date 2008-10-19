@@ -1,8 +1,8 @@
-package Pod::Weaver::Plugin::Abstract;
+package Pod::Weaver::Section::Abstract;
 use Moose;
-with 'Pod::Weaver::Role::Plugin';
+with 'Pod::Weaver::Role::Section';
 
-sub munge_pod {
+sub weave_section {
   my ($self) = @_;
 
   #unless (_h1(NAME => @pod)) {
