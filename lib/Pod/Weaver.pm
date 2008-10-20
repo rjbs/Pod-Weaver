@@ -5,7 +5,7 @@ use Moose;
 use List::MoreUtils qw(any);
 use Moose::Autobox;
 use PPI;
-use Pod::Weaver::Parser;
+use Pod::Weaver::Parser::Nesting;
 use Pod::Weaver::Role::Plugin;
 use String::Flogger;
 use String::RewritePrefix;
@@ -88,7 +88,7 @@ has parser => (
   is   => 'ro',
   isa  => 'Str|Object',
   required => 1,
-  default  => 'Pod::Weaver::Parser',
+  default  => 'Pod::Weaver::Parser::Nesting',
 );
 
 =method munge_pod_string
