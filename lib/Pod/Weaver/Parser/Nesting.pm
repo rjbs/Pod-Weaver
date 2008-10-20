@@ -24,6 +24,12 @@ my %RANK = do {
   map { $_ => $i++ } qw(head1 head2 head3 head4 over item begin for);
 };
 
+sub can_recurse {
+  my ($self, $event) = @_;
+  return 1 if $event->command eq [ qw(over begin) ]->any;
+  return 0;
+}
+
 sub rank_for {
   my ($self, $event) = @_;
   return $RANK{ $event->command };
@@ -41,7 +47,7 @@ sub nestify_events {
   my @stack  = $top;
 
   EVENT: while (my $event = $events->shift) {
-    # =cut?  Where we're going, we don't need =cut. -- rjbs, 2025-11-05
+    # =cut?  Where we're going, we don't need =cut. -- rjbs, 2015-11-05
     next if $event->type eq 'command' and $event->command eq 'cut';
 
     if ($event->type ne 'command') {
@@ -53,14 +59,15 @@ sub nestify_events {
     if ($event->command eq 'back') {
       pop @stack until !@stack or $stack[-1]->command eq 'over';
       Carp::croak "encountered =back without =over" unless @stack;
-      # $stack[-1]->children->push($event);
+      pop @stack; # we want to be outside of the 
       next EVENT;
     }
 
     if ($event->command eq 'end') {
-      pop @stack until !@stack or $stack[-1]->command eq 'begin';
-      Carp::croak "encountered =end without =begin" unless @stack;
-      # $stack[-1]->children->push($event);
+      pop @stack until !@stack
+        or ($stack[-1]->command eq 'begin'
+        and $stack[-1]->content eq $event->content);
+      Carp::croak "encountered =end without matching =begin" unless @stack;
       next EVENT;
     }
 
@@ -72,14 +79,16 @@ sub nestify_events {
     if (@stack > 1) {
       if (! $rank) {
         @stack = $top;
-      } elsif ($rank < $parent_rank) {
-        pop @stack until @stack == 1 or $parent_rank < $rank;
+      } else {
+        until (@stack == 1) {
+          last if $self->rank_for($stack[-1]) < $rank;
+          last if $self->can_recurse($event)
+              and $event->command eq $stack[-1]->command;
+
+          pop @stack;
+        }
       }
     }
-
-    # printf "parent is =%s; pushing a %s/%s (rank %s)\n",
-    #   $stack[-1]->command, $event->type, ($event->command||''),
-    #   (defined $rank ? $rank : '-');
 
     $stack[-1]->children->push($event);
     @stack->push($event);
