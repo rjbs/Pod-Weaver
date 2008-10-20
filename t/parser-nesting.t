@@ -59,5 +59,7 @@ cmp_deeply(
   "we get the right chunky content we wanted",
 );
 
+# diag $_->as_string for @$chunks;
+
 sub cmd { return(type => 'command', command => $_[0]) }
 sub txt { return(type => 'text',    content => $_[0]) }
