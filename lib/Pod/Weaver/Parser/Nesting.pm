@@ -24,6 +24,11 @@ my %RANK = do {
   map { $_ => $i++ } qw(head1 head2 head3 head4 over item begin for);
 };
 
+sub rank_for {
+  my ($self, $event) = @_;
+  return $RANK{ $event->command };
+}
+
 sub nestify_events {
   my ($self, $events) = @_;
 
@@ -59,10 +64,10 @@ sub nestify_events {
       next EVENT;
     }
 
-    pop @stack until @stack == 1 or defined $RANK{ $stack[-1]->command };
+    pop @stack until @stack == 1 or defined $self->rank_for($stack[-1]);
 
-    my $rank        = $RANK{ $event->command };
-    my $parent_rank = $RANK{ $stack[-1]->command } || 0;
+    my $rank        = $self->rank_for($event);
+    my $parent_rank = $self->rank_for($stack[-1]) || 0;
 
     if (@stack > 1) {
       if (! $rank) {
