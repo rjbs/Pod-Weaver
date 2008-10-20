@@ -7,86 +7,50 @@ use Pod::Weaver::Parser::Nesting;
 my $chunks = Pod::Weaver::Parser::Nesting->read_file('t/eg/Simple.pm');
 my $want = [
   {
-    type     => 'command',
-    command  => 'head1',
+    cmd('head1'),
     content  => "DESCRIPTION\n",
-    children => [
-      { type => 'text', content => re(qr{^This is .+ that\?\n}) },
-    ],
+    children => [ { txt( re(qr{^This is .+ that\?\n}) ) } ],
   },
 
   {
-    type     => 'command',
-    command  => 'synopsis',
+    cmd('synopsis'),
     content  => "\n",
-    children => [
-      { type => 'verbatim', content => re(qr{^  use Test.+;$}) },
-    ]
+    children => [ { type => 'verbatim', content => re(qr{^  use Test.+;$}) } ]
   },
 
   {
-    type => 'command',
-    command => 'head2',
+    cmd('head2'),
     content => "Free Radical\n",
     children => [
       {
-        type => 'command',
-        command => 'head3',
+        cmd('head3'),
         content => "Subsumed Radical\n",
         children => [
           {
-            type => 'command',
-            command => 'over',
+            cmd('over'),
             content => "4\n",
             children => [
-              {
-                type => 'command',
-                command => 'item',
-                content => re(qr{^\* nom.+st\n})
-              },
-              {
-                type => 'command',
-                command => 'back',
-                content => "\n"
-              },
-            ],
-          },
-        ],
-      }
-    ],
-  },
+              { cmd('item'), content => re(qr{^\* nom.+st\n}) },
+              { cmd('back'), content => "\n" },
+  ], }, ], } ], },
 
   {
-    type => 'command',
-    command => 'method',
+    cmd('method'),
     content => "none\n",
-    children => [
-      {
-        type    => 'text',
-        content => "Nope, there are no methods.\n",
-      },
-    ],
+    children => [ { txt("Nope, there are no methods.\n") } ],
   },
 
   {
-    type     => 'command',
-    command  => 'attr',
+    cmd('attr'),
     content  => "also_none\n",
-    children => [
-      { type => 'text',     content => "None of these, either.\n"          },
-    ],
+    children => [ { txt("None of these, either.\n") } ],
   },
 
   {
-    type => 'command',
-    command => 'method',
-    content => "i_lied\n",
-    children => [
-      { type => 'text',     content => "Ha!  Gotcha!\n"                    },
-    ],
+    cmd('method'),
+    content  => "i_lied\n",
+    children => [ { txt("Ha!  Gotcha!\n") } ],
   },
-
-  { type => 'command',  command => 'cut',     content => "\n"          },
 ];
 
 cmp_deeply(
@@ -94,3 +58,6 @@ cmp_deeply(
   $want,
   "we get the right chunky content we wanted",
 );
+
+sub cmd { return(type => 'command', command => $_[0]) }
+sub txt { return(type => 'text',    content => $_[0]) }
