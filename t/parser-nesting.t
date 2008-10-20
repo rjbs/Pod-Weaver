@@ -29,10 +29,8 @@ my $want = [
           {
             cmd('over'),
             content => "4\n",
-            children => [
-              { cmd('item'), content => re(qr{^\* nom.+st\n}) },
-              { cmd('back'), content => "\n" },
-  ], }, ], } ], },
+            children => [ { cmd('item'), content => re(qr{^\* nom.+st\n}) } ],
+  }, ], } ], },
 
   {
     cmd('method'),
@@ -58,8 +56,6 @@ cmp_deeply(
   $want,
   "we get the right chunky content we wanted",
 );
-
-# diag $_->as_string for @$chunks;
 
 sub cmd { return(type => 'command', command => $_[0]) }
 sub txt { return(type => 'text',    content => $_[0]) }

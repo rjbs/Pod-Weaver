@@ -43,9 +43,7 @@ sub as_string {
     push @para, "=back\n" if $self->command eq 'over';
     push @para, "=end\n"  if $self->command eq 'begin';
   } else {
-    # XXX: Why do I need this \n?  That makes me wonder if I have a bug in
-    # Pod::Elemental. -- rjbs, 2008-10-20
-    push @para, $self->content . "\n";
+    push @para, $self->content;
   }
 
   return join "\n", @para;

@@ -48,14 +48,14 @@ sub nestify_events {
     if ($event->command eq 'back') {
       pop @stack until !@stack or $stack[-1]->command eq 'over';
       Carp::croak "encountered =back without =over" unless @stack;
-      $stack[-1]->children->push($event);
+      # $stack[-1]->children->push($event);
       next EVENT;
     }
 
     if ($event->command eq 'end') {
       pop @stack until !@stack or $stack[-1]->command eq 'begin';
       Carp::croak "encountered =end without =begin" unless @stack;
-      $stack[-1]->children->push($event);
+      # $stack[-1]->children->push($event);
       next EVENT;
     }
 
