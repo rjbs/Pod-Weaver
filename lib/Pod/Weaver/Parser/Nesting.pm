@@ -64,11 +64,16 @@ sub nestify_events {
     }
 
     if ($event->command eq 'end') {
-      pop @stack until !@stack
-        or ($stack[-1]->command eq 'begin'
-        and $stack[-1]->content eq $event->content);
+      while (@stack) {
+        pop @stack, next unless $stack[-1]->command eq 'begin';
+
+        Carp::croak "encountered mismatched =begin/=end"
+          unless $event->content eq $stack[-1]->content;
+
+        pop @stack, next EVENT;
+      }
+
       Carp::croak "encountered =end without matching =begin" unless @stack;
-      next EVENT;
     }
 
     pop @stack until @stack == 1 or defined $self->rank_for($stack[-1]);

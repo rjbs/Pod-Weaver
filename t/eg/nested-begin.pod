@@ -1,0 +1,31 @@
+
+=head1 DESCRIPTION
+
+Foo.
+
+=begin outer
+
+=begin inner
+
+=head1
+
+=over
+
+=item * oneone
+
+=item * twotwo
+
+=back
+
+=item * two
+
+=back
+
+=head2 Sub-Description
+
+Bar.
+
+=head1 Final
+
+Baz.
+
