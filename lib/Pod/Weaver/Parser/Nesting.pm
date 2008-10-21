@@ -55,7 +55,42 @@ sub nestify_events {
       next EVENT;
     }
 
-    # XXX: Refactor the following two blocks -- rjbs, 2008-10-20
+    if ($event->command eq 'begin') {
+      # =begin/=end are treated like subdocuments; we're going to look ahead
+      # for the balancing =end, then pass the whole set of events to a new
+      # nestification process -- rjbs, 2008-10-20
+      my $level  = 1;
+      my @subdoc;
+
+      SUBEV: while ($level and my $next = $events->shift) {
+        if (
+          $next->type eq 'command'
+          and $next->command eq 'begin'
+          and $next->content eq $event->content
+        ) {
+          $level++;
+          push @subdoc, $next;
+          next SUBEV;
+        }
+
+        if (
+          $next->type eq 'command'
+          and $next->command eq 'end'
+          and $next->content eq $event->content
+        ) {
+          $level--;
+          push @subdoc, $next if $level;
+          next SUBEV;
+        }
+
+        push @subdoc, $next;
+      }
+
+      $event->children->push( $self->nestify_events(\@subdoc)->flatten );
+      $stack[-1]->children->push( $event );
+      next EVENT;
+    }
+
     if ($event->command eq 'back') {
       pop @stack until !@stack or $stack[-1]->command eq 'over';
       Carp::croak "encountered =back without =over" unless @stack;
@@ -64,16 +99,7 @@ sub nestify_events {
     }
 
     if ($event->command eq 'end') {
-      while (@stack) {
-        pop @stack, next unless $stack[-1]->command eq 'begin';
-
-        Carp::croak "encountered mismatched =begin/=end"
-          unless $event->content eq $stack[-1]->content;
-
-        pop @stack, next EVENT;
-      }
-
-      Carp::croak "encountered =end without matching =begin" unless @stack;
+      Carp::croak "encountered =end outside matching =begin";
     }
 
     pop @stack until @stack == 1 or defined $self->rank_for($stack[-1]);

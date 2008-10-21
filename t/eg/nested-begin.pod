@@ -7,25 +7,27 @@ Foo.
 
 =begin inner
 
-=head1
+=head1 Inner!
 
 =over
 
-=item * oneone
-
-=item * twotwo
+=item * one
 
 =back
 
-=item * two
+=begin inner
 
-=back
+=head1 Another!
 
-=head2 Sub-Description
+=end inner
 
-Bar.
+=head2 Welcome to my Second Head
 
-=head1 Final
+=end inner
+
+=head3 Finalizing
+
+=end outer
 
 Baz.
 

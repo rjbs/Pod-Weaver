@@ -41,12 +41,34 @@ sub as_string {
     }
 
     push @para, "=back\n" if $self->command eq 'over';
-    push @para, "=end\n"  if $self->command eq 'begin';
+    push @para, ('=end ' . $self->content) if $self->command eq 'begin';
   } else {
     push @para, $self->content;
   }
 
   return join "\n", @para;
+}
+
+sub as_debug_string {
+  my ($self) = @_;
+
+  my @para;
+
+  if ($self->type eq 'command') {
+    push @para, sprintf '=%s %s', $self->command, $self->content;
+    if ($self->children->length) {
+      my @sub = $self->children->map(sub { $_->as_debug_string })->flatten;
+      s/^/  /gm for @sub;
+      push @para, @sub;
+    }
+
+    push @para, "=back\n" if $self->command eq 'over';
+    push @para, ('=end ' . $self->content) if $self->command eq 'begin';
+  } else {
+    push @para, $self->content;
+  }
+
+  return join "", @para;
 }
 
 __PACKAGE__->meta->make_immutable;
