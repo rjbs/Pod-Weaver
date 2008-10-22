@@ -1,6 +1,6 @@
-package Pod::Weaver::Section::Methods;
+package Pod::Weaver::Weaver::Methods;
 use Moose;
-with 'Pod::Weaver::Role::Section';
+with 'Pod::Weaver::Role::Weaver';
 
 sub weave {
 #  my (@methods, $in_method);

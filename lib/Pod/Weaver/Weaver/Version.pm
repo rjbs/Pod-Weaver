@@ -1,6 +1,6 @@
-package Pod::Weaver::Section::Version;
+package Pod::Weaver::Weaver::Version;
 use Moose;
-with 'Pod::Weaver::Role::Section';
+with 'Pod::Weaver::Role::Weaver';
 
 sub weave {
 #  if ($arg->{version} and not _h1(VERSION => @pod)) {

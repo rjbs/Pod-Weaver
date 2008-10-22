@@ -113,18 +113,18 @@ has _config => (
       {
         '=' => '',
         ''  => 'Pod::Weaver::Plugin::',
-        '$' => 'Pod::Weaver::Section::',
+        '~' => 'Pod::Weaver::Weaver::',
       },
-      qw($Abstract $Version $Methods $Authors $License),
+      qw(~Abstract ~Version ~Methods ~Authors ~License),
     );
-    return [ map { $_ => { '=name' => $_ } } @plugins ];
+    return [ map {; [ $_ => { '=name' => $_ } ] } @plugins ];
   },
 );
 
 sub BUILD {
   my ($self) = @_;
 
-  for my $entry ($self->_config) {
+  for my $entry ($self->_config->flatten) {
     my ($plugin_class, $config) = @$entry;
     eval "require $plugin_class; 1" or die;
     $self->plugins->push(
@@ -136,7 +136,7 @@ sub BUILD {
 sub plugins_with {
   my ($self, $role) = @_;
 
-  $role =~ s/^-/Dist::Zilla::Role::/;
+  $role =~ s/^-/Pod::Weaver::Role::/;
   my $plugins = $self->plugins->grep(sub { $_->does($role) });
 
   return $plugins;
@@ -171,9 +171,11 @@ sub munge_pod_string {
 
   $self->input_pod( $elements );
 
-  for my $plugin ($self->plugins_with(-Section)->flatten) {
+  die $self->dump;
+
+  for my $plugin ($self->plugins_with(-Weaver)->flatten) {
     $self->log([ 'invoking plugin %s', $plugin->plugin_name ]);
-    $plugin->weave_section;
+    $plugin->weave;
   }
 
   $self->output_pod->push($self->input_pod->flatten);
