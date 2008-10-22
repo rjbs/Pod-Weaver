@@ -12,8 +12,8 @@ sub weave {
   my $package = $pkg_node->namespace;
 
   #unless (_h1(NAME => @pod)) {
-  #  $self->log("couldn't find abstract in $arg->{filename}")
-  #    unless my ($abstract) = $podless_doc_str =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
+  $self->log("couldn't find abstract in filename")
+     unless my ($abstract) = $self->weaver->perl->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
 
   #  my $name = $package;
   #  $name .= " - $abstract" if $abstract;
