@@ -5,6 +5,8 @@ use Moose;
 use List::MoreUtils qw(any);
 use Moose::Autobox;
 use PPI;
+use Pod::Elemental;
+use Pod::Eventual::Simple;
 use Pod::Weaver::Parser::Nesting;
 use Pod::Weaver::Role::Plugin;
 use String::Flogger;
@@ -44,35 +46,14 @@ sub _h1 {
   any { $_->{type} eq 'command' and $_->{content} =~ /^\Q$name$/m } @_;
 }
 
-sub _events_to_string {
-  my ($self, $events) = @_;
-  my $str = "\n=pod\n\n";
-
-  EVENT: for my $event (@$events) {
-    if ($event->{type} eq 'verbatim') {
-      $event->{content} =~ s/^/  /mg;
-      $event->{type} = 'text';
-    }
-
-    if ($event->{type} eq 'text') {
-      $str .= "$event->{content}\n";
-      next EVENT;
-    }
-
-    $str .= "=$event->{command} $event->{content}\n";
-  }
-
-  return $str;
-}
-
 has input_pod => (
   is   => 'rw',
-  isa  => 'ArrayRef[HashRef]',
+  isa  => 'ArrayRef[Pod::Elemental::Element]',
 );
 
 has output_pod => (
   is   => 'ro',
-  isa  => 'ArrayRef[HashRef]',
+  isa  => 'ArrayRef[Pod::Elemental::Element]',
   lazy => 1,
   required => 1,
   init_arg => undef,
@@ -84,11 +65,18 @@ has perl => (
   isa  => 'PPI::Document',
 );
 
-has parser => (
+has eventual => (
   is   => 'ro',
   isa  => 'Str|Object',
   required => 1,
-  default  => 'Pod::Weaver::Parser::Nesting',
+  default  => 'Pod::Eventual::Simple',
+);
+
+has elemental => (
+  is   => 'ro',
+  isa  => 'Str|Object',
+  required => 1,
+  default  => 'Pod::Elemental',
 );
 
 =method munge_pod_string
@@ -167,7 +155,11 @@ sub munge_pod_string {
 
   my $podless_doc_str = $self->perl->serialize;
 
-  if ($self->parser->read_string($podless_doc_str)->length) {
+  if (
+    $self->eventual->read_string($podless_doc_str)->grep(sub {
+      $_->{type} ne 'nonpod'
+    })->length
+  ) {
     $self->log(
       sprintf "can't invoke %s on %s: there is POD inside string literals",
         'Pod::Weaver', $arg->{filename} # XXX
@@ -175,24 +167,18 @@ sub munge_pod_string {
     return;
   }
 
-  $self->input_pod( $self->parser->read_string(join "\n", @pod_tokens) );
+  my $elements = $self->elemental->read_string(join "\n", @pod_tokens);
+
+  $self->input_pod( $elements );
 
   for my $plugin ($self->plugins_with(-Section)->flatten) {
     $self->log([ 'invoking plugin %s', $plugin->plugin_name ]);
     $plugin->weave_section;
   }
 
-  $self->output_pod->push($self->input_pod->grep(sub {
-    $_->{type} ne 'command' or $_->{command} ne 'cut'
-  })->flatten);
+  $self->output_pod->push($self->input_pod->flatten);
 
-  $self->output_pod->push({
-    type    => 'command',
-    command => 'cut',
-    content => "\n",
-  });
-
-  my $newpod = $self->_events_to_string($self->output_pod);
+  my $newpod = $self->output_pod->map(sub { $_->as_string })->join("\n");
 
   my $end = do {
     my $end_elem = $self->perl->find('PPI::Statement::Data')
