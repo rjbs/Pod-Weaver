@@ -60,7 +60,7 @@ has output_pod => (
   default  => sub { [] },
 );
 
-has perl => (
+has ppi_doc => (
   is   => 'rw',
   isa  => 'PPI::Document',
 );
@@ -165,14 +165,23 @@ sub plugins_with {
 
 sub munge_pod_string {
   my ($self, $content, $arg) = @_;
+
+  # This won't last. It's just here transitionally. -- rjbs, 2008-10-22
+  $self = $self->new unless ref $self;
+
   $arg = { filename => 'document' }->merge($arg || {});
 
-  $self->perl( PPI::Document->new(\$content) );
+  $self->ppi_doc( PPI::Document->new(\$content) );
 
-  my @pod_tokens = map {"$_"} @{ $self->perl->find('PPI::Token::Pod') || [] };
-  $self->perl->prune('PPI::Token::Pod');
+  unless ($self->ppi_doc) {
+    $self->log("can't produce PPI::Document from $arg->{filename}; giving up");
+    return $content;
+  }
 
-  my $podless_doc_str = $self->perl->serialize;
+  my @pod_tokens = map {"$_"} @{ $self->ppi_doc->find('PPI::Token::Pod') || [] };
+  $self->ppi_doc->prune('PPI::Token::Pod');
+
+  my $podless_doc_str = $self->ppi_doc->serialize;
 
   if (
     $self->eventual->read_string($podless_doc_str)->grep(sub {
@@ -200,13 +209,13 @@ sub munge_pod_string {
   my $newpod = $self->output_pod->map(sub { $_->as_string })->join("\n");
 
   my $end = do {
-    my $end_elem = $self->perl->find('PPI::Statement::Data')
-                || $self->perl->find('PPI::Statement::End');
+    my $end_elem = $self->ppi_doc->find('PPI::Statement::Data')
+                || $self->ppi_doc->find('PPI::Statement::End');
     join q{}, @{ $end_elem || [] };
   };
 
-  $self->perl->prune('PPI::Statement::End');
-  $self->perl->prune('PPI::Statement::Data');
+  $self->ppi_doc->prune('PPI::Statement::End');
+  $self->ppi_doc->prune('PPI::Statement::Data');
 
   $content = $end ? "$podless_doc_str\n\n$newpod\n\n$end"
                   : "$podless_doc_str\n__END__\n$newpod\n";
