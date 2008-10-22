@@ -11,7 +11,7 @@ has header  => (is => 'ro', isa => 'Str', required => 1);
 sub weave {
   my ($self) = @_;
 
-  my @methods;
+  my @thingers;
 
   my $input = $self->weaver->input_pod;
   for my $i (reverse (0 .. $input->length - 1)) {
@@ -20,15 +20,17 @@ sub weave {
             and $element->command eq $self->command;
 
     splice @$input, $i, 1;
-    unshift @methods, $element;
+    unshift @thingers, $element;
   }
+
+  return unless @thingers;
 
   $self->weaver->output_pod->push(
     Pod::Elemental::Element::Command->new({
       type     => 'command',
       command  => 'head1',
       content  => $self->header,
-      children => @methods->map(sub {
+      children => @thingers->map(sub {
         Pod::Elemental::Element::Command->new({
           type     => 'command',
           command  => 'head2',

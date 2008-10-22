@@ -31,19 +31,17 @@ END_INNER
 
 
 __END__
-
-=pod
-
 =head1 NAME
 
 Test::Example::Pod - this is just a test
 
-=cut 
-
-
 END_DOC
 
-my $woven = Pod::Weaver->new->munge_pod_string($pod);
+my $logger = do {
+  package TL; sub log {}; bless {};
+};
+
+my $woven = Pod::Weaver->new({ logger => $logger })->munge_pod_string($pod);
 
 eq_or_diff($woven, $want, 'we rewrote as expected');
 
