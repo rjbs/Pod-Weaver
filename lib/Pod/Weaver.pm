@@ -117,7 +117,15 @@ has _config => (
       },
       qw(~Abstract ~Version ~Methods ~Authors ~License),
     );
-    return [ map {; [ $_ => { '=name' => $_ } ] } @plugins ];
+    my $return = [ map {; [ $_ => { '=name' => $_ } ] } @plugins ];
+    splice @$return, 2, 0, [
+      'Pod::Weaver::Weaver::Methods' => {
+        '=name' => 'Attributes',
+        command => 'attr',
+        header  => 'ATTRIBUTES',
+      }
+    ];
+    return $return;
   },
 );
 
@@ -193,48 +201,6 @@ sub munge_pod_string {
                   : "$podless_doc_str\n__END__\n$newpod\n";
 
   return $content;
-}
-
-sub _regroup {
-  my ($self, $cmd, $header, $pod) = @_;
-
-  my @items;
-  my $in_item;
-
-  EVENT: for (my $i = 0; $i < @$pod; $i++) {
-    my $event = $pod->[$i];
-
-    if ($event->{type} eq 'command' and $event->{command} eq $cmd) {
-      $in_item = 1;
-      push @items, splice @$pod, $i--, 1;
-      next EVENT;
-    }
-
-    if (
-      $event->{type} eq 'command'
-      and $event->{command} !~ /^(?:over|item|back|head[3456])$/
-    ) {
-      $in_item = 0;
-      next EVENT;
-    }
-
-    push @items, splice @$pod, $i--, 1 if $in_item;
-  }
-      
-  if (@items) {
-    unless (_h1($header => @$pod)) {
-      push @$pod, {
-        type    => 'command',
-        command => 'head1',
-        content => "$header\n",
-      };
-    }
-
-    $_->{command} = 'head2'
-      for grep { ($_->{command}||'') eq $cmd } @items;
-
-    push @$pod, @items;
-  }
 }
 
 __PACKAGE__->meta->make_immutable;

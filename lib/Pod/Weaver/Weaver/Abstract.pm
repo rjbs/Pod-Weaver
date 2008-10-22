@@ -2,6 +2,8 @@ package Pod::Weaver::Weaver::Abstract;
 use Moose;
 with 'Pod::Weaver::Role::Weaver';
 
+use Moose::Autobox;
+
 sub weave {
   my ($self) = @_;
 
@@ -12,17 +14,26 @@ sub weave {
   my $package = $pkg_node->namespace;
 
   #unless (_h1(NAME => @pod)) {
+
   $self->log("couldn't find abstract in filename")
      unless my ($abstract) = $self->weaver->perl->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
 
-  #  my $name = $package;
-  #  $name .= " - $abstract" if $abstract;
+  my $name = $package;
+  $name .= " - $abstract" if $abstract;
 
-  #  unshift @pod, (
-  #    { type => 'command', command => 'head1', content => "NAME\n"  },
-  #    { type => 'text',                        content => "$name\n" },
-  #  );
-  #}
+  $self->weaver->output_pod->push(
+    Pod::Elemental::Element::Command->new({
+      type     => 'command',
+      command  => 'head1',
+      content  => 'NAME',
+      children => [
+        Pod::Elemental::Element::Text->new({
+          type    => 'text',
+          content => $name,
+        }),
+      ],
+    }),
+  );
 }
 
 __PACKAGE__->meta->make_immutable;
