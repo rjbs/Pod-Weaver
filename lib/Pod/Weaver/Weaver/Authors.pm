@@ -1,8 +1,8 @@
-package Pod::Weaver::Section::Authors;
+package Pod::Weaver::Weaver::Authors;
 use Moose;
-with 'Pod::Weaver::Role::Section';
+with 'Pod::Weaver::Role::Weaver';
 
-sub weave_section {
+sub weave {
 #  if (
 #    $arg->{authors}->length
 #    and ! (_h1(AUTHOR => @pod) or _h1(AUTHORS => @pod))

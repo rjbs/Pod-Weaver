@@ -1,8 +1,8 @@
-package Pod::Weaver::Role::Section;
+package Pod::Weaver::Role::Weaver;
 use Moose::Role;
 with 'Pod::Weaver::Role::Plugin';
 
-requires 'weave_section';
+requires 'weave';
 
 no Moose::Role;
 1;

@@ -1,8 +1,8 @@
-package Pod::Weaver::Section::Abstract;
+package Pod::Weaver::Weaver::Abstract;
 use Moose;
-with 'Pod::Weaver::Role::Section';
+with 'Pod::Weaver::Role::Weaver';
 
-sub weave_section {
+sub weave {
   my ($self) = @_;
 
   my $pkg_node = $self->weaver->perl->find_first('PPI::Statement::Package');

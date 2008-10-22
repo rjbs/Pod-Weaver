@@ -1,6 +1,6 @@
-package Pod::Weaver::Section::License;
+package Pod::Weaver::Weaver::License;
 use Moose;
-with 'Pod::Weaver::Role::Section';
+with 'Pod::Weaver::Role::Weaver';
 
 sub weave_section {
 # if ($arg->{license} and ! (_h1(COPYRIGHT => @pod) or _h1(LICENSE => @pod))) {

@@ -2,7 +2,7 @@ package Pod::Weaver::Section::Methods;
 use Moose;
 with 'Pod::Weaver::Role::Section';
 
-sub weave_section {
+sub weave {
 #  my (@methods, $in_method);
 #
 #  $self->_regroup($_->[0] => $_->[1] => \@pod)
