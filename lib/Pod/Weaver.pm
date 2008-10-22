@@ -171,8 +171,6 @@ sub munge_pod_string {
 
   $self->input_pod( $elements );
 
-  die $self->dump;
-
   for my $plugin ($self->plugins_with(-Weaver)->flatten) {
     $self->log([ 'invoking plugin %s', $plugin->plugin_name ]);
     $plugin->weave;
