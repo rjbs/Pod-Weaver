@@ -1,21 +1,22 @@
 package Pod::Weaver::Weaver::Abstract;
 use Moose;
 with 'Pod::Weaver::Role::Weaver';
+# ABSTRACT: add a NAME section with abstract (for your Perl module)
 
 use Moose::Autobox;
 
 sub weave {
-  my ($self) = @_;
+  my ($self, $arg) = @_;
 
   my $pkg_node = $self->weaver->perl->find_first('PPI::Statement::Package');
 
-  Carp::croak "couldn't find package declaration in document" unless $pkg_node;
+  Carp::croak
+    sprintf "couldn't find package declaration in %s", $arg->{filename}
+    unless $pkg_node;
 
   my $package = $pkg_node->namespace;
 
-  #unless (_h1(NAME => @pod)) {
-
-  $self->log("couldn't find abstract in filename")
+  $self->log([ "couldn't find abstract in %s", $arg->{filename} ])
      unless my ($abstract) = $self->weaver->perl->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
 
   my $name = $package;

@@ -1,26 +1,16 @@
 package Pod::Weaver::Weaver::License;
 use Moose;
 with 'Pod::Weaver::Role::Weaver';
+# ABSTRACT: add a license notice
 
 use Moose::Autobox;
 
 sub weave {
-  my ($self) = @_;
-# if ($arg->{license} and ! (_h1(COPYRIGHT => @pod) or _h1(LICENSE => @pod))) {
-#   push @pod, (
-#     { type => 'command', command => 'head1',
-#       content => "COPYRIGHT AND LICENSE\n" },
-#     { type => 'text', content => $arg->{license}->notice }
-#   );
-# }
+  my ($self, $arg) = @_;
 
-  require Software::License::Perl_5;
-  my $license = Software::License::Perl_5->new({
-    year   => 2008,
-    holder => 'rjbs',
-  });
+  return unless $arg->{license};
 
-  my $notice = $license->notice;
+  my $notice = $arg->{license}->notice;
   chomp $notice;
 
   $self->weaver->output_pod->push(

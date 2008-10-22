@@ -1,11 +1,12 @@
-package Pod::Weaver::Weaver::Methods;
+package Pod::Weaver::Weaver::Thingers;
 use Moose;
 with 'Pod::Weaver::Role::Weaver';
+# ABSTRACT: group together a bunch of =thingers
 
 use Moose::Autobox;
 
-has command => (is => 'ro', isa => 'Str', required => 1, default => 'method');
-has header  => (is => 'ro', isa => 'Str', required => 1, default => 'METHODS');
+has command => (is => 'ro', isa => 'Str', required => 1);
+has header  => (is => 'ro', isa => 'Str', required => 1);
 
 sub weave {
   my ($self) = @_;

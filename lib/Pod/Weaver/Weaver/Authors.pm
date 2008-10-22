@@ -1,20 +1,38 @@
 package Pod::Weaver::Weaver::Authors;
 use Moose;
 with 'Pod::Weaver::Role::Weaver';
+# ABSTRACT: add an AUTHORS section
+
+use Moose::Autobox;
 
 sub weave {
-#  if (
-#    $arg->{authors}->length
-#    and ! (_h1(AUTHOR => @pod) or _h1(AUTHORS => @pod))
-#  ) {
-#    my $name = $arg->{authors}->length > 1 ? 'AUTHORS' : 'AUTHOR';
-#
-#    push @pod, (
-#      { type => 'command',  command => 'head1', content => "$name\n" },
-#      { type => 'verbatim', content => $arg->{authors}->join("\n") . "\n"
-#      }
-#    );
-#  }
+  my ($self, $arg) = @_;
+
+  unless ($arg->{authors}) {
+    return $self->log([
+      'not adding authors section to %s: no authors',
+      $arg->{filename},
+    ]);
+  }
+  
+  my $name = $arg->{authors}->length > 1 ? 'AUTHORS' : 'AUTHOR';
+  my $str  = $arg->{authors}->join("\n");
+
+  $str =~ s{^}{  }mg;
+
+  $self->weaver->output_pod->push(
+    Pod::Elemental::Element::Command->new({
+      type     => 'command',
+      command  => 'head1',
+      content  => $name,
+      children => [
+        Pod::Elemental::Element::Text->new({
+          type    => 'verbatim',
+          content => $str,
+        }),
+      ],
+    }),
+  );
 }
 
 __PACKAGE__->meta->make_immutable;

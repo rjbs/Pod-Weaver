@@ -4,6 +4,7 @@ use warnings;
 use Test::More 'no_plan';
 use Test::Differences;
 use Pod::Weaver;
+use Software::License::Perl_5;
 
 my $pod = <<'END_DOC';
 use strict;
@@ -46,12 +47,13 @@ sub i_lied { ... }
 1;
 
 __END__
-
-=pod
-
 =head1 NAME
 
 Test::Example::Pod - this is just a test
+
+=head1 VERSION
+
+version 1.002
 
 =head1 DESCRIPTION
 
@@ -73,13 +75,35 @@ Nope, there are no methods.
 
 Ha!  Gotcha!
 
-=cut 
+=head1 AUTHOR
 
+  E. Xavier Ample <eduardo@example.name>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2008 by E. Xavier Ample.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as perl itself.
 
 END_DOC
 
-my $woven = Pod::Weaver->new->munge_pod_string($pod);
+my $license = Software::License::Perl_5->new({
+  year   => 2008,
+  holder => 'E. Xavier Ample',
+});
+
+my $logger = do {
+  package TL; sub log {}; bless {};
+};
+
+my $woven = Pod::Weaver->new({ logger => $logger })->munge_pod_string(
+  $pod,
+  {
+    authors => [ 'E. Xavier Ample <eduardo@example.name>' ],
+    version => 1.002,
+    license => $license,
+  },
+);
 
 eq_or_diff($woven, $want, 'we rewrote as expected');
-
-print ">>\n$woven\n";

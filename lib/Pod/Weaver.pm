@@ -115,15 +115,28 @@ has _config => (
         ''  => 'Pod::Weaver::Plugin::',
         '~' => 'Pod::Weaver::Weaver::',
       },
-      qw(~Abstract ~Version ~Methods ~Authors ~License),
+      qw(~Abstract ~Version ~Authors ~License),
     );
     my $return = [ map {; [ $_ => { '=name' => $_ } ] } @plugins ];
     splice @$return, 2, 0, [
-      'Pod::Weaver::Weaver::Methods' => {
+      'Pod::Weaver::Weaver::Maybe' => {
+        '=name' => 'Maybe',
+        section => [ qw(SYNOPSIS DESCRIPTION) ],
+      },
+    ],
+    [
+      'Pod::Weaver::Weaver::Thingers' => {
         '=name' => 'Attributes',
         command => 'attr',
         header  => 'ATTRIBUTES',
-      }
+      },
+    ],
+    [
+      'Pod::Weaver::Weaver::Thingers' => {
+        '=name' => 'Methods',
+        command => 'method',
+        header  => 'METHODS',
+      },
     ];
     return $return;
   },
@@ -152,9 +165,7 @@ sub plugins_with {
 
 sub munge_pod_string {
   my ($self, $content, $arg) = @_;
-  $arg ||= {};
-  $arg->{authors}  ||= [];
-  $arg->{filename} ||= 'document';
+  $arg = { filename => 'document' }->merge($arg || {});
 
   $self->perl( PPI::Document->new(\$content) );
 
@@ -170,7 +181,7 @@ sub munge_pod_string {
   ) {
     $self->log(
       sprintf "can't invoke %s on %s: there is POD inside string literals",
-        'Pod::Weaver', $arg->{filename} # XXX
+        'Pod::Weaver', $arg->{filename}
     );
     return;
   }
@@ -181,7 +192,7 @@ sub munge_pod_string {
 
   for my $plugin ($self->plugins_with(-Weaver)->flatten) {
     $self->log([ 'invoking plugin %s', $plugin->plugin_name ]);
-    $plugin->weave;
+    $plugin->weave($arg);
   }
 
   $self->output_pod->push($self->input_pod->flatten);

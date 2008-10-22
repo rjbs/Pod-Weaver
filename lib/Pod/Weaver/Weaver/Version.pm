@@ -1,12 +1,13 @@
 package Pod::Weaver::Weaver::Version;
 use Moose;
 with 'Pod::Weaver::Role::Weaver';
+# ABSTRACT: add a VERSION pod section to your Perl module
 
 use Moose::Autobox;
 
 sub weave {
-  my ($self) = @_;
-#  if ($arg->{version} and not _h1(VERSION => @pod)) {
+  my ($self, $arg) = @_;
+  return unless $arg->{version};
 
   $self->weaver->output_pod->push(
     Pod::Elemental::Element::Command->new({
@@ -16,7 +17,7 @@ sub weave {
       children => [
         Pod::Elemental::Element::Text->new({
           type    => 'text',
-          content => sprintf('version %s', 1),
+          content => sprintf('version %s', $arg->{version}),
         }),
       ],
     }),
