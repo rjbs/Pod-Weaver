@@ -1,5 +1,4 @@
 package Pod::Weaver::Role::Plugin;
-
 use Moose::Role;
 
 has plugin_name => (
