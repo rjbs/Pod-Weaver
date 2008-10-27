@@ -7,7 +7,6 @@ use Moose::Autobox;
 use PPI;
 use Pod::Elemental;
 use Pod::Eventual::Simple;
-use Pod::Weaver::Parser::Nesting;
 use Pod::Weaver::Role::Plugin;
 use String::Flogger;
 use String::RewritePrefix;
