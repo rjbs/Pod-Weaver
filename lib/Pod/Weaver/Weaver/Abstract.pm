@@ -22,7 +22,7 @@ sub weave {
   my $name = $package;
   $name .= " - $abstract" if $abstract;
 
-  $self->weaver->output_pod->push(
+  $self->weaver->output_pod->children->push(
     Pod::Elemental::Element::Command->new({
       type     => 'command',
       command  => 'head1',

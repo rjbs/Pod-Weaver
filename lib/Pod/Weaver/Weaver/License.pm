@@ -13,7 +13,7 @@ sub weave {
   my $notice = $arg->{license}->notice;
   chomp $notice;
 
-  $self->weaver->output_pod->push(
+  $self->weaver->output_pod->children->push(
     Pod::Elemental::Element::Command->new({
       type     => 'command',
       command  => 'head1',

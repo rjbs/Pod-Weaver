@@ -6,6 +6,7 @@ use List::MoreUtils qw(any);
 use Moose::Autobox;
 use PPI;
 use Pod::Elemental;
+use Pod::Elemental::Document;
 use Pod::Eventual::Simple;
 use Pod::Weaver::Role::Plugin;
 use String::Flogger;
@@ -47,16 +48,16 @@ sub _h1 {
 
 has input_pod => (
   is   => 'rw',
-  isa  => 'ArrayRef[Pod::Elemental::Element]',
+  isa  => 'Pod::Elemental::Document',
 );
 
 has output_pod => (
   is   => 'ro',
-  isa  => 'ArrayRef[Pod::Elemental::Element]',
+  isa  => 'Pod::Elemental::Document',
   lazy => 1,
   required => 1,
   init_arg => undef,
-  default  => sub { [] },
+  default  => sub { Pod::Elemental::Document->new },
 );
 
 has ppi_doc => (
@@ -203,9 +204,11 @@ sub munge_pod_string {
     $plugin->weave($arg);
   }
 
-  $self->output_pod->push($self->input_pod->flatten);
+  $self->output_pod->children->push($self->input_pod->children->flatten);
 
-  my $newpod = $self->output_pod->map(sub { $_->as_string })->join("\n");
+  my $newpod = $self->output_pod->children->map(
+    sub { $_->as_string }
+  )->join("\n");
 
   my $end = do {
     my $end_elem = $self->ppi_doc->find('PPI::Statement::Data')

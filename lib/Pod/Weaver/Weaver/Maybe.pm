@@ -17,7 +17,8 @@ sub weave {
   my ($self) = @_;
 
   for my $section ($self->sections) {
-    my $input = $self->weaver->input_pod;
+    # XXX Is this right? -- rjbs, 2008-11-21
+    my $input = $self->weaver->input_pod->children;
     my @to_add;
 
     for my $i (reverse (0 .. $#$input)) {
@@ -42,7 +43,7 @@ sub weave {
       unshift @to_add, $elem;
     }
 
-    $self->weaver->output_pod->push(@to_add);
+    $self->weaver->output_pod->children->push(@to_add);
   }
 }
 

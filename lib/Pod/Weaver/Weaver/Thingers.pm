@@ -13,7 +13,7 @@ sub weave {
 
   my @thingers;
 
-  my $input = $self->weaver->input_pod;
+  my $input = $self->weaver->input_pod->children;
   for my $i (reverse (0 .. $input->length - 1)) {
     my $element = $input->[ $i ];
     next unless $element->type eq 'command'
@@ -25,7 +25,7 @@ sub weave {
 
   return unless @thingers;
 
-  $self->weaver->output_pod->push(
+  $self->weaver->output_pod->children->push(
     Pod::Elemental::Element::Command->new({
       type     => 'command',
       command  => 'head1',
