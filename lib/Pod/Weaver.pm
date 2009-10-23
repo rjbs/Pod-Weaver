@@ -1,10 +1,9 @@
 package Pod::Weaver;
 use Moose;
-# ABSTRACT: do horrible things to POD, producing better docs
+# ABSTRACT: do horrible things to Pod, producing better docs
 
 use List::MoreUtils qw(any);
 use Moose::Autobox;
-use PPI;
 use Pod::Elemental;
 use Pod::Elemental::Document;
 use Pod::Weaver::Role::Plugin;
@@ -22,8 +21,8 @@ don't expect it to do anything but bring sorrow to you and your people.
 
 =head1 DESCRIPTION
 
-Pod::Weaver is a work in progress, which rips apart your kinda-POD and
-reconstructs it as boring old real POD.
+Pod::Weaver is a work in progress, which rips apart your kinda-Pod and
+reconstructs it as boring old real Pod.
 
 =cut
 
@@ -40,20 +39,6 @@ has logger => (
   handles => [ qw(log) ]
 );
 
-has input_pod => (
-  is   => 'rw',
-  isa  => 'Pod::Elemental::Document',
-);
-
-has output_pod => (
-  is   => 'ro',
-  isa  => 'Pod::Elemental::Document',
-  lazy => 1,
-  required => 1,
-  init_arg => undef,
-  default  => sub { Pod::Elemental::Document->new },
-);
-
 has plugins => (
   is  => 'ro',
   isa => 'ArrayRef[Pod::Weaver::Role::Plugin]',
@@ -63,18 +48,6 @@ has plugins => (
   default  => sub { [] },
 );
 
-sub BUILD {
-  my ($self) = @_;
-
-  for my $entry ($self->_config->flatten) {
-    my ($plugin_class, $config) = @$entry;
-    eval "require $plugin_class; 1" or die;
-    $self->plugins->push(
-      $plugin_class->new( $config->merge({ weaver  => $self }) )
-    );
-  }
-}
-
 sub plugins_with {
   my ($self, $role) = @_;
 
@@ -82,6 +55,13 @@ sub plugins_with {
   my $plugins = $self->plugins->grep(sub { $_->does($role) });
 
   return $plugins;
+}
+
+sub weave_document {
+  my ($self, $input) = @_;
+
+  my $document = Pod::Elemental::Document->new;
+  return $document;
 }
 
 __PACKAGE__->meta->make_immutable;
