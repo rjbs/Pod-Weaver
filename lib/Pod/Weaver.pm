@@ -60,7 +60,9 @@ sub plugins_with {
 sub weave_document {
   my ($self, $input) = @_;
 
-  my $document = Pod::Elemental::Document->new;
+  my $document = Pod::Elemental::Document->new({
+    children => $input->{document}->children,
+  });
   return $document;
 }
 
