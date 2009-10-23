@@ -14,8 +14,8 @@ sub weave_section {
       command  => 'head1',
       content  => 'VERSION',
       children => [
-        Pod::Elemental::Element::Pod5:Ordinary->new({
-          content => sprintf('version %s', $arg->{version}),
+        Pod::Elemental::Element::Pod5::Ordinary->new({
+          content => sprintf('version %s', $input->{version}),
         }),
       ],
     }),
