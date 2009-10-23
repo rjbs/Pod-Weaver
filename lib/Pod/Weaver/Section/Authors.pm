@@ -5,7 +5,7 @@ with 'Pod::Weaver::Role::Section';
 
 use Moose::Autobox;
 
-use Pod::Elemental::Element::Pod5::Command;
+use Pod::Elemental::Element::Nested;
 use Pod::Elemental::Element::Pod5::Verbatim;
 
 sub weave_section {
@@ -19,7 +19,7 @@ sub weave_section {
   $str =~ s{^}{  }mg;
 
   $document->children->push(
-    Pod::Elemental::Element::Pod5::Command->new({
+    Pod::Elemental::Element::Nested->new({
       type     => 'command',
       command  => 'head1',
       content  => $name,

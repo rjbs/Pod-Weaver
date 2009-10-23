@@ -111,6 +111,10 @@ require Software::License::Artistic_1_0;
 my $woven = $weaver->weave_document({
   document => $document,
   version  => '1.012078',
+  authors  => [
+    'Ricardo Signes <rjbs@example.com>',
+    'Molly Millions <sshears@orbit.tash>',
+  ],
   license  => Software::License::Artistic_1_0->new({
     holder => 'Ricardo Signes',
     year   => 1999,
@@ -121,6 +125,10 @@ print $woven->as_debug_string, "\n";
 
 __DATA__
 =pod
+
+=for :prelude  Please pay close attention to the following.
+
+=for :postlude Thank you for your attention.
 
 =head1 DESCRIPTION
 
