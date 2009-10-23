@@ -62,6 +62,10 @@ sub weave_document {
 
   my $document = Pod::Elemental::Document->new;
 
+  $self->plugins_with(-Preparer)->each_value(sub {
+    $_->prepare_input($input);
+  });
+
   $self->plugins_with(-Section)->each_value(sub {
     $_->weave_section($document, $input);
   });

@@ -57,7 +57,7 @@ my $weaver = Pod::Weaver->new;
 
 {
   use Pod::Weaver::Section::Generic;
-  for my $section (qw(SYNOPSIS DESCRIPTION OVERVIEW ATTRIBUTES METHODS)) {
+  for my $section (qw(SYNOPSIS DESCRIPTION OVERVIEW)) {
     my $generic = Pod::Weaver::Section::Generic->new({
       weaver      => $weaver,
       plugin_name => $section,
@@ -66,6 +66,23 @@ my $weaver = Pod::Weaver->new;
     $weaver->plugins->push($generic);
   }
 }
+
+{
+  use Pod::Weaver::Section::Collect;
+  for my $pair (
+    [ qw(attr   ATTRIBUTES) ],
+    [ qw(method METHODS   ) ],
+  ) {
+    my $collect = Pod::Weaver::Section::Collect->new({
+      weaver      => $weaver,
+      plugin_name => $pair->[1],
+      command     => $pair->[0],
+    });
+
+    $weaver->plugins->push($collect);
+  }
+}
+
 
 {
   use Pod::Weaver::Section::Leftovers;
@@ -147,5 +164,9 @@ Happy hacking!
 =head1 SYNOPSIS
 
 This should probably get moved up front.
+
+=attr is_awesome
+
+(This is true by default.)
 
 =cut
