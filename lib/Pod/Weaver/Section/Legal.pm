@@ -1,33 +1,28 @@
-package Pod::Weaver::Weaver::License;
+package Pod::Weaver::Section::License;
 use Moose;
-with 'Pod::Weaver::Role::Weaver';
-# ABSTRACT: add a license notice
+with 'Pod::Weaver::Role::Section';
+# ABSTRACT: a section for the copyright and license
 
 use Moose::Autobox;
 
-sub weave {
-  my ($self, $arg) = @_;
+sub weave_section {
+  my ($self, $document, $input) = @_;
 
-  return unless $arg->{license};
+  return unless $input->{license};
 
-  my $notice = $arg->{license}->notice;
+  my $notice = $input->{license}->notice;
   chomp $notice;
 
-  $self->weaver->output_pod->children->push(
-    Pod::Elemental::Element::Command->new({
-      type     => 'command',
+  $document->children->push(
+    Pod::Elemental::Element::Nested->new({
       command  => 'head1',
       content  => 'COPYRIGHT AND LICENSE',
       children => [
-        Pod::Elemental::Element::Text->new({
-          type    => 'text',
-          content => $notice,
-        }),
+        Pod::Elemental::Element::Pod5::Ordinary->new({ content => $notice }),
       ],
     }),
   );
 }
 
-__PACKAGE__->meta->make_immutable;
 no Moose;
 1;

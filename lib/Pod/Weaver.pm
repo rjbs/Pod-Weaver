@@ -3,7 +3,7 @@ use Moose;
 # ABSTRACT: do horrible things to Pod, producing better docs
 
 use List::MoreUtils qw(any);
-use Moose::Autobox;
+use Moose::Autobox 0.10;
 use Pod::Elemental;
 use Pod::Elemental::Document;
 use Pod::Weaver::Role::Plugin;
@@ -60,9 +60,16 @@ sub plugins_with {
 sub weave_document {
   my ($self, $input) = @_;
 
-  my $document = Pod::Elemental::Document->new({
-    children => $input->{document}->children,
+  my $document = Pod::Elemental::Document->new;
+
+  $self->plugins_with(-Section)->each_value(sub {
+    $_->weave_section($document, $input);
   });
+
+  $self->plugins_with(-Finalizer)->each_value(sub {
+    $_->finalize_document($document, $input);
+  });
+
   return $document;
 }
 

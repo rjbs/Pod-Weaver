@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use Test::More;
+use Moose::Autobox 0.10;
 
 use Pod::Elemental;
 use Pod::Elemental::Selectors -all;
@@ -22,7 +23,35 @@ Pod::Elemental::Transformer::Nester->new({
   ],
 })->transform_node($document);
 
-my $woven = Pod::Weaver->new->weave_document({
+my $weaver = Pod::Weaver->new;
+
+use Pod::Weaver::Section::Name;
+my $name = Pod::Weaver::Section::Name->new({
+  weaver      => $weaver,
+  plugin_name => 'Name',
+});
+
+$weaver->plugins->push($name);
+
+use Pod::Weaver::Section::Generic;
+for my $section (qw(SYNOPSIS DESCRIPTION OVERVIEW ATTRIBUTES METHODS)) {
+  my $generic = Pod::Weaver::Section::Generic->new({
+    weaver      => $weaver,
+    plugin_name => $section,
+  });
+
+  $weaver->plugins->push($generic);
+}
+
+use Pod::Weaver::Section::Leftovers;
+my $leftovers = Pod::Weaver::Section::Leftovers->new({
+  weaver      => $weaver,
+  plugin_name => 'Leftovers',
+});
+
+$weaver->plugins->push($leftovers);
+
+my $woven = $weaver->weave_document({
   document => $document,
 });
 
@@ -44,5 +73,9 @@ This is not supported:
   much at all
 
 Happy hacking!
+
+=head1 SYNOPSIS
+
+This should probably get moved up front.
 
 =cut
