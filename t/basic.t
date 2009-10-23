@@ -25,34 +25,77 @@ Pod::Elemental::Transformer::Nester->new({
 
 my $weaver = Pod::Weaver->new;
 
-use Pod::Weaver::Section::Name;
-my $name = Pod::Weaver::Section::Name->new({
-  weaver      => $weaver,
-  plugin_name => 'Name',
-});
-
-$weaver->plugins->push($name);
-
-use Pod::Weaver::Section::Generic;
-for my $section (qw(SYNOPSIS DESCRIPTION OVERVIEW ATTRIBUTES METHODS)) {
-  my $generic = Pod::Weaver::Section::Generic->new({
+{
+  use Pod::Weaver::Section::Name;
+  my $name = Pod::Weaver::Section::Name->new({
     weaver      => $weaver,
-    plugin_name => $section,
+    plugin_name => 'Name',
   });
 
-  $weaver->plugins->push($generic);
+  $weaver->plugins->push($name);
 }
 
-use Pod::Weaver::Section::Leftovers;
-my $leftovers = Pod::Weaver::Section::Leftovers->new({
-  weaver      => $weaver,
-  plugin_name => 'Leftovers',
-});
+{
+  use Pod::Weaver::Section::Version;
+  my $version = Pod::Weaver::Section::Version->new({
+    weaver      => $weaver,
+    plugin_name => 'Version',
+  });
 
-$weaver->plugins->push($leftovers);
+  $weaver->plugins->push($version);
+}
 
+{
+  use Pod::Weaver::Section::Region;
+  my $prelude = Pod::Weaver::Section::Region->new({
+    weaver      => $weaver,
+    plugin_name => 'prelude',
+  });
+
+  $weaver->plugins->push($prelude);
+}
+
+{
+  use Pod::Weaver::Section::Generic;
+  for my $section (qw(SYNOPSIS DESCRIPTION OVERVIEW ATTRIBUTES METHODS)) {
+    my $generic = Pod::Weaver::Section::Generic->new({
+      weaver      => $weaver,
+      plugin_name => $section,
+    });
+
+    $weaver->plugins->push($generic);
+  }
+}
+
+{
+  use Pod::Weaver::Section::Leftovers;
+  my $leftovers = Pod::Weaver::Section::Leftovers->new({
+    weaver      => $weaver,
+    plugin_name => 'Leftovers',
+  });
+
+  $weaver->plugins->push($leftovers);
+}
+
+{
+  use Pod::Weaver::Section::Region;
+  my $postlude = Pod::Weaver::Section::Region->new({
+    weaver      => $weaver,
+    plugin_name => 'postlude',
+  });
+
+  $weaver->plugins->push($postlude);
+}
+
+require Software::License::Artistic_1_0;
 my $woven = $weaver->weave_document({
   document => $document,
+  version  => '1.012078',
+  license  => Software::License::Artistic_1_0->new({
+    holder => 'Ricardo Signes',
+    year   => 1999,
+  }),
+
 });
 
 print $woven->as_debug_string, "\n";
