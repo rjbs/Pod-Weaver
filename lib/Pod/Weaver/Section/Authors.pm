@@ -11,6 +11,8 @@ use Pod::Elemental::Element::Pod5::Verbatim;
 sub weave_section {
   my ($self, $document, $input) = @_;
 
+  return unless $input->{authors};
+
   my $name = $input->{authors}->length > 1 ? 'AUTHORS' : 'AUTHOR';
   my $str  = $input->{authors}->join("\n");
 

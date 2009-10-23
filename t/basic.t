@@ -87,6 +87,26 @@ my $weaver = Pod::Weaver->new;
   $weaver->plugins->push($postlude);
 }
 
+{
+  use Pod::Weaver::Section::Authors;
+  my $authors = Pod::Weaver::Section::Authors->new({
+    weaver      => $weaver,
+    plugin_name => 'Authors',
+  });
+
+  $weaver->plugins->push($authors);
+}
+
+{
+  use Pod::Weaver::Section::Legal;
+  my $legal = Pod::Weaver::Section::Legal->new({
+    weaver      => $weaver,
+    plugin_name => 'Legal',
+  });
+
+  $weaver->plugins->push($legal);
+}
+
 require Software::License::Artistic_1_0;
 my $woven = $weaver->weave_document({
   document => $document,
@@ -95,7 +115,6 @@ my $woven = $weaver->weave_document({
     holder => 'Ricardo Signes',
     year   => 1999,
   }),
-
 });
 
 print $woven->as_debug_string, "\n";
