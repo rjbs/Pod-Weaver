@@ -5,6 +5,8 @@ use Test::More;
 use Test::Differences;
 use Moose::Autobox 0.10;
 
+use PPI;
+
 use Pod::Elemental;
 use Pod::Elemental::Selectors -all;
 use Pod::Elemental::Transformer::Pod5;
@@ -25,11 +27,15 @@ Pod::Elemental::Transformer::Nester->new({
   ],
 })->transform_node($document);
 
+my $perl_document = do { local $/; <DATA> };
+my $ppi_document  = PPI::Document->new(\$perl_document);
+
 my $weaver = Pod::Weaver->new_with_default_config;
 
 require Software::License::Artistic_1_0;
 my $woven = $weaver->weave_document({
   pod_document => $document,
+  ppi_document => $ppi_document,
 
   version  => '1.012078',
   authors  => [
@@ -89,3 +95,10 @@ eq_or_diff(
 );
 
 done_testing;
+
+__DATA__
+
+package Module::Name;
+# ABSTRACT: abstract text
+
+my $this = 'a test';
