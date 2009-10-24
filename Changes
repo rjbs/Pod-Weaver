@@ -1,5 +1,8 @@
 Revision history for Pod-Weaver
 
+3.092972  2009-10-24
+          no code changes; Pod robuilt
+
 3.092971  2009-10-24
           fixes to make the NAME section "just work"
 
