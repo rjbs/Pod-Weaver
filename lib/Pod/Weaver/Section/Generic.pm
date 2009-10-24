@@ -30,7 +30,7 @@ has selector => (
 sub weave_section {
   my ($self, $document, $input) = @_;
 
-  my $in_node = $input->{document}->children;
+  my $in_node = $input->{pod_document}->children;
   my @found;
   $in_node->each(sub {
     my ($i, $para) = @_;

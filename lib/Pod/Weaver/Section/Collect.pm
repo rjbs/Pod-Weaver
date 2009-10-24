@@ -38,7 +38,7 @@ has __used_container => (is => 'rw');
 sub prepare_input {
   my ($self, $input) = @_;
 
-  my $document = $input->{document};
+  my $document = $input->{pod_document};
   my $selector = s_command($self->command);
 
   return unless $document->children->grep($selector)->length;
@@ -75,7 +75,7 @@ sub weave_section {
 
   return unless $self->__used_container;
 
-  my $in_node = $input->{document}->children;
+  my $in_node = $input->{pod_document}->children;
   my @found;
   $in_node->each(sub {
     my ($i, $para) = @_;

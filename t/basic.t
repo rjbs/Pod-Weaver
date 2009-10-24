@@ -25,110 +25,12 @@ Pod::Elemental::Transformer::Nester->new({
   ],
 })->transform_node($document);
 
-my $weaver = Pod::Weaver->new;
-
-{
-  use Pod::Weaver::Section::Name;
-  my $name = Pod::Weaver::Section::Name->new({
-    weaver      => $weaver,
-    plugin_name => 'Name',
-  });
-
-  $weaver->plugins->push($name);
-}
-
-{
-  use Pod::Weaver::Section::Version;
-  my $version = Pod::Weaver::Section::Version->new({
-    weaver      => $weaver,
-    plugin_name => 'Version',
-  });
-
-  $weaver->plugins->push($version);
-}
-
-{
-  use Pod::Weaver::Section::Region;
-  my $prelude = Pod::Weaver::Section::Region->new({
-    weaver      => $weaver,
-    plugin_name => 'prelude',
-  });
-
-  $weaver->plugins->push($prelude);
-}
-
-{
-  use Pod::Weaver::Section::Generic;
-  for my $section (qw(SYNOPSIS DESCRIPTION OVERVIEW)) {
-    my $generic = Pod::Weaver::Section::Generic->new({
-      weaver      => $weaver,
-      plugin_name => $section,
-    });
-
-    $weaver->plugins->push($generic);
-  }
-}
-
-{
-  use Pod::Weaver::Section::Collect;
-  for my $pair (
-    [ qw(attr   ATTRIBUTES) ],
-    [ qw(method METHODS   ) ],
-  ) {
-    my $collect = Pod::Weaver::Section::Collect->new({
-      weaver      => $weaver,
-      plugin_name => $pair->[1],
-      command     => $pair->[0],
-    });
-
-    $weaver->plugins->push($collect);
-  }
-}
-
-
-{
-  use Pod::Weaver::Section::Leftovers;
-  my $leftovers = Pod::Weaver::Section::Leftovers->new({
-    weaver      => $weaver,
-    plugin_name => 'Leftovers',
-  });
-
-  $weaver->plugins->push($leftovers);
-}
-
-{
-  use Pod::Weaver::Section::Region;
-  my $postlude = Pod::Weaver::Section::Region->new({
-    weaver      => $weaver,
-    plugin_name => 'postlude',
-  });
-
-  $weaver->plugins->push($postlude);
-}
-
-{
-  use Pod::Weaver::Section::Authors;
-  my $authors = Pod::Weaver::Section::Authors->new({
-    weaver      => $weaver,
-    plugin_name => 'Authors',
-  });
-
-  $weaver->plugins->push($authors);
-}
-
-{
-  use Pod::Weaver::Section::Legal;
-  my $legal = Pod::Weaver::Section::Legal->new({
-    weaver      => $weaver,
-    plugin_name => 'Legal',
-  });
-
-  $weaver->plugins->push($legal);
-}
+my $weaver = Pod::Weaver->new_with_default_config;
 
 require Software::License::Artistic_1_0;
 my $woven = $weaver->weave_document({
-  document => $document,
+  pod_document => $document,
+
   version  => '1.012078',
   authors  => [
     'Ricardo Signes <rjbs@example.com>',

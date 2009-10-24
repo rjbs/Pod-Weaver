@@ -28,7 +28,7 @@ sub weave_section {
 
   my @to_insert;
 
-  my $idc = $input->{document}->children;
+  my $idc = $input->{pod_document}->children;
   IDX: for (my $i = 0; $i < $idc->length; $i++) {
     next unless my $para = $idc->[ $i ];
     next unless $para->isa('Pod::Elemental::Element::Pod5::Region')

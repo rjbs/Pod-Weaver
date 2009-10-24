@@ -37,8 +37,8 @@ sub weave_section {
 sub finalize_document {
   my ($self, $document, $input) = @_;
 
-  my $children = $input->{document}->children;
-  $input->{document}->children([]);
+  my $children = $input->{pod_document}->children;
+  $input->{pod_document}->children([]);
 
   INDEX: for my $i (0 .. $document->children->length - 1) {
     my $para = $document->children->[$i];

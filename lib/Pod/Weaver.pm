@@ -1,28 +1,42 @@
 package Pod::Weaver;
 use Moose;
-# ABSTRACT: do horrible things to Pod, producing better docs
+# ABSTRACT: weave together a Pod document from an outline
 
-use List::MoreUtils qw(any);
+use namespace::autoclean;
+
+=head1 SYNOPSIS
+
+  my $weaver = Pod::Weaver->new_with_default_config;
+
+  my $document = $weaver->weave_document({
+    pod_document => $pod_elemental_document,
+    ppi_document => $ppi_document,
+
+    license  => $software_license,
+    version  => $version_string,
+    authors  => \@author_names,
+  })
+
+=head1 DESCRIPTION
+
+Pod::Weaver is a system for building Pod documents from templates.  It doesn't
+perform simple text substitution, but instead builds a
+Pod::Elemental::Document.  Its plugins sketch out a series of sections
+that will be produced based on an existing Pod document or other provided
+information.
+
+=cut
+
 use Moose::Autobox 0.10;
 use Pod::Elemental;
 use Pod::Elemental::Document;
 use Pod::Weaver::Role::Plugin;
 use String::Flogger;
-use String::RewritePrefix;
 
-=head1 WARNING
+=attr logger
 
-This code is really, really sketchy.  It's crude and brutal and will probably
-break whatever it is you were trying to do.
-
-Eventually, this code will be really awesome.  I hope.  It will probably
-provide an interface to something more cool and sophisticated.  Until then,
-don't expect it to do anything but bring sorrow to you and your people.
-
-=head1 DESCRIPTION
-
-Pod::Weaver is a work in progress, which rips apart your kinda-Pod and
-reconstructs it as boring old real Pod.
+This attribute stores the logger, which must provide a log method.  The
+weaver's log method delegates to the logger's log method.
 
 =cut
 
@@ -39,6 +53,14 @@ has logger => (
   handles => [ qw(log) ]
 );
 
+=attr plugins
+
+This attribute is an arrayref of objects that can perform the
+L<Pod::Weaver::Role::Plugin> role.  In general, its contents are found through
+the C<L</plugins_with>> method.
+
+=cut
+
 has plugins => (
   is  => 'ro',
   isa => 'ArrayRef[Pod::Weaver::Role::Plugin]',
@@ -48,6 +70,16 @@ has plugins => (
   default  => sub { [] },
 );
 
+=method plugins_with
+
+  my $plugins_array_ref = $weaver->plugins_with('-Section');
+
+This method will return an arrayref of plugins that perform the given role, in
+the order of their registration.  If the role name begins with a hyphen, the
+method will prepend C<Pod::Weaver::Role::>.
+
+=cut
+
 sub plugins_with {
   my ($self, $role) = @_;
 
@@ -56,6 +88,29 @@ sub plugins_with {
 
   return $plugins;
 }
+
+=method weave_document
+
+  my $document = $weaver->weave_document(\%input);
+
+This is the most important method in Pod::Weaver.  Given a set of input
+parameters, it will weave a new document.  Different section plugins will
+expect different input parameters to be present, but some common ones include:
+
+  pod_document - a Pod::Elemental::Document for the original Pod document
+  ppi_document - a PPI document for the source of the module being documented
+  license      - a Software::License object for the source module's license
+  version      - a version (string) to use in produced documentation
+
+The C<pod_document> should have gone through a L<Pod5
+transformer|Pod::Elemental::Transformer::Pod5>, and should probably have had
+its C<=head1> elements L<nested|Pod::Elemental::Transformer::Nester>.
+
+The method will return a new Pod::Elemental::Document.  The input documents may
+be destructively altered during the weaving process.  If they should be
+untouched, pass in copies.
+
+=cut
 
 sub weave_document {
   my ($self, $input) = @_;
@@ -75,6 +130,140 @@ sub weave_document {
   });
 
   return $document;
+}
+
+=method new_with_default_config
+
+This method returns a new Pod::Weaver with a stock configuration, equivalent to
+this:
+
+  [Name]
+  [Version]
+
+  [Region  / prelude]
+
+  [Generic / SYNOPSIS]
+  [Generic / DESCRIPTION]
+  [Generic / OVERVIEW]
+
+  [Collect / ATTRIBUTES]
+  command = attr
+
+  [Collect / METHODS]
+  command = method
+
+  [Leftovers]
+
+  [Region  / postlude]
+
+  [Authors]
+  [Legal]
+
+=cut
+
+sub new_with_default_config {
+  my ($class) = @_;
+  my $weaver = $class->new;
+
+  {
+    require Pod::Weaver::Section::Name;
+    my $name = Pod::Weaver::Section::Name->new({
+      weaver      => $weaver,
+      plugin_name => 'Name',
+    });
+
+    $weaver->plugins->push($name);
+  }
+
+  {
+    require Pod::Weaver::Section::Version;
+    my $version = Pod::Weaver::Section::Version->new({
+      weaver      => $weaver,
+      plugin_name => 'Version',
+    });
+
+    $weaver->plugins->push($version);
+  }
+
+  {
+    require Pod::Weaver::Section::Region;
+    my $prelude = Pod::Weaver::Section::Region->new({
+      weaver      => $weaver,
+      plugin_name => 'prelude',
+    });
+
+    $weaver->plugins->push($prelude);
+  }
+
+  {
+    require Pod::Weaver::Section::Generic;
+    for my $section (qw(SYNOPSIS DESCRIPTION OVERVIEW)) {
+      my $generic = Pod::Weaver::Section::Generic->new({
+        weaver      => $weaver,
+        plugin_name => $section,
+      });
+
+      $weaver->plugins->push($generic);
+    }
+  }
+
+  {
+    require Pod::Weaver::Section::Collect;
+    for my $pair (
+      [ qw(attr   ATTRIBUTES) ],
+      [ qw(method METHODS   ) ],
+    ) {
+      my $collect = Pod::Weaver::Section::Collect->new({
+        weaver      => $weaver,
+        plugin_name => $pair->[1],
+        command     => $pair->[0],
+      });
+
+      $weaver->plugins->push($collect);
+    }
+  }
+
+  {
+    require Pod::Weaver::Section::Leftovers;
+    my $leftovers = Pod::Weaver::Section::Leftovers->new({
+      weaver      => $weaver,
+      plugin_name => 'Leftovers',
+    });
+
+    $weaver->plugins->push($leftovers);
+  }
+
+  {
+    require Pod::Weaver::Section::Region;
+    my $postlude = Pod::Weaver::Section::Region->new({
+      weaver      => $weaver,
+      plugin_name => 'postlude',
+    });
+
+    $weaver->plugins->push($postlude);
+  }
+
+  {
+    require Pod::Weaver::Section::Authors;
+    my $authors = Pod::Weaver::Section::Authors->new({
+      weaver      => $weaver,
+      plugin_name => 'Authors',
+    });
+
+    $weaver->plugins->push($authors);
+  }
+
+  {
+    require Pod::Weaver::Section::Legal;
+    my $legal = Pod::Weaver::Section::Legal->new({
+      weaver      => $weaver,
+      plugin_name => 'Legal',
+    });
+
+    $weaver->plugins->push($legal);
+  }
+
+  return $weaver;
 }
 
 __PACKAGE__->meta->make_immutable;

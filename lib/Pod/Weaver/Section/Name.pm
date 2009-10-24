@@ -5,6 +5,23 @@ with 'Pod::Weaver::Role::Section';
 
 use Moose::Autobox;
 
+=head1 OVERVIEW
+
+This section plugin will produce a hunk of Pod giving the name of the document
+as well as an abstract, like this:
+
+  =head1 NAME
+
+  Some::Document - a document for some
+
+It will determine the name and abstract by inspecting the C<ppi_document> which
+must be given.  It will look for the first package declaration, and for a
+comment in this form:
+
+  # ABSTRACT: a document for some
+
+=cut
+
 use Pod::Elemental::Element::Pod5::Command;
 use Pod::Elemental::Element::Pod5::Ordinary;
 use Pod::Elemental::Element::Nested;
@@ -39,5 +56,4 @@ sub weave_section {
   $document->children->push($name_para);
 }
 
-no Moose;
 1;
