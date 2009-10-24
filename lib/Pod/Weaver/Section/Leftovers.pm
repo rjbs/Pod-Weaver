@@ -6,6 +6,18 @@ with 'Pod::Weaver::Role::Finalizer';
 
 use Moose::Autobox;
 
+=head1 OVERVIEW
+
+This section plugin is used to designate where in the output sequence all
+unused parts of the input C<pod_document> should be placed.
+
+Other section plugins are expected to remove from the input Pod document any
+sections that are consumed.  At the end of all section weaving, the Leftovers
+section will inject any leftover input Pod into its position in the output
+document.
+
+=cut
+
 use Pod::Elemental::Element::Pod5::Region;
 use Pod::Elemental::Types qw(FormatName);
 

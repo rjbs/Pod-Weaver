@@ -5,6 +5,24 @@ with 'Pod::Weaver::Role::Section';
 
 use Moose::Autobox;
 
+=head1 OVERVIEW
+
+This section will find and include a located hunk of Pod.  In general, it will
+find a C<=head1> command with a content of the plugin's name.
+
+In other words, if your configuration include:
+
+  [Generic / OVERVIEW]
+
+...then this weaver will look for "=head1 OVERVIEW" and include it at the
+appropriate location in your output.
+
+If the C<required> attribute is given, and true, then an exception will be
+raised if this section can't be found.
+
+=cut
+
+
 use Pod::Elemental::Element::Pod5::Region;
 use Pod::Elemental::Selectors -all;
 
@@ -36,6 +54,9 @@ sub weave_section {
     my ($i, $para) = @_;
     push @found, $i if $self->selector->($para);
   });
+
+  confess "couldn't find requried Generic section for " . $self->plugin_name
+    if $self->required and not @found;
 
   my @to_add;
   for my $i (reverse @found) {

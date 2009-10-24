@@ -6,6 +6,21 @@ with 'Pod::Weaver::Role::Preparer';
 
 use Moose::Autobox;
 
+=head1 OVERVIEW
+
+Given the configuration:
+
+  [Collect / METHODS]
+  command = method
+
+This plugin will start off by gathering and nesting any C<=method> commands
+found in the C<pod_document>.  Those commands, along with their nestable
+content, will be collected under a C<=head1 METHODS> header and placed in the
+correct location in the output stream.  Their order will be preserved as itw as
+in the source document.
+
+=cut
+
 use Pod::Elemental::Element::Pod5::Region;
 use Pod::Elemental::Selectors -all;
 
@@ -46,7 +61,7 @@ sub prepare_input {
   my $nester = Pod::Elemental::Transformer::Nester->new({
      top_selector      => $selector,
      content_selectors => [
-       s_command([ qw(head2 head3 head4 over item back) ]),
+       s_command([ qw(head3 head4 over item back) ]),
        s_flat,
      ],
   });
