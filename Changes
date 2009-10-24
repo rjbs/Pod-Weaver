@@ -1,5 +1,11 @@
 Revision history for Pod-Weaver
 
+3.092971  2009-10-24
+          fixes to make the NAME section "just work"
+
+3.092970  2009-10-24
+          total rewrite
+
 1.003     2008-10-??
           use $doc->serialize instead of "$doc" to work with here-docs
 
