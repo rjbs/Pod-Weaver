@@ -1,5 +1,8 @@
 Revision history for Pod-Weaver
 
+3.092990  2009-10-26
+          Pod::Weaver::Config and tests for config-from-ini
+
 3.092972  2009-10-24
           no code changes; Pod robuilt
 
