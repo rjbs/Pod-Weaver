@@ -30,6 +30,7 @@ information.
 use Moose::Autobox 0.10;
 use Pod::Elemental;
 use Pod::Elemental::Document;
+use Pod::Weaver::Config::Finder;
 use Pod::Weaver::Role::Plugin;
 use String::Flogger;
 
@@ -264,6 +265,56 @@ sub new_with_default_config {
   }
 
   return $weaver;
+}
+
+sub new_from_config {
+  my ($class, $arg) = @_;
+  
+  my ($sequence) = Pod::Weaver::Config::Finder->new->read_config({
+    root     => $arg->{root}     || '.',
+    basename => $arg->{basename} || 'weaver',
+  });
+
+  return $class->new_from_config_sequence($sequence);
+}
+
+sub new_from_config_sequence {
+  my ($class, $seq) = @_;
+
+  confess("config must be a Config::MVP::Sequence")
+    unless $seq and $seq->isa('Config::MVP::Sequence');
+
+  my $core_config = $seq->section_named('_')->payload;
+
+  my $self = $class->new($core_config);
+
+  for my $section ($seq->sections) {
+    next if $section->name eq '_';
+
+    my ($name, $plugin_class, $arg) = (
+      $section->name,
+      $section->package,
+      $section->payload,
+    );
+
+    # $self->log("initializing plugin $name ($plugin_class)");
+
+    confess "arguments attempted to override 'plugin_name'"
+      if defined $arg->{plugin_name};
+
+    confess "arguments attempted to override 'weaver'"
+      if defined $arg->{weaver};
+
+    $self->plugins->push(
+      $plugin_class->new({
+        %$arg,
+        plugin_name => $name,
+        weaver      => $self,
+      })
+    );
+  }
+
+  return $self;
 }
 
 __PACKAGE__->meta->make_immutable;
