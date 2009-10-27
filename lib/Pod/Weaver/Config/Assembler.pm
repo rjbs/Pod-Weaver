@@ -12,6 +12,7 @@ sub expand_package {
   return scalar String::RewritePrefix->rewrite(
     {
       ''  => 'Pod::Weaver::Section::',
+      '-' => 'Pod::Weaver::Plugin::',
       '@' => 'Pod::Weaver::PluginBundle::',
       '=' => '',
     },

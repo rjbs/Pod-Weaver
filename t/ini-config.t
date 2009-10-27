@@ -18,15 +18,6 @@ my $in_pod   = do { local $/; open my $fh, '<', 't/eg/basic.in.pod'; <$fh> };
 my $expected = do { local $/; open my $fh, '<', 't/eg/basic.out.pod'; <$fh> };
 my $document = Pod::Elemental->read_string($in_pod);
 
-Pod::Elemental::Transformer::Pod5->new->transform_node($document);
-Pod::Elemental::Transformer::Nester->new({
-  top_selector => s_command('head1'),
-  content_selectors => [
-    s_command([ qw(head2 head3 head4 over item back) ]),
-    s_flat,
-  ],
-})->transform_node($document);
-
 my $perl_document = do { local $/; <DATA> };
 my $ppi_document  = PPI::Document->new(\$perl_document);
 

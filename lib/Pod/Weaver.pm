@@ -138,6 +138,8 @@ sub weave_document {
 This method returns a new Pod::Weaver with a stock configuration, equivalent to
 this:
 
+  [@CorePrep]
+
   [Name]
   [Version]
 
@@ -165,6 +167,20 @@ this:
 sub new_with_default_config {
   my ($class) = @_;
   my $weaver = $class->new;
+
+  {
+    require Pod::Weaver::PluginBundle::CorePrep;
+    my @plugins = Pod::Weaver::PluginBundle::CorePrep->mvp_bundle_config({});
+
+    for my $plugin (@plugins) {
+      eval "require $plugin->[1]; 1" or die;
+      $weaver->plugins->push($plugin->[1]->new({
+        %{ $plugin->[2] },
+        plugin_name => $plugin->[0],
+        weaver      => $weaver,
+      }));
+    }
+  }
 
   {
     require Pod::Weaver::Section::Name;
