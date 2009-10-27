@@ -1,5 +1,11 @@
 Revision history for Pod-Weaver
 
+
+3.093000  2009-10-27
+          plugins for common preparation: -H1Nester, -EnsurePod5, @CorePrep
+          "-" as prefix now denotes a non-Section plugin
+          tweak weaving phases and methods to add Dialect
+
 3.092990  2009-10-26
           Pod::Weaver::Config and tests for config-from-ini
 
