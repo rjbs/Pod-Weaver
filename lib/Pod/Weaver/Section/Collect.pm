@@ -1,7 +1,7 @@
 package Pod::Weaver::Section::Collect;
 use Moose;
 with 'Pod::Weaver::Role::Section';
-with 'Pod::Weaver::Role::Preparer';
+with 'Pod::Weaver::Role::Transformer';
 # ABSTRACT: a section that gathers up specific commands
 
 use Moose::Autobox;
@@ -50,10 +50,9 @@ use Pod::Elemental::Transformer::Nester;
 
 has __used_container => (is => 'rw');
 
-sub prepare_input {
-  my ($self, $input) = @_;
+sub transform_document {
+  my ($self, $document) = @_;
 
-  my $document = $input->{pod_document};
   my $selector = s_command($self->command);
 
   return unless $document->children->grep($selector)->length;

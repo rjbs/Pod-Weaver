@@ -8,6 +8,7 @@ use Pod::Weaver::Plugin::H1Nester;
 sub mvp_bundle_config {
   return (
     [ '@CorePrep/EnsurePod5', 'Pod::Weaver::Plugin::EnsurePod5', {} ],
+    # dialects should run here
     [ '@CorePrep/H1Nester',   'Pod::Weaver::Plugin::H1Nester',   {} ],
   );
 }

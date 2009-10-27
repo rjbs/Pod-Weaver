@@ -1,6 +1,6 @@
 package Pod::Weaver::Plugin::H1Nester;
 use Moose;
-with 'Pod::Weaver::Role::Preparer';
+with 'Pod::Weaver::Role::Transformer';
 # ABSTRACT: structure the input pod document into head1-grouped sections
 
 use namespace::autoclean;
@@ -17,8 +17,8 @@ C<=head1> elements.
 
 =cut
 
-sub prepare_input {
-  my ($self, $input) = @_;
+sub transform_document {
+  my ($self, $document) = @_;
 
   my $nester = Pod::Elemental::Transformer::Nester->new({
     top_selector => s_command([ qw(head1) ]),
@@ -28,7 +28,7 @@ sub prepare_input {
     ],
   });
 
-  $nester->transform_node($input->{pod_document});
+  $nester->transform_node($document);
 
   return;
 }

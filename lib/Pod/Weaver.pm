@@ -122,6 +122,14 @@ sub weave_document {
     $_->prepare_input($input);
   });
 
+  $self->plugins_with(-Dialect)->each_value(sub {
+    $_->translate_dialect($input->{pod_document});
+  });
+
+  $self->plugins_with(-Transformer)->each_value(sub {
+    $_->transform_document($input->{pod_document});
+  });
+
   $self->plugins_with(-Section)->each_value(sub {
     $_->weave_section($document, $input);
   });
