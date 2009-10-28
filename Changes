@@ -1,5 +1,7 @@
 Revision history for Pod-Weaver
 
+3.093001  2009-10-27
+          create @Default and use it to set up the new_with_default_config
 
 3.093000  2009-10-27
           plugins for common preparation: -H1Nester, -EnsurePod5, @CorePrep

@@ -143,152 +143,23 @@ sub weave_document {
 
 =method new_with_default_config
 
-This method returns a new Pod::Weaver with a stock configuration, equivalent to
-this:
-
-  [@CorePrep]
-
-  [Name]
-  [Version]
-
-  [Region  / prelude]
-
-  [Generic / SYNOPSIS]
-  [Generic / DESCRIPTION]
-  [Generic / OVERVIEW]
-
-  [Collect / ATTRIBUTES]
-  command = attr
-
-  [Collect / METHODS]
-  command = method
-
-  [Leftovers]
-
-  [Region  / postlude]
-
-  [Authors]
-  [Legal]
+This method returns a new Pod::Weaver with a stock configuration by using only
+L<Pod::Weaver::PluginBundle::Default>.
 
 =cut
 
 sub new_with_default_config {
   my ($class) = @_;
-  my $weaver = $class->new;
 
-  {
-    require Pod::Weaver::PluginBundle::CorePrep;
-    my @plugins = Pod::Weaver::PluginBundle::CorePrep->mvp_bundle_config({});
+  my $assembler = Pod::Weaver::Config::Assembler->new;
 
-    for my $plugin (@plugins) {
-      eval "require $plugin->[1]; 1" or die;
-      $weaver->plugins->push($plugin->[1]->new({
-        %{ $plugin->[2] },
-        plugin_name => $plugin->[0],
-        weaver      => $weaver,
-      }));
-    }
-  }
+  my $root = $assembler->section_class->new({ name => '_' });
+  $assembler->sequence->add_section($root);
 
-  {
-    require Pod::Weaver::Section::Name;
-    my $name = Pod::Weaver::Section::Name->new({
-      weaver      => $weaver,
-      plugin_name => 'Name',
-    });
+  $assembler->change_section('@Default');
+  $assembler->end_section;
 
-    $weaver->plugins->push($name);
-  }
-
-  {
-    require Pod::Weaver::Section::Version;
-    my $version = Pod::Weaver::Section::Version->new({
-      weaver      => $weaver,
-      plugin_name => 'Version',
-    });
-
-    $weaver->plugins->push($version);
-  }
-
-  {
-    require Pod::Weaver::Section::Region;
-    my $prelude = Pod::Weaver::Section::Region->new({
-      weaver      => $weaver,
-      plugin_name => 'prelude',
-    });
-
-    $weaver->plugins->push($prelude);
-  }
-
-  {
-    require Pod::Weaver::Section::Generic;
-    for my $section (qw(SYNOPSIS DESCRIPTION OVERVIEW)) {
-      my $generic = Pod::Weaver::Section::Generic->new({
-        weaver      => $weaver,
-        plugin_name => $section,
-      });
-
-      $weaver->plugins->push($generic);
-    }
-  }
-
-  {
-    require Pod::Weaver::Section::Collect;
-    for my $pair (
-      [ qw(attr   ATTRIBUTES) ],
-      [ qw(method METHODS   ) ],
-    ) {
-      my $collect = Pod::Weaver::Section::Collect->new({
-        weaver      => $weaver,
-        plugin_name => $pair->[1],
-        command     => $pair->[0],
-      });
-
-      $weaver->plugins->push($collect);
-    }
-  }
-
-  {
-    require Pod::Weaver::Section::Leftovers;
-    my $leftovers = Pod::Weaver::Section::Leftovers->new({
-      weaver      => $weaver,
-      plugin_name => 'Leftovers',
-    });
-
-    $weaver->plugins->push($leftovers);
-  }
-
-  {
-    require Pod::Weaver::Section::Region;
-    my $postlude = Pod::Weaver::Section::Region->new({
-      weaver      => $weaver,
-      plugin_name => 'postlude',
-    });
-
-    $weaver->plugins->push($postlude);
-  }
-
-  {
-    require Pod::Weaver::Section::Authors;
-    my $authors = Pod::Weaver::Section::Authors->new({
-      weaver      => $weaver,
-      plugin_name => 'Authors',
-    });
-
-    $weaver->plugins->push($authors);
-  }
-
-  {
-    require Pod::Weaver::Section::Legal;
-    my $legal = Pod::Weaver::Section::Legal->new({
-      weaver      => $weaver,
-      plugin_name => 'Legal',
-    });
-
-    $weaver->plugins->push($legal);
-  }
-
-  return $weaver;
+  return $class->new_from_config_sequence($assembler->sequence);
 }
 
 sub new_from_config {
