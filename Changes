@@ -1,5 +1,8 @@
 Revision history for Pod-Weaver
 
+3.093120  2009-11-08
+          fix broken prereq (Config::MVP)
+
 3.093001  2009-10-27
           create @Default and use it to set up the new_with_default_config
 
