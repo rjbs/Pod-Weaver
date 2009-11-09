@@ -1,5 +1,8 @@
 Revision history for Pod-Weaver
 
+3.093130  2009-11-09
+          add Config::MVP::Reader::INI to prereq
+
 3.093120  2009-11-08
           fix broken prereq (Config::MVP)
 
