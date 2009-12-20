@@ -1,5 +1,9 @@
 Revision history for Pod-Weaver
 
+{{$NEXT}}
+          add the -Transformer plugin to allow pass-through for arbitrary
+          Pod::Elemental::Transformers
+
 3.093130  2009-11-09
           add Config::MVP::Reader::INI to prereq
 
