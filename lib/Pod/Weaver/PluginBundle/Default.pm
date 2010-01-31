@@ -55,6 +55,7 @@ sub mvp_bundle_config {
 
     [ 'ATTRIBUTES',         _exp('Collect'),   { command => 'attr'   } ],
     [ 'METHODS',            _exp('Collect'),   { command => 'method' } ],
+    [ 'FUNCTIONS',          _exp('Collect'),   { command => 'func'   } ],
 
     [ '@Default/Leftovers', _exp('Leftovers'), {} ],
 

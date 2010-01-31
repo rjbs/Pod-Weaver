@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+          add =func/FUNCTIONS to match =method and =attr
+          require newer Pod::Elemental (to avoid Moose incompat)
 
 3.093530  2009-12-19 22:52:47 America/New_York
           add the -Transformer plugin to allow pass-through for arbitrary
