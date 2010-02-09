@@ -32,7 +32,7 @@ sub weave_section {
   return unless my $ppi_document = $input->{ppi_document};
   my $pkg_node = $ppi_document->find_first('PPI::Statement::Package');
 
-  my $filename = 'file'; # $arg->{filename}
+  my $filename = $input->{filename} || 'file';
 
   Carp::croak sprintf "couldn't find package declaration in %s", $filename
     unless $pkg_node;
