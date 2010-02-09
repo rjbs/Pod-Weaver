@@ -45,13 +45,14 @@ weaver's log method delegates to the logger's log method.
   package
     Pod::Weaver::_Logger;
   sub log { printf "%s\n", String::Flogger->flog($_[1]) }
+  sub log_debug { }
   sub new { bless {} => $_[0] }
 }
 
 has logger => (
   lazy    => 1,
   default => sub { Pod::Weaver::_Logger->new },
-  handles => [ qw(log) ]
+  handles => [ qw(log log_debug) ]
 );
 
 =attr plugins
@@ -149,7 +150,7 @@ L<Pod::Weaver::PluginBundle::Default>.
 =cut
 
 sub new_with_default_config {
-  my ($class) = @_;
+  my ($class, $arg) = @_;
 
   my $assembler = Pod::Weaver::Config::Assembler->new;
 
@@ -159,29 +160,35 @@ sub new_with_default_config {
   $assembler->change_section('@Default');
   $assembler->end_section;
 
-  return $class->new_from_config_sequence($assembler->sequence);
+  return $class->new_from_config_sequence($assembler->sequence, $arg);
 }
 
 sub new_from_config {
-  my ($class, $arg) = @_;
+  my ($class, $arg, $new_arg) = @_;
   
   my ($sequence) = Pod::Weaver::Config::Finder->new->read_config({
     root     => $arg->{root}     || '.',
     basename => $arg->{basename} || 'weaver',
   });
 
-  return $class->new_from_config_sequence($sequence);
+  return $class->new_from_config_sequence($sequence, $new_arg);
 }
 
 sub new_from_config_sequence {
-  my ($class, $seq) = @_;
+  my ($class, $seq, $arg) = @_;
+  $arg ||= {};
+
+  my $merge = $arg->{root_config} || {};
 
   confess("config must be a Config::MVP::Sequence")
     unless $seq and $seq->isa('Config::MVP::Sequence');
 
   my $core_config = $seq->section_named('_')->payload;
 
-  my $self = $class->new($core_config);
+  my $self = $class->new({
+    %$merge,
+    %$core_config,
+  });
 
   for my $section ($seq->sections) {
     next if $section->name eq '_';
