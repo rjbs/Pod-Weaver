@@ -44,7 +44,14 @@ weaver's log method delegates to the logger's log method.
 {
   package
     Pod::Weaver::_Logger;
-  sub log { printf "%s\n", String::Flogger->flog($_[1]) }
+  sub log {
+    shift;
+    printf "%s\n", join q{ }, map {; String::Flogger->flog($_) } @_;
+  }
+  sub log_fatal {
+    shift;
+    die sprintf "%s\n", join q{ }, map {; String::Flogger->flog($_) } @_;
+  }
   sub log_debug { }
   sub new { bless {} => $_[0] }
 }
@@ -52,7 +59,7 @@ weaver's log method delegates to the logger's log method.
 has logger => (
   lazy    => 1,
   default => sub { Pod::Weaver::_Logger->new },
-  handles => [ qw(log log_debug) ]
+  handles => [ qw(log log_fatal log_debug) ]
 );
 
 =attr plugins

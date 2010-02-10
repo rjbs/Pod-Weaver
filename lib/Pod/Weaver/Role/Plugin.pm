@@ -36,4 +36,13 @@ has weaver => (
   handles  => [ qw(log) ],
 );
 
+for my $method (qw(log log_debug log_fatal)) {
+  Sub::Install::install_sub({
+    code => sub {
+      my $self = shift;
+      $self->weaver->$method($self->plugin_name, @_); },
+    as   => $method,
+  });
+}
+
 1;
