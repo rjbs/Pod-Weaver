@@ -2,6 +2,11 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+3.100650  2010-03-06 23:21:19 America/New_York
+          expect a Log::Dispatchouli-like logger
+          added a means to tweak the configuration loaded during new
+          log the file in which errors occur more often
+
 3.100310  2010-01-31 15:32:00 America/New_York
           add =func/FUNCTIONS to match =method and =attr
           require newer Pod::Elemental (to avoid Moose incompat)
