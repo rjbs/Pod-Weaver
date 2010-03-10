@@ -46,10 +46,12 @@ weaver's log method delegates to the logger's log method.
     Pod::Weaver::_Logger;
   sub log {
     shift;
+    shift if ref $_[0] eq 'HASH';
     printf "%s\n", join q{ }, map {; String::Flogger->flog($_) } @_;
   }
   sub log_fatal {
     shift;
+    shift if ref $_[0] eq 'HASH';
     die sprintf "%s\n", join q{ }, map {; String::Flogger->flog($_) } @_;
   }
   sub log_debug { }
@@ -57,6 +59,7 @@ weaver's log method delegates to the logger's log method.
 }
 
 has logger => (
+  is      => 'ro',
   lazy    => 1,
   default => sub { Pod::Weaver::_Logger->new },
   handles => [ qw(log log_fatal log_debug) ]
