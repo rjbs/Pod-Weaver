@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+
+3.100710  2010-03-12 10:03:42 America/New_York
           further logging improvements; now uses Log::Dispatchouli explicitly
 
 3.100680  2010-03-09 23:38:30 America/New_York
