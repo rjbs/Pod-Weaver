@@ -27,6 +27,7 @@ information.
 
 =cut
 
+use Log::Dispatchouli 1.100710; # proxy
 use Moose::Autobox 0.10;
 use Pod::Elemental;
 use Pod::Elemental::Document;
@@ -41,27 +42,16 @@ weaver's log method delegates to the logger's log method.
 
 =cut
 
-{
-  package
-    Pod::Weaver::_Logger;
-  sub log {
-    shift;
-    shift if ref $_[0] eq 'HASH';
-    printf "%s\n", join q{ }, map {; String::Flogger->flog($_) } @_;
-  }
-  sub log_fatal {
-    shift;
-    shift if ref $_[0] eq 'HASH';
-    die sprintf "%s\n", join q{ }, map {; String::Flogger->flog($_) } @_;
-  }
-  sub log_debug { }
-  sub new { bless {} => $_[0] }
-}
-
 has logger => (
   is      => 'ro',
   lazy    => 1,
-  default => sub { Pod::Weaver::_Logger->new },
+  default => sub {
+    Log::Dispatchouli->new({
+      ident     => 'Pod::Weaver',
+      to_stdout => 1,
+      log_pid   => 0,
+    });
+  },
   handles => [ qw(log log_fatal log_debug) ]
 );
 
