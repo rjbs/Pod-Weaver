@@ -29,11 +29,11 @@ information.
 
 use Log::Dispatchouli 1.100710; # proxy
 use Moose::Autobox 0.10;
-use Pod::Elemental;
+use Pod::Elemental 0.100220;
 use Pod::Elemental::Document;
 use Pod::Weaver::Config::Finder;
 use Pod::Weaver::Role::Plugin;
-use String::Flogger;
+use String::Flogger 1;
 
 =attr logger
 

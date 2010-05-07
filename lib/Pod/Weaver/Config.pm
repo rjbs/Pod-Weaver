@@ -2,6 +2,7 @@ package Pod::Weaver::Config;
 use Moose::Role;
 # ABSTRACT: stored configuration loader role
 
+use Config::MVP 0.093120;
 with q(Config::MVP::Reader) => { -excludes => 'build_assembler' };
 
 use Pod::Weaver::Config::Assembler;
