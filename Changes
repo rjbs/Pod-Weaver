@@ -1,6 +1,7 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+          allow an explicit header arg to Generic
 
 3.100710  2010-03-12 10:03:42 America/New_York
           further logging improvements; now uses Log::Dispatchouli explicitly
