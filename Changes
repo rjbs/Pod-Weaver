@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+
+3.101450  2010-05-25 18:38:44 America/New_York
           compat with Config::MVP::Reader v1
 
 3.101270  2010-05-07 21:36:45 America/New_York
