@@ -1,7 +1,7 @@
 package Pod::Weaver::Config::Finder;
 use Moose;
 extends 'Config::MVP::Reader::Finder';
-with 'Pod::Weaver::Config';
+with 'Pod::Weaver::Config' => { -excludes => [ qw(read_config) ] };
 # ABSTRACT: the reader for weaver.ini files
 
 sub default_search_path {

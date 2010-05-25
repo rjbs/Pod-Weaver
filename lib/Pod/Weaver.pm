@@ -27,6 +27,7 @@ information.
 
 =cut
 
+use File::Spec;
 use Log::Dispatchouli 1.100710; # proxy
 use Moose::Autobox 0.10;
 use Pod::Elemental 0.100220;
@@ -166,10 +167,9 @@ sub new_with_default_config {
 sub new_from_config {
   my ($class, $arg, $new_arg) = @_;
   
-  my ($sequence) = Pod::Weaver::Config::Finder->new->read_config({
-    root     => $arg->{root}     || '.',
-    basename => $arg->{basename} || 'weaver',
-  });
+  my $root = $arg->{root} || '.';
+  my $name = File::Spec->catfile($root, 'weaver');
+  my ($sequence) = Pod::Weaver::Config::Finder->new->read_config($name);
 
   return $class->new_from_config_sequence($sequence, $new_arg);
 }
