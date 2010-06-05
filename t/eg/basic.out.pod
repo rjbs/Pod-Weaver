@@ -38,8 +38,17 @@ Thank you for your attention.
 
 =head1 AUTHORS
 
-  Ricardo Signes <rjbs@example.com>
-  Molly Millions <sshears@orbit.tash>
+=over 4
+
+=item *
+
+Ricardo Signes <rjbs@example.com>
+
+=item *
+
+Molly Millions <sshears@orbit.tash>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 

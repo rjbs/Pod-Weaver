@@ -59,7 +59,12 @@ my $woven = $weaver->weave_document({
 #   2      Pod5::Ordinary <Happy hacking!>
 # 7      Pod5::Ordinary <Thank you for your attention.>
 # 8      =head1 AUTHORS
-#   0      Pod5::Verbatim <  Ricardo Signe…rs@orbit.tash>>
+#   0      =over 4
+#   1      =item *
+#   2      Pod5::Ordinary <Ricardo Singes…>
+#   3      =item *
+#   4      Pod5::Ordinary <Molly Millions…>
+#   5      =back
 # 9      =head1 COPYRIGHT AND LICENSE
 #   0      Pod5::Ordinary <This software i…ic License 1.0>
 

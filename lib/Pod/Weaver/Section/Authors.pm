@@ -26,19 +26,36 @@ sub weave_section {
 
   return unless $input->{authors};
 
-  my $name = $input->{authors}->length > 1 ? 'AUTHORS' : 'AUTHOR';
-  my $str  = $input->{authors}->join("\n");
+  my $multiple_authors = $input->{authors}->length > 1;
 
-  $str =~ s{^}{  }mg;
+  my $name = $multiple_authors ? 'AUTHORS' : 'AUTHOR';
+  my $authors = $input->{authors}->map(sub {
+    Pod::Elemental::Element::Pod5::Ordinary->new({
+      content => $_,
+    }),
+  });
+
+  $authors = [
+    Pod::Elemental::Element::Pod5::Command->new({
+      command => 'over', content => '4',
+    }),
+    $authors->map(sub {
+      Pod::Elemental::Element::Pod5::Command->new({
+        command => 'item', content => '*',
+      }),
+      $_,
+    })->flatten,
+    Pod::Elemental::Element::Pod5::Command->new({
+      command => 'back', content => '',
+    }),
+  ] if $multiple_authors;
 
   $document->children->push(
     Pod::Elemental::Element::Nested->new({
       type     => 'command',
       command  => 'head1',
       content  => $name,
-      children => [
-        Pod::Elemental::Element::Pod5::Verbatim->new({ content => $str }),
-      ],
+      children => $authors,
     }),
   );
 }
