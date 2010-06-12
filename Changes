@@ -2,7 +2,12 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+3.101630  2010-06-12 14:42:26 America/New_York
+          Author section now emits a normal para or bulleted list (Florian
+          Ragwitz)
+
 3.101460  2010-05-26 22:36:13 America/New_York
+          compat with Config::MVP::Reader v2
 
 3.101450  2010-05-25 18:38:44 America/New_York
           compat with Config::MVP::Reader v1
