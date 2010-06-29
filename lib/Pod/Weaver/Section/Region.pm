@@ -111,7 +111,7 @@ sub weave_section {
   }
 
   confess "Couldn't find required Region for " . $self->region_name . " in file "
-    . $input->{filename} if $self->required and not @to_insert;
+    . (defined $input->{filename} ? $input->{filename} : '') if $self->required and not @to_insert;
 
   $document->children->push(@to_insert);
 }

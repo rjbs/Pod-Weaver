@@ -93,7 +93,7 @@ sub weave_section {
   });
 
   confess "Couldn't find required Generic section for " . $self->header . " in file "
-    . $input->{filename} if $self->required and not @found;
+    . (defined $input->{filename} ? $input->{filename} : '') if $self->required and not @found;
 
   my @to_add;
   for my $i (reverse @found) {
