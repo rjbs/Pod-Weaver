@@ -9,39 +9,51 @@ use PPI;
 use Pod::Elemental;
 use Pod::Weaver;
 
-my $in_pod   = do { local $/; open my $fh, '<', 't/eg/basic.in.pod'; <$fh> };
-my $document = Pod::Elemental->read_string($in_pod);
+is( woven( configer( 0 ) ), 0, "Doesn't throw exception for nonrequired section" );
 
-my $perl_document = do { local $/; <DATA> };
-my $ppi_document  = PPI::Document->new(\$perl_document);
+is( woven( configer( 1 ) ), 1, "Properly throws exception for required section" );
 
-# TODO Hmpf, is there an easier way for this? --APOCAL
-my $assembler = Pod::Weaver::Config::Assembler->new;
-$assembler->sequence->add_section( $assembler->section_class->new({ name => '_' }) );
-$assembler->change_section('@Default');
-$assembler->change_section('Generic', 'FOOBAZ');
-$assembler->add_value( 'required' => 1 );
-my $weaver = Pod::Weaver->new_from_config_sequence( $assembler->sequence );
+sub configer {
+  my $required = shift;
 
-require Software::License::Artistic_1_0;
-eval {
-  my $woven = $weaver->weave_document({
-    pod_document => $document,
-    ppi_document => $ppi_document,
+  # TODO Hmpf, is there an easier way for this? --APOCAL
+  my $assembler = Pod::Weaver::Config::Assembler->new;
+  $assembler->sequence->add_section( $assembler->section_class->new({ name => '_' }) );
+  $assembler->change_section('@Default');
+  $assembler->change_section('Section', 'FOOBAZ');
+  $assembler->add_value( 'required' => $required );
+  return Pod::Weaver->new_from_config_sequence( $assembler->sequence );
+}
 
-    version  => '1.012078',
-    authors  => [
-      'Ricardo Signes <rjbs@example.com>',
-      'Molly Millions <sshears@orbit.tash>',
-    ],
-    license  => Software::License::Artistic_1_0->new({
-      holder => 'Ricardo Signes',
-      year   => 1999,
-    }),
-  });
-};
+sub woven {
+  my $weaver = shift;
 
-like( $@, qr/Couldn't find required Generic section/, "Properly throws exception for required section" );
+  my $in_pod   = do { local $/; open my $fh, '<', 't/eg/basic.in.pod'; <$fh> };
+  my $document = Pod::Elemental->read_string($in_pod);
+
+  my $perl_document = do { local $/; <DATA> };
+  my $ppi_document  = PPI::Document->new(\$perl_document);
+
+  require Software::License::Artistic_1_0;
+  eval {
+    my $woven = $weaver->weave_document({
+      pod_document => $document,
+      ppi_document => $ppi_document,
+
+      version  => '1.012078',
+      authors  => [
+        'Ricardo Signes <rjbs@example.com>',
+        'Molly Millions <sshears@orbit.tash>',
+      ],
+      license  => Software::License::Artistic_1_0->new({
+        holder => 'Ricardo Signes',
+        year   => 1999,
+      }),
+    });
+  };
+
+  return $@ ? 1 : 0;
+}
 
 done_testing;
 
