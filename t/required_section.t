@@ -20,7 +20,7 @@ sub configer {
   my $assembler = Pod::Weaver::Config::Assembler->new;
   $assembler->sequence->add_section( $assembler->section_class->new({ name => '_' }) );
   $assembler->change_section('@Default');
-  $assembler->change_section('Section', 'FOOBAZ');
+  $assembler->change_section('Generic', 'FOOBAZ');
   $assembler->add_value( 'required' => $required );
   return Pod::Weaver->new_from_config_sequence( $assembler->sequence );
 }
