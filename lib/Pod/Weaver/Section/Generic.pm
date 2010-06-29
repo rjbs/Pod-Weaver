@@ -30,9 +30,17 @@ raised if this section can't be found.
 
 =cut
 
-
 use Pod::Elemental::Element::Pod5::Region;
 use Pod::Elemental::Selectors -all;
+
+=attr required
+
+A boolean value specifying whether this section is required to be present or not. Defaults
+to false.
+
+If it's enabled and the section can't be found an exception will be raised.
+
+=cut
 
 has required => (
   is  => 'ro',
@@ -40,12 +48,26 @@ has required => (
   default => 0,
 );
 
+=attr header
+
+The name of this section. Defaults to the plugin name.
+
+=cut
+
 has header => (
   is   => 'ro',
   isa  => 'Str',
   lazy => 1,
   default => sub { $_[0]->plugin_name },
 );
+
+=attr selector
+
+The coderef that implements the search for the specified section. You usually don't need to touch this!
+
+TODO: We need a better way to specify this in the F<weaver.ini> file...
+
+=cut
 
 has selector => (
   is  => 'ro',
@@ -70,8 +92,8 @@ sub weave_section {
     push @found, $i if $self->selector->($para);
   });
 
-  confess "couldn't find requried Generic section for " . $self->plugin_name
-    if $self->required and not @found;
+  confess "Couldn't find required Generic section for " . $self->header . " in file "
+    . $input->{filename} if $self->required and not @found;
 
   my @to_add;
   for my $i (reverse @found) {
