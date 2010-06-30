@@ -55,13 +55,13 @@ sub do_weave {
     ppi_document => $ppi_document,
   });
 
-#  is($woven->children->length, 5, "we end up with a 5-paragraph document");
+  is($woven->children->length, 5, "we end up with a 5-paragraph document");
 
-#  for (qw(0 2 3 4)) {
-#    my $para = $woven->children->[ $_ ];
-#    isa_ok($para, 'Pod::Elemental::Element::Nested', "element $_");
-#    is($para->command, 'head1', "... and is =head1");
-#  }
+  for (qw(0 2 3 4)) {
+    my $para = $woven->children->[ $_ ];
+    isa_ok($para, 'Pod::Elemental::Element::Nested', "element $_");
+    is($para->command, 'head1', "... and is =head1");
+  }
 
   # XXX: This test is extremely risky as things change upstream.
   # -- rjbs, 2009-10-23
