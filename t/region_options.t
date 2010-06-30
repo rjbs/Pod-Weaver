@@ -65,8 +65,7 @@ sub do_weave {
 
   # XXX: This test is extremely risky as things change upstream.
   # -- rjbs, 2009-10-23
-#  eq_or_diff(
-  is(
+  eq_or_diff(
     $woven->as_pod_string,
     $expected,
     "exactly the pod string we wanted after weaving for $filename!",
