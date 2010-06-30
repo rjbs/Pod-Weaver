@@ -1,0 +1,29 @@
+=pod
+
+=head1 NAME
+
+Module::Name - abstract text
+
+=head1 VERSION
+
+  version 1.012078
+
+=head1 DESCRIPTION
+
+This is a simple document meant to be used in testing Pod::Weaver.
+
+It does not do very much.
+
+=head1 BE FOREWARNED
+
+This is not supported:
+
+  much at all
+
+Happy hacking!
+
+=head1 SYNOPSIS
+
+This should probably get moved up front.
+
+=cut
