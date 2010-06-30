@@ -25,13 +25,14 @@ sub configer {
   return Pod::Weaver->new_from_config_sequence( $assembler->sequence );
 }
 
+my $perl_document;
 sub woven {
   my $weaver = shift;
 
   my $in_pod   = do { local $/; open my $fh, '<', 't/eg/basic.in.pod'; <$fh> };
   my $document = Pod::Elemental->read_string($in_pod);
 
-  my $perl_document = do { local $/; <DATA> };
+  $perl_document = do { local $/; <DATA> } if ! defined $perl_document;
   my $ppi_document  = PPI::Document->new(\$perl_document);
 
   require Software::License::Artistic_1_0;
