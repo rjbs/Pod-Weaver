@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+          Name section now looks for a PODNAME comment if no package is found
+          (hanekomu)
 
 3.101630  2010-06-12 14:42:26 America/New_York
           Author section now emits a normal para or bulleted list (Florian

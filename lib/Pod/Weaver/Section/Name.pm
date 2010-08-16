@@ -20,27 +20,53 @@ comment in this form:
 
   # ABSTRACT: a document for some
 
+If no package declaration is found - this is common for scripts and C<.pod>
+files -, it will look for a comment in this form:
+
+  # PODNAME: Some::Package::Name
+
 =cut
 
 use Pod::Elemental::Element::Pod5::Command;
 use Pod::Elemental::Element::Pod5::Ordinary;
 use Pod::Elemental::Element::Nested;
 
+sub get_package_via_statement {
+  my ($self, $ppi_document) = @_;
+
+  my $pkg_node = $ppi_document->find_first('PPI::Statement::Package');
+  return unless $pkg_node;
+  return $pkg_node->namespace;
+}
+
+sub get_package_via_comment {
+  my ($self, $ppi_document) = @_;
+
+  my ($package) = $ppi_document->serialize =~ /^\s*#+\s*PODNAME:\s*(.+)$/m;
+  return $package;
+}
+
+sub get_package {
+  my ($self, $input) = @_;
+
+  return unless my $ppi_document = $input->{ppi_document};
+  return
+    $self->get_package_via_statement($ppi_document) ||
+    $self->get_package_via_comment($ppi_document);
+}
+
 sub weave_section {
   my ($self, $document, $input) = @_;
 
-  return unless my $ppi_document = $input->{ppi_document};
-  my $pkg_node = $ppi_document->find_first('PPI::Statement::Package');
-
   my $filename = $input->{filename} || 'file';
 
-  Carp::croak sprintf "couldn't find package declaration in %s", $filename
-    unless $pkg_node;
-
-  my $package = $pkg_node->namespace;
+  my $package = $self->get_package($input);
+  unless ($package) {
+    Carp::croak sprintf "couldn't find package declaration in %s", $filename;
+  }
 
   my ($abstract)
-    = $ppi_document->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
+    = $input->{ppi_document}->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
 
   $self->log([ "couldn't find abstract in %s", $filename ]) unless $abstract;
  
