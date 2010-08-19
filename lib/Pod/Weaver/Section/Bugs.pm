@@ -1,5 +1,6 @@
 package Pod::Weaver::Section::Bugs;
 use Moose;
+use Text::Wrap ();
 with 'Pod::Weaver::Role::Section';
 # ABSTRACT: a section for bugtracker info
 
@@ -31,18 +32,20 @@ sub weave_section {
   return unless exists $input->{distmeta}{resources}{bugtracker};
   my $bugtracker = $input->{distmeta}{resources}{bugtracker};
   my ($web,$mailto) = @{$bugtracker}{qw/web mailto/};
-  return unless defined $web && defined $mailto;
+  return unless defined $web || defined $mailto;
 
-  my $text = "Please report any bugs or feature requests"; 
+  my $text = "Please report any bugs or feature requests ";
 
   if (defined $web) {
-    $text .= "on the bugtracker website\n$web\n";
-    $text .= "or " if defined $mailto;
+    $text .= "on the bugtracker website $web";
+    $text .= defined $mailto ? " or " : "\n";
   }
 
   if (defined $mailto) {
     $text .= "by email to $mailto\.\n";
   }
+
+  $text = Text::Wrap::wrap(q{}, q{}, $text);
 
   $text .= <<'HERE';
 
