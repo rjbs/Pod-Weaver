@@ -4,6 +4,11 @@ Revision history for Pod-Weaver
           Name section now looks for a PODNAME comment if no package is found
           (hanekomu)
 
+          Added a Bugs section (thanks, David Golden)
+
+          Version, Region, and Generic are all more configurable (thanks,
+          Apocalypse)
+
 3.101630  2010-06-12 14:42:26 America/New_York
           Author section now emits a normal para or bulleted list (Florian
           Ragwitz)
