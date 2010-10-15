@@ -61,14 +61,6 @@ has header => (
   default => sub { $_[0]->plugin_name },
 );
 
-=attr selector
-
-The coderef that implements the search for the specified section. You usually don't need to touch this!
-
-TODO: We need a better way to specify this in the F<weaver.ini> file...
-
-=cut
-
 has selector => (
   is  => 'ro',
   isa => 'CodeRef',
