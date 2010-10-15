@@ -15,15 +15,14 @@ as well as an abstract, like this:
   Some::Document - a document for some
 
 It will determine the name and abstract by inspecting the C<ppi_document> which
-must be given.  It will look for the first package declaration, and for a
-comment in this form:
+must be given.  It looks for comments in the form:
+
 
   # ABSTRACT: a document for some
-
-If no package declaration is found - this is common for scripts and C<.pod>
-files -, it will look for a comment in this form:
-
   # PODNAME: Some::Package::Name
+
+If no C<PODNAME> comment is present, but a package declaration can be found,
+the package name will be used as the document name.
 
 =cut
 
@@ -31,7 +30,7 @@ use Pod::Elemental::Element::Pod5::Command;
 use Pod::Elemental::Element::Pod5::Ordinary;
 use Pod::Elemental::Element::Nested;
 
-sub get_package_via_statement {
+sub _get_docname_via_statement {
   my ($self, $ppi_document) = @_;
 
   my $pkg_node = $ppi_document->find_first('PPI::Statement::Package');
@@ -39,20 +38,32 @@ sub get_package_via_statement {
   return $pkg_node->namespace;
 }
 
-sub get_package_via_comment {
+sub _get_docname_via_comment {
   my ($self, $ppi_document) = @_;
 
-  my ($package) = $ppi_document->serialize =~ /^\s*#+\s*PODNAME:\s*(.+)$/m;
-  return $package;
+  my ($docname) = $ppi_document->serialize =~ /^\s*#+\s*PODNAME:\s*(.+)$/m;
+  return $docname;
 }
 
-sub get_package {
+sub _get_docname {
   my ($self, $input) = @_;
 
-  return unless my $ppi_document = $input->{ppi_document};
-  return
-    $self->get_package_via_statement($ppi_document) ||
-    $self->get_package_via_comment($ppi_document);
+  my $ppi_document = $input->{ppi_document};
+
+  my $docname = $self->_get_docname_via_comment($ppi_document)
+             || $self->_get_docname_via_statement($ppi_document);
+
+  return $docname;
+}
+
+sub _get_abstract {
+  my ($self, $input) = @_;
+
+  my $ppi_document = $input->{ppi_document};
+
+  my ($abstract) = $ppi_document->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
+
+  return $abstract;
 }
 
 sub weave_section {
@@ -60,17 +71,15 @@ sub weave_section {
 
   my $filename = $input->{filename} || 'file';
 
-  my $package = $self->get_package($input);
-  unless ($package) {
-    Carp::croak sprintf "couldn't find package declaration in %s", $filename;
-  }
+  my $docname  = $self->_get_docname($input);
+  my $abstract = $self->_get_abstract($input);
 
-  my ($abstract)
-    = $input->{ppi_document}->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
+  Carp::croak sprintf "couldn't determine document name for %s", $filename
+    unless $docname;
 
   $self->log([ "couldn't find abstract in %s", $filename ]) unless $abstract;
  
-  my $name = $package;
+  my $name = $docname;
   $name .= " - $abstract" if $abstract;
 
   my $name_para = Pod::Elemental::Element::Nested->new({
