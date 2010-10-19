@@ -18,6 +18,7 @@ It will do nothing if there is no C<version> entry in the input.
 
 =cut
 
+use DateTime;
 use Moose::Autobox;
 
 use String::Formatter 0.100680 stringf => {
