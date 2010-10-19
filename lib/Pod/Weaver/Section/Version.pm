@@ -112,7 +112,7 @@ sub weave_section {
 
   if ( exists $input->{ppi_document} ) {
     my $pkg_node = $input->{ppi_document}->find_first('PPI::Statement::Package');
-    $args{module} = $pkg_node->namespace if defined $pkg_node;
+    $args{module} = $pkg_node->namespace if $pkg_node;
   }
 
   my $content = _format_version($self->format, \%args);
