@@ -19,6 +19,10 @@ information for the document, like this:
 This plugin will do nothing if no C<license> input parameter is available.  The
 C<license> is expected to be a L<Software::License> object.
 
+If a L<Dist::Zilla> object is provided and the distribution contains a F<LICENSE>
+file, an extra line of text will be added telling users to check the file for the
+full text of the license.
+
 =cut
 
 sub weave_section {
@@ -28,6 +32,17 @@ sub weave_section {
 
   my $notice = $input->{license}->notice;
   chomp $notice;
+
+  if ( $input->{zilla} ) {
+    # TODO dzil docs claim that the file representation might change...
+    foreach my $f ( @{ $input->{zilla}->files } ) {
+      if ( $f->name eq 'LICENSE' ) {
+        $notice .= "\n\nThe full text of the license can be found";
+        $notice .= " in the LICENSE file included with this distribution.";
+        last;
+      }
+    }
+  }
 
   $document->children->push(
     Pod::Elemental::Element::Nested->new({
