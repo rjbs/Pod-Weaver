@@ -19,11 +19,23 @@ information for the document, like this:
 This plugin will do nothing if no C<license> input parameter is available.  The
 C<license> is expected to be a L<Software::License> object.
 
-If a L<Dist::Zilla> object is provided and the distribution contains a F<LICENSE>
-file, an extra line of text will be added telling users to check the file for the
+=cut
+
+=attr license_file
+
+Specify the name of the license file and if it is present in the L<Dist::Zilla>
+object, an extra line of text will be added telling users to check the file for the
 full text of the license.
 
+Defaults to none.
+
 =cut
+
+has license_file => (
+  is => 'ro',
+  isa => 'Str',
+  predicate => '_license_file',
+);
 
 sub weave_section {
   my ($self, $document, $input) = @_;
@@ -33,12 +45,12 @@ sub weave_section {
   my $notice = $input->{license}->notice;
   chomp $notice;
 
-  if ( $input->{zilla} ) {
+  if ( $self->_license_file and $input->{zilla} ) {
     # TODO dzil docs claim that the file representation might change...
     foreach my $f ( @{ $input->{zilla}->files } ) {
-      if ( $f->name eq 'LICENSE' ) {
-        $notice .= "\n\nThe full text of the license can be found";
-        $notice .= " in the LICENSE file included with this distribution.";
+      if ( $f->name =~ /^${\$self->license_file}$/i ) {
+        $notice .= "\n\nThe full text of the license can be found in the\n'";
+        $notice .= $f->name . "' file included with this distribution.";
         last;
       }
     }
