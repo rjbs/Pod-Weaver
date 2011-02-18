@@ -21,6 +21,21 @@ C<license> is expected to be a L<Software::License> object.
 
 =cut
 
+=attr license_file
+
+Specify the name of the license file and an extra line of text will be added
+telling users to check the file for the full text of the license.
+
+Defaults to none.
+
+=cut
+
+has license_file => (
+  is => 'ro',
+  isa => 'Str',
+  predicate => '_has_license_file',
+);
+
 sub weave_section {
   my ($self, $document, $input) = @_;
 
@@ -28,6 +43,11 @@ sub weave_section {
 
   my $notice = $input->{license}->notice;
   chomp $notice;
+
+  if ( $self->_has_license_file ) {
+    $notice .= "\n\nThe full text of the license can be found in the\n'";
+    $notice .= $self->license_file . "' file included with this distribution.";
+  }
 
   $document->children->push(
     Pod::Elemental::Element::Nested->new({
