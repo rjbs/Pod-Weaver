@@ -25,6 +25,9 @@ It is nearly equivalent to the following:
   [Collect / ATTRIBUTES]
   command = attr
 
+  [Collect / EVENTS]
+  command = event
+
   [Collect / METHODS]
   command = method
 
@@ -54,6 +57,7 @@ sub mvp_bundle_config {
     [ 'OVERVIEW',           _exp('Generic'),   {} ],
 
     [ 'ATTRIBUTES',         _exp('Collect'),   { command => 'attr'   } ],
+    [ 'EVENTS',             _exp('Collect'),   { command => 'event'  } ],
     [ 'METHODS',            _exp('Collect'),   { command => 'method' } ],
     [ 'FUNCTIONS',          _exp('Collect'),   { command => 'func'   } ],
 
