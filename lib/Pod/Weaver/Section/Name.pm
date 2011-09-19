@@ -41,8 +41,7 @@ sub _get_docname_via_statement {
 sub _get_docname_via_comment {
   my ($self, $ppi_document) = @_;
 
-  my ($docname) = $ppi_document->serialize =~ /^\s*#+\s*PODNAME:\s*(.+)$/m;
-  return $docname;
+  return $self->_extract_comment_content( $ppi_document, qr/^\s*#+\s*PODNAME:\s*(.+)$/m );
 }
 
 sub _get_docname {
@@ -59,11 +58,26 @@ sub _get_docname {
 sub _get_abstract {
   my ($self, $input) = @_;
 
-  my $ppi_document = $input->{ppi_document};
+  return $self->_extract_comment_content( $input->{ppi_document}, qr/^\s*#+\s*ABSTRACT:\s*(.+)$/m );
+}
 
-  my ($abstract) = $ppi_document->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
+sub _extract_comment_content {
+  my ($self, $ppi_document, $regex) = @_;
 
-  return $abstract;
+  my $content;
+  my $finder = sub {
+    my $node = $_[1];
+    return 0 unless $node->isa('PPI::Token::Comment');
+    if ( $node->content =~ $regex ) {
+      $content = $1;
+      return 1;
+    }
+    return 0;
+  };
+
+  $ppi_document->find_first($finder);
+
+  return $content;
 }
 
 sub weave_section {
