@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+          throw a (helpful?) exception when %m is used in a version format, but
+          no package was found in the file
 
 3.101633  2011-09-19 15:48:16 America/New_York
           speed up performance by changing how we use PPI (thanks, Dave Rolsky)

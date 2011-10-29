@@ -34,7 +34,13 @@ use String::Formatter 0.100680 stringf => {
               ->format_cldr($_[1]),
     },
     r => sub { $_[0]->{zilla}->name },
-    m => sub { $_[0]->{module} },
+    m => sub {
+      return $_[0]->{module} if defined $_[0]->{module};
+      $_[0]->{self}->log_fatal([
+        "%%m format used for Version section, but no package declaration found in %s",
+        $_[0]->{filename},
+      ]);
+    },
     t => sub { "\t" },
     n => sub { "\n" },
   },
@@ -105,8 +111,9 @@ sub weave_section {
   return unless $input->{version};
 
   my %args = (
-    self => $self,
-    version => $input->{version},
+    self     => $self,
+    version  => $input->{version},
+    filename => $input->{filename},
   );
   $args{zilla} = $input->{zilla} if exists $input->{zilla};
 
