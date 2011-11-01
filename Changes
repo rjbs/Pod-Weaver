@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+
+3.101634  2011-10-31 22:56:36 America/New_York
           throw a (helpful?) exception when %m is used in a version format, but
           no package was found in the file
 
