@@ -58,7 +58,12 @@ sub _get_docname {
 sub _get_abstract {
   my ($self, $input) = @_;
 
-  return $self->_extract_comment_content( $input->{ppi_document}, qr/^\s*#+\s*ABSTRACT:\s*(.+)$/m );
+  my $comment = $self->_extract_comment_content( $input->{ppi_document}, qr/^\s*#+\s*ABSTRACT:\s*(.+)$/m );
+  return $comment if $comment;
+
+  # If that failed, fall back to searching the whole document
+  my ($abstract) = $input->{ppi_document}->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
+  return $abstract;
 }
 
 sub _extract_comment_content {
