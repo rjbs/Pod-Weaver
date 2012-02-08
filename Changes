@@ -2,6 +2,10 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+3.101635  2012-02-07 22:03:26 America/New_York
+          restore the full-document scan for ABSTRACT if not found in a comment
+          token (thanks, David Golden)
+
 3.101634  2011-10-31 22:56:36 America/New_York
           throw a (helpful?) exception when %m is used in a version format, but
           no package was found in the file
