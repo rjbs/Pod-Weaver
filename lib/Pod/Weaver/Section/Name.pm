@@ -38,6 +38,19 @@ sub _get_docname_via_statement {
   return $pkg_node->namespace;
 }
 
+sub _get_docname_via_class_decl {
+  my ($self, $ppi_document) = @_;
+
+  my $word_node = $ppi_document->find_first(sub {
+      $_[1]->isa('PPI::Token::Word')
+      and $_[1]->content eq 'class'
+      and $_[1]->snext_sibling
+      and $_[1]->snext_sibling->isa('PPI::Token::Word')
+  });
+  return unless $word_node;
+  return $word_node->snext_sibling->content;
+}
+
 sub _get_docname_via_comment {
   my ($self, $ppi_document) = @_;
 
@@ -53,7 +66,8 @@ sub _get_docname {
   my $ppi_document = $input->{ppi_document};
 
   my $docname = $self->_get_docname_via_comment($ppi_document)
-             || $self->_get_docname_via_statement($ppi_document);
+             || $self->_get_docname_via_statement($ppi_document)
+             || $self->_get_docname_via_class_decl($ppi_document);
 
   return $docname;
 }
