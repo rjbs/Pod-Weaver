@@ -117,20 +117,7 @@ sub weave_section {
   );
   $args{zilla} = $input->{zilla} if exists $input->{zilla};
 
-  if ( exists $input->{ppi_document} ) {
-    my $pkg_node = $input->{ppi_document}->find_first('PPI::Statement::Package');
-    if ( $pkg_node ) {
-      $args{module} = $pkg_node->namespace;
-    } else {
-      $pkg_node = $input->{ppi_document}->find_first(sub {
-        $_[1]->isa('PPI::Token::Word')
-        and $_[1]->content eq 'class'
-        and $_[1]->snext_sibling
-        and $_[1]->snext_sibling->isa('PPI::Token::Word')
-      });
-      $args{module} = $pkg_node->snext_sibling->content if $pkg_node;
-    }
-  }
+  $args{module} = $self->get_docname($input);
 
   my $content = _format_version($self->format, \%args);
   if ( $self->is_verbatim ) {
