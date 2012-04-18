@@ -16,7 +16,7 @@ Given the configuration:
 This plugin will start off by gathering and nesting any C<=method> commands
 found in the C<pod_document>.  Those commands, along with their nestable
 content, will be collected under a C<=head1 METHODS> header and placed in the
-correct location in the output stream.  Their order will be preserved as itw as
+correct location in the output stream.  Their order will be preserved as it was
 in the source document.
 
 =cut
