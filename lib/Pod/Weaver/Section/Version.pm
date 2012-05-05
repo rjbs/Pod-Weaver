@@ -106,7 +106,7 @@ has time_zone => (
   default => 'local',
 );
 
-sub weave_section {
+sub weave_section_content {
   my ($self, $document, $input) = @_;
   return unless $input->{version};
 
@@ -133,11 +133,20 @@ sub weave_section {
     });
   }
 
+  return ($content);
+}
+
+sub weave_section {
+  my ($self, $document, $input) = @_;
+  return unless $input->{version};
+
+  my @content = $self->weave_section_content($document, $input);
+
   $document->children->push(
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',
       content  => 'VERSION',
-      children => [ $content ],
+      children => \@content,
     }),
   );
 }
