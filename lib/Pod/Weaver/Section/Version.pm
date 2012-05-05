@@ -106,8 +106,20 @@ has time_zone => (
   default => 'local',
 );
 
-sub weave_section_content {
-  my ($self, $document, $input) = @_;
+=method build_content
+
+  my @pod_elements = $section->build_content(\%input);
+
+This method is passed the same C<\%input> that goes to the C<weave_section>
+method, and should return a list of pod elements to insert.
+
+In almost all cases, this method is used internally, but could be usefully
+overridden in a subclass.
+
+=cut
+
+sub build_content {
+  my ($self, $input) = @_;
   return unless $input->{version};
 
   my %args = (
@@ -140,7 +152,7 @@ sub weave_section {
   my ($self, $document, $input) = @_;
   return unless $input->{version};
 
-  my @content = $self->weave_section_content($document, $input);
+  my @content = $self->build_content($input);
 
   $document->children->push(
     Pod::Elemental::Element::Nested->new({

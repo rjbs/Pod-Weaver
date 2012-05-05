@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+          break the content-generating code in the Version section into its own
+          method (thanks, Chris Weyl)
 
 3.101635  2012-02-07 22:03:26 America/New_York
           restore the full-document scan for ABSTRACT if not found in a comment
