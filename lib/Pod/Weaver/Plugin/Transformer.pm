@@ -15,7 +15,7 @@ This plugin acts as a L<Pod::Weaver::Role::Dialect> that applies an arbitrary
 L<Pod::Elemental::Transformer> to your input document.  It is configured like
 this:
 
-  [Transformer / Lists]
+  [-Transformer / Lists]
   transformer = List
   format_name = outline
 
