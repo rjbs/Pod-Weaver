@@ -24,6 +24,28 @@ in the source document.
 use Pod::Elemental::Element::Pod5::Region;
 use Pod::Elemental::Selectors -all;
 
+=attr command
+
+The command that will be collected (e.g. C<attr> or C<method>).
+(required)
+
+=attr new_command
+
+The command to be used in the output instead of the collected command.
+(default: C<head2>)
+
+=attr header_command
+
+The section command for the section to be added.
+(default: C<head1>)
+
+=attr header
+
+The title of the section to be added.
+(default: the plugin name)
+
+=cut
+
 has command => (
   is  => 'ro',
   isa => 'Str',
@@ -35,6 +57,13 @@ has new_command => (
   isa => 'Str',
   required => 1,
   default  => 'head2',
+);
+
+has header_command => (
+  is  => 'ro',
+  isa => 'Str',
+  required => 1,
+  default  => 'head1',
 );
 
 has header => (
@@ -66,7 +95,7 @@ sub transform_document {
   });
 
   my $container = Pod::Elemental::Element::Nested->new({
-    command => "head1",
+    command => $self->header_command,
     content => $self->header,
   });
 
