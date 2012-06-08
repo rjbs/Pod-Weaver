@@ -129,10 +129,7 @@ sub build_content {
   );
   $args{zilla} = $input->{zilla} if exists $input->{zilla};
 
-  if ( exists $input->{ppi_document} ) {
-    my $pkg_node = $input->{ppi_document}->find_first('PPI::Statement::Package');
-    $args{module} = $pkg_node->namespace if $pkg_node;
-  }
+  $args{module} = $self->get_docname($input);
 
   my $content = _format_version($self->format, \%args);
   if ( $self->is_verbatim ) {

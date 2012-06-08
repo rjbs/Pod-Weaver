@@ -30,77 +30,13 @@ use Pod::Elemental::Element::Pod5::Command;
 use Pod::Elemental::Element::Pod5::Ordinary;
 use Pod::Elemental::Element::Nested;
 
-sub _get_docname_via_statement {
-  my ($self, $ppi_document) = @_;
-
-  my $pkg_node = $ppi_document->find_first('PPI::Statement::Package');
-  return unless $pkg_node;
-  return $pkg_node->namespace;
-}
-
-sub _get_docname_via_comment {
-  my ($self, $ppi_document) = @_;
-
-  return $self->_extract_comment_content(
-    $ppi_document,
-    qr/^\s*#+\s*PODNAME:\s*(.+)$/m,
-  );
-}
-
-sub _get_docname {
-  my ($self, $input) = @_;
-
-  my $ppi_document = $input->{ppi_document};
-
-  my $docname = $self->_get_docname_via_comment($ppi_document)
-             || $self->_get_docname_via_statement($ppi_document);
-
-  return $docname;
-}
-
-sub _get_abstract {
-  my ($self, $input) = @_;
-
-  my $comment = $self->_extract_comment_content(
-    $input->{ppi_document},
-    qr/^\s*#+\s*ABSTRACT:\s*(.+)$/m,
-  );
-
-  return $comment if $comment;
-
-  # If that failed, fall back to searching the whole document
-  my ($abstract)
-    = $input->{ppi_document}->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
-
-  return $abstract;
-}
-
-sub _extract_comment_content {
-  my ($self, $ppi_document, $regex) = @_;
-
-  my $content;
-  my $finder = sub {
-    my $node = $_[1];
-    return 0 unless $node->isa('PPI::Token::Comment');
-    if ( $node->content =~ $regex ) {
-      $content = $1;
-      return 1;
-    }
-    return 0;
-  };
-
-  $ppi_document->find_first($finder);
-
-  return $content;
-}
-
 sub weave_section {
   my ($self, $document, $input) = @_;
 
   my $filename = $input->{filename} || 'file';
 
-  my $docname  = $self->_get_docname($input);
-  my $abstract = $self->_get_abstract($input);
+  my $docname  = $self->get_docname($input);
+  my $abstract = $self->get_abstract($input);
 
   Carp::croak sprintf "couldn't determine document name for %s", $filename
     unless $docname;
