@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+
+3.101637  2012-06-07 22:18:55 America/New_York
           add header_command attribute to the Collect section
           (thanks, Christopher J. Madsen)
 
