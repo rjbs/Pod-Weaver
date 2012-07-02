@@ -102,7 +102,7 @@ sub weave_section {
   my $docname  = $self->_get_docname($input);
   my $abstract = $self->_get_abstract($input);
 
-  Carp::croak sprintf "couldn't determine document name for %s", $filename
+  Carp::croak sprintf "couldn't determine document name for %s\nAdd something like this to %s:\n# PODNAME: bobby_tables.pl", $filename, $filename
     unless $docname;
 
   $self->log([ "couldn't find abstract in %s", $filename ]) unless $abstract;
