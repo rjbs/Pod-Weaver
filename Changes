@@ -2,6 +2,10 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+3.101638  2012-08-03 20:42:44 America/New_York
+          add more helpful information to the "no document name" error (thanks,
+          Leto Labs, LLC!)
+
 3.101637  2012-06-07 22:18:55 America/New_York
           add header_command attribute to the Collect section
           (thanks, Christopher J. Madsen)
