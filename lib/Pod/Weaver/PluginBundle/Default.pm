@@ -28,6 +28,9 @@ It is nearly equivalent to the following:
   [Collect / METHODS]
   command = method
 
+  [Collect / FUNCTIONS]
+  command = func
+
   [Leftovers]
 
   [Region  / postlude]
