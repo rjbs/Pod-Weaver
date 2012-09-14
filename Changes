@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+          documentation fix: mention that =func exists in the default
+          configuration (thanks, Joshua Keroes!)
 
 3.101638  2012-08-03 20:42:44 America/New_York
           add more helpful information to the "no document name" error (thanks,
