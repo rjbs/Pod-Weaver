@@ -24,6 +24,29 @@ This plugin requires a C<distmeta> parameter containing a hash reference of
 L<CPAN::Meta::Spec> distribution metadata and at least one of one of the
 parameters C<web> or C<mailto> defined in C<< $meta->{resources}{bugtracker} >>.
 
+=head2 Usage Example from Dist-Zilla
+
+To use from L<Dist::Zilla>, add something like the following to C<dist.ini>:
+
+    [MetaResources]
+    bugtracker.web = http://rt.cpan.org/NoAuth/Bugs.html?Dist=Pod-Weaver-Example
+    bugtracker.mailto = bug-pod-weaver-example@rt.cpan.org
+
+    ; Perhaps add repository stuff here:
+    repository.url =
+    repository.web =
+    repository.type =
+
+    [PodWeaver]
+
+(Without the C<MetaResources> section, this plugin will silently abort and not
+add the section.)
+
+And add this to C<weaver.ini>:
+
+    [@Default]
+    [Bugs]
+
 =cut
 
 sub weave_section {
