@@ -39,6 +39,9 @@ To use from L<Dist::Zilla>, add something like the following to C<dist.ini>:
 
     [PodWeaver]
 
+(Without the C<MetaResources> section, this plugin will silently abort and not
+add the section.)
+
 And add this to C<weaver.ini>:
 
     [@Default]
