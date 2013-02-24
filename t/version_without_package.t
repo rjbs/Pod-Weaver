@@ -11,8 +11,8 @@ use PPI;
 use Pod::Elemental;
 use Pod::Weaver;
 
-# Test various combinations of options for Section::Version
 do_weave( configer( ), 'version_without_package' );
+do_weave( configer( format => "%t%v%t-%t%m", is_verbatim => 1 ), 'version_t4');
 
 sub configer {
   my %opts = @_;
@@ -62,6 +62,6 @@ done_testing;
 __DATA__
 
 # ABSTRACT: abstract text
-# PODNAME: script-name
+# PODNAME: Module::Name
 
 my $this = 'a test';
