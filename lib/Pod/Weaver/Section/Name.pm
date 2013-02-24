@@ -1,6 +1,7 @@
 package Pod::Weaver::Section::Name;
 use Moose;
 with 'Pod::Weaver::Role::Section';
+with 'Pod::Weaver::HelperRole::FromComment';
 # ABSTRACT: add a NAME section with abstract (for your Perl module)
 
 use Moose::Autobox;
@@ -41,10 +42,7 @@ sub _get_docname_via_statement {
 sub _get_docname_via_comment {
   my ($self, $ppi_document) = @_;
 
-  return $self->_extract_comment_content(
-    $ppi_document,
-    qr/^\s*#+\s*PODNAME:\s*(.+)$/m,
-  );
+  return $self->_extract_comment_content($ppi_document, 'PODNAME');
 }
 
 sub _get_docname {
@@ -61,10 +59,7 @@ sub _get_docname {
 sub _get_abstract {
   my ($self, $input) = @_;
 
-  my $comment = $self->_extract_comment_content(
-    $input->{ppi_document},
-    qr/^\s*#+\s*ABSTRACT:\s*(.+)$/m,
-  );
+  my $comment = $self->_extract_comment_content($input->{ppi_document}, 'ABSTRACT');
 
   return $comment if $comment;
 
@@ -73,25 +68,6 @@ sub _get_abstract {
     = $input->{ppi_document}->serialize =~ /^\s*#+\s*ABSTRACT:\s*(.+)$/m;
 
   return $abstract;
-}
-
-sub _extract_comment_content {
-  my ($self, $ppi_document, $regex) = @_;
-
-  my $content;
-  my $finder = sub {
-    my $node = $_[1];
-    return 0 unless $node->isa('PPI::Token::Comment');
-    if ( $node->content =~ $regex ) {
-      $content = $1;
-      return 1;
-    }
-    return 0;
-  };
-
-  $ppi_document->find_first($finder);
-
-  return $content;
 }
 
 sub weave_section {
