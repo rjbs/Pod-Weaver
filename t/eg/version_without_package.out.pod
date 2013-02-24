@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-script-name - abstract text
+Module::Name - abstract text
 
 =head1 VERSION
 
