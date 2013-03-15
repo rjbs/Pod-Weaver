@@ -1,7 +1,7 @@
 package Pod::Weaver::Section::Name;
 use Moose;
 with 'Pod::Weaver::Role::Section';
-with 'Pod::Weaver::HelperRole::FromComment';
+with 'Pod::Weaver::Role::StringFromComment';
 # ABSTRACT: add a NAME section with abstract (for your Perl module)
 
 use Moose::Autobox;

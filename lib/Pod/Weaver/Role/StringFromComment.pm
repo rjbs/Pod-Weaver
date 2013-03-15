@@ -1,4 +1,4 @@
-package Pod::Weaver::HelperRole::FromComment;
+package Pod::Weaver::Role::StringFromComment;
 
 use Moose::Role;
 use namespace::autoclean;
