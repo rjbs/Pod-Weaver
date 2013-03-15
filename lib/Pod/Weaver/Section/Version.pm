@@ -1,7 +1,7 @@
 package Pod::Weaver::Section::Version;
 use Moose;
 with 'Pod::Weaver::Role::Section';
-with 'Pod::Weaver::HelperRole::FromComment';
+with 'Pod::Weaver::Role::StringFromComment';
 # ABSTRACT: add a VERSION pod section
 
 use Module::Runtime qw(use_module);
