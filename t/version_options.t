@@ -19,10 +19,7 @@ do_weave( configer( format => "%t%v%t-%t%m", is_verbatim => 1 ), 'version_t4' );
 # In order to test DateTime, we have to avoid touching the time! Hence UTC and the weird CLDR here...
 do_weave( configer( format => "%v - %{ZZZZ G}d", time_zone => 'UTC' ), 'version_t5' );
 
-TODO: {
-  local $TODO = 'not implemented yet';
-  do_weave( configer( format => ["%v", "FOOBAZ", "", "EXPLANATION"] ), 'version_t6' );
-}
+do_weave( configer( format => ["%v", "FOOBAZ", "", "EXPLANATION"] ), 'version_t6' );
 
 sub configer {
   my %opts = @_;

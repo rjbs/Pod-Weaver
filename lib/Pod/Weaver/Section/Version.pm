@@ -20,6 +20,7 @@ It will do nothing if there is no C<version> entry in the input.
 
 use DateTime;
 use Moose::Autobox;
+use Moose::Util::TypeConstraints;
 
 use String::Formatter 0.100680 stringf => {
   -as => '_format_version',
@@ -46,6 +47,9 @@ use String::Formatter 0.100680 stringf => {
   },
 };
 
+# Needed by Config::MVP.
+sub mvp_multivalue_args { 'format' }
+
 =attr format
 
 The string to use when generating the version string.
@@ -70,11 +74,31 @@ The following variables are available:
 
 =back
 
+If multiple strings are supplied as an array ref, a line of POD is
+produced for each string.  Each line will be separated by a newline.
+This is useful for splitting longer text across multiple lines in a
+C<weaver.ini> file, for example:
+
+  ; weaver.ini
+  [Version]
+  format = version %v
+  format =
+  format = This module's version numbers follow the conventions described at
+  format = L<semver.org|http://semver.org/>.
+
 =cut
+
+subtype 'Pod::Weaver::Section::Version::_Format',
+  as 'ArrayRef[Str]';
+
+coerce 'Pod::Weaver::Section::Version::_Format',
+  from 'Str',
+  via { [ $_ ] };
 
 has format => (
   is  => 'ro',
-  isa => 'Str',
+  isa => 'Pod::Weaver::Section::Version::_Format',
+  coerce => 1,
   default => 'version %v',
 );
 
@@ -134,7 +158,7 @@ sub build_content {
     $args{module} = $pkg_node->namespace if $pkg_node;
   }
 
-  my $content = _format_version($self->format, \%args);
+  my $content = _format_version(join("\n", @{ $self->format }), \%args);
   if ( $self->is_verbatim ) {
     $content = Pod::Elemental::Element::Pod5::Verbatim->new({
       content => "  $content",
