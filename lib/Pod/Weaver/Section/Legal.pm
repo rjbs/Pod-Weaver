@@ -45,8 +45,8 @@ sub weave_section {
   chomp $notice;
 
   if ( $self->_has_license_file ) {
-    $notice .= "\n\nThe full text of the license can be found in the\n'";
-    $notice .= $self->license_file . "' file included with this distribution.";
+    $notice .= "\n\nThe full text of the license can be found in the\nF<";
+    $notice .= $self->license_file . "> file included with this distribution.";
   }
 
   $document->children->push(

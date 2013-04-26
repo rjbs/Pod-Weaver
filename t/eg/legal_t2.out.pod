@@ -30,6 +30,6 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 The full text of the license can be found in the
-'LICENSE' file included with this distribution.
+F<LICENSE> file included with this distribution.
 
 =cut
