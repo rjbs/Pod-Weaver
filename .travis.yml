@@ -1,0 +1,24 @@
+language: perl
+perl:
+   - "5.8"
+   - "5.10"
+   - "5.12"
+   - "5.14"
+   - "5.16"
+   - "5.18"
+
+matrix:
+   allow_failures:
+      - perl: "5.8"
+
+install:
+   # not so much install our package as all its prereqs
+
+    # Moose/Dist::Zilla install in parallel quite nicely.  Others...  not always so much.
+   - HARNESS_OPTIONS=j8:c               cpanm --quiet Moose Dist::Zilla || { cat ~/.cpanm/build.log ; false ; }
+   - dzil authordeps --missing        | cpanm --quiet                   || { cat ~/.cpanm/build.log ; false ; }
+   - dzil listdeps --author --missing | cpanm --quiet                   || { cat ~/.cpanm/build.log ; false ; }
+
+script:
+   - export DZSIGN=archive
+   - dzil test --release --author
