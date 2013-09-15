@@ -6,6 +6,7 @@ with 'Pod::Weaver::Role::Dialect';
 use namespace::autoclean;
 use Moose::Autobox;
 
+use Module::Runtime qw(use_module);
 use List::MoreUtils qw(part);
 use String::RewritePrefix;
 
@@ -45,7 +46,7 @@ sub BUILDARGS {
     delete $xform_args{transformer},
   );
 
-  Class::MOP::load_class($xform_class);
+  use_module($xform_class);
 
   my $plugin_name = delete $xform_args{plugin_name};
   my $weaver      = delete $xform_args{weaver};
