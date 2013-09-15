@@ -3,6 +3,7 @@ use Moose;
 with 'Pod::Weaver::Role::Section';
 # ABSTRACT: add a VERSION pod section
 
+use Module::Runtime qw(use_module);
 use namespace::autoclean;
 
 =head1 OVERVIEW
@@ -29,7 +30,7 @@ use String::Formatter 0.100680 stringf => {
   codes => {
     v => sub { $_[0]->{version} },
     d => sub {
-      Class::MOP::load_class( 'DateTime', { -version => '0.44' } ); # CLDR fixes
+      use_module( 'DateTime', { -version => '0.44' } ); # CLDR fixes
       DateTime->from_epoch(epoch => $^T, time_zone => $_[0]->{self}->time_zone)
               ->format_cldr($_[1]),
     },
