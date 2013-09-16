@@ -2,6 +2,9 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+3.101640  2013-09-17 08:57:41 Asia/Tokyo
+        - fix repository links! argh, oops
+
 3.101639  2013-09-17 08:56:05 Asia/Tokyo
         - documentation fix: mention that =func exists in the default
           configuration (thanks, Joshua Keroes!)
