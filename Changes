@@ -1,114 +1,115 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
-          documentation fix: mention that =func exists in the default
+        - documentation fix: mention that =func exists in the default
           configuration (thanks, Joshua Keroes!)
-          removed use of deprecated Class::MOP::load_class
+        - removed use of deprecated Class::MOP::load_class (thanks, Karen
+          Etheridge)
 
 3.101638  2012-08-03 20:42:44 America/New_York
-          add more helpful information to the "no document name" error (thanks,
+        - add more helpful information to the "no document name" error (thanks,
           Leto Labs, LLC!)
 
 3.101637  2012-06-07 22:18:55 America/New_York
-          add header_command attribute to the Collect section
+        - add header_command attribute to the Collect section
           (thanks, Christopher J. Madsen)
 
 3.101636  2012-05-04 21:28:10 America/New_York
-          break the content-generating code in the Version section into its own
+        - break the content-generating code in the Version section into its own
           method (thanks, Chris Weyl)
 
 3.101635  2012-02-07 22:03:26 America/New_York
-          restore the full-document scan for ABSTRACT if not found in a comment
+        - restore the full-document scan for ABSTRACT if not found in a comment
           token (thanks, David Golden)
 
 3.101634  2011-10-31 22:56:36 America/New_York
-          throw a (helpful?) exception when %m is used in a version format, but
+        - throw a (helpful?) exception when %m is used in a version format, but
           no package was found in the file
 
-          the Legal plugin can now be given the filename in which the dist's
+        - the Legal plugin can now be given the filename in which the dist's
           full license can be found (thanks, APOCAL!)
 
 3.101633  2011-09-19 15:48:16 America/New_York
-          speed up performance by changing how we use PPI (thanks, Dave Rolsky)
+        - speed up performance by changing how we use PPI (thanks, Dave Rolsky)
 
 3.101632  2010-10-19 07:49:32 America/New_York
-          add missing DateTime prereq
+        - add missing DateTime prereq
 
 3.101631  2010-10-14 23:00:19 America/New_York
-          Name section now looks for a PODNAME comment if no package is found
+        - Name section now looks for a PODNAME comment if no package is found
           (hanekomu)
 
-          Added a Bugs section (thanks, David Golden)
+        - Added a Bugs section (thanks, David Golden)
 
-          Version, Region, and Generic are all more configurable (thanks,
+        - Version, Region, and Generic are all more configurable (thanks,
           Apocalypse)
 
 3.101630  2010-06-12 14:42:26 America/New_York
-          Author section now emits a normal para or bulleted list (Florian
+        - Author section now emits a normal para or bulleted list (Florian
           Ragwitz)
 
 3.101460  2010-05-26 22:36:13 America/New_York
-          compat with Config::MVP::Reader v2
+        - compat with Config::MVP::Reader v2
 
 3.101450  2010-05-25 18:38:44 America/New_York
-          compat with Config::MVP::Reader v1
+        - compat with Config::MVP::Reader v1
 
 3.101270  2010-05-07 21:36:45 America/New_York
-          allow an explicit header arg to Generic
+        - allow an explicit header arg to Generic
 
 3.100710  2010-03-12 10:03:42 America/New_York
-          further logging improvements; now uses Log::Dispatchouli explicitly
+        - further logging improvements; now uses Log::Dispatchouli explicitly
 
 3.100680  2010-03-09 23:38:30 America/New_York
-          improve logging delegation to interoperate with recent DZ changes
+        - improve logging delegation to interoperate with recent DZ changes
 
 3.100650  2010-03-06 23:21:19 America/New_York
-          expect a Log::Dispatchouli-like logger
-          added a means to tweak the configuration loaded during new
-          log the file in which errors occur more often
+        - expect a Log::Dispatchouli-like logger
+        - added a means to tweak the configuration loaded during new
+        - log the file in which errors occur more often
 
 3.100310  2010-01-31 15:32:00 America/New_York
-          add =func/FUNCTIONS to match =method and =attr
-          require newer Pod::Elemental (to avoid Moose incompat)
+        - add =func/FUNCTIONS to match =method and =attr
+        - require newer Pod::Elemental (to avoid Moose incompat)
 
 3.093530  2009-12-19 22:52:47 America/New_York
-          add the -Transformer plugin to allow pass-through for arbitrary
+        - add the -Transformer plugin to allow pass-through for arbitrary
           Pod::Elemental::Transformers
 
 3.093130  2009-11-09
-          add Config::MVP::Reader::INI to prereq
+        - add Config::MVP::Reader::INI to prereq
 
 3.093120  2009-11-08
-          fix broken prereq (Config::MVP)
+        - fix broken prereq (Config::MVP)
 
 3.093001  2009-10-27
-          create @Default and use it to set up the new_with_default_config
+        - create @Default and use it to set up the new_with_default_config
 
 3.093000  2009-10-27
-          plugins for common preparation: -H1Nester, -EnsurePod5, @CorePrep
+        - plugins for common preparation: -H1Nester, -EnsurePod5, @CorePrep
           "-" as prefix now denotes a non-Section plugin
-          tweak weaving phases and methods to add Dialect
+        - tweak weaving phases and methods to add Dialect
 
 3.092990  2009-10-26
-          Pod::Weaver::Config and tests for config-from-ini
+        - Pod::Weaver::Config and tests for config-from-ini
 
 3.092972  2009-10-24
-          no code changes; Pod robuilt
+        - no code changes; Pod robuilt
 
 3.092971  2009-10-24
-          fixes to make the NAME section "just work"
+        - fixes to make the NAME section "just work"
 
 3.092970  2009-10-24
-          total rewrite
+        - total rewrite
 
 1.003     2008-10-??
-          use $doc->serialize instead of "$doc" to work with here-docs
+        - use $doc->serialize instead of "$doc" to work with here-docs
 
 1.002     2008-10-13
-          add missing prereq (PPI)
+        - add missing prereq (PPI)
 
 1.001     2008-10-12
-          fix prereq for testing
+        - fix prereq for testing
 
 1.000     2008-10-12
-          first release (at the Pittsburgh Perl Workshop)
+        - first release (at the Pittsburgh Perl Workshop)
