@@ -1,0 +1,33 @@
+=pod
+
+=for :prelude  Please pay close attention to the following.
+
+=for :postlude Thank you for your attention.
+
+=head1 DESCRIPTION
+
+=encoding utf8
+
+This is a simple document meant to be used in testing Pod::Weaver.
+
+It does not do very much.
+
+=head1 BE FOREWARNED
+
+This is not supported:
+
+  much at all
+
+Happy hacking!
+
+=encoding UTF-8
+
+=head1 SYNOPSIS
+
+This should probably get moved up front.
+
+=attr is_awesome
+
+(This is true by default.)
+
+=cut
