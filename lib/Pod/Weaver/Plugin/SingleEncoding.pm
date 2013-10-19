@@ -32,7 +32,6 @@ sub translate_dialect {
 
   for (reverse 0 .. $#$childs) {
     next unless $is_enc->( $childs->[ $_ ] );
-    print "! $_\n";
     my $have = $childs->[$_]->content;
     $have =~ s/\s+\z//;
     my $ok = lc $have eq lc $want
