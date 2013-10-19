@@ -1,7 +1,9 @@
 package Pod::Weaver::Section::Leftovers;
 use Moose;
-with 'Pod::Weaver::Role::Section';
-with 'Pod::Weaver::Role::Finalizer';
+with(
+  'Pod::Weaver::Role::Section',
+  'Pod::Weaver::Role::Finalizer',
+);
 # ABSTRACT: a place to put everything that nothing else used
 
 use Moose::Autobox;
