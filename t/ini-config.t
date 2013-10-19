@@ -40,39 +40,40 @@ my $woven = $weaver->weave_document({
 });
 
 #      Document
-# 0      =head1 NAME
+# 0      =encoding UTF-8
+# 1      =head1 NAME
 #   0      Pod5::Ordinary <Module::Name - abstract text>
-# 1      =head1 VERSION
+# 2      =head1 VERSION
 #   0      Pod5::Ordinary <version 1.012078>
-# 2      Pod5::Ordinary <Please pay clos…the following.>
-# 3      =head1 SYNOPSIS
+# 3      Pod5::Ordinary <Please pay clos…the following.>
+# 4      =head1 SYNOPSIS
 #   0      Pod5::Ordinary <This should pro…oved up front.>
-# 4      =head1 DESCRIPTION
+# 5      =head1 DESCRIPTION
 #   0      Pod5::Ordinary <This is a simpl…g Pod::Weaver.>
 #   1      Pod5::Ordinary <It does not do very much.>
-# 5      =head1 ATTRIBUTES
+# 6      =head1 ATTRIBUTES
 #   0      =head2 is_awesome
 #     0      Pod5::Ordinary <(This is true by default.)>
-# 6      =head1 BE FOREWARNED
+# 7      =head1 BE FOREWARNED
 #   0      Pod5::Ordinary <This is not supported:>
 #   1      Pod5::Verbatim <  much at all>
 #   2      Pod5::Ordinary <Happy hacking!>
-# 7      Pod5::Ordinary <Thank you for your attention.>
-# 8      =head1 AUTHORS
+# 8      Pod5::Ordinary <Thank you for your attention.>
+# 9      =head1 AUTHORS
 #   0      Pod5::Verbatim <  Ricardo Signe…rs@orbit.tash>>
-# 9      =head1 COPYRIGHT AND LICENSE
+# 10     =head1 COPYRIGHT AND LICENSE
 #   0      Pod5::Ordinary <This software i…ic License 1.0>
 
-is($woven->children->length, 10, "we end up with a 10-paragraph document");
+is($woven->children->length, 11, "we end up with a 11-paragraph document");
 
-for (qw(0 1 3 4 5 6 8 9)) {
+for (qw(1 2 4 5 6 7 9 10)) {
   my $para = $woven->children->[ $_ ];
   isa_ok($para, 'Pod::Elemental::Element::Nested', "element $_");
   is($para->command, 'head1', "... and is =head1");
 }
 
 is(
-  $woven->children->[1]->children->[0]->content,
+  $woven->children->[2]->children->[0]->content,
   'version 1.012078',
   "the version is in the version section",
 );
