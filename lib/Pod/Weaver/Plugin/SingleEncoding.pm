@@ -35,9 +35,10 @@ sub translate_dialect {
     print "! $_\n";
     my $have = $childs->[$_]->content;
     $have =~ s/\s+\z//;
+    my $ok = lc $have eq lc $want
+          || lc $have eq 'utf8' && lc $want eq 'utf-8';
 
-    confess "expected only $want encoding but found $have"
-      unless lc $have eq lc $want;
+    confess "expected only $want encoding but found $have" unless $ok;
 
     splice @$childs, $_, 1;
   }
