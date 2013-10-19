@@ -37,8 +37,8 @@ my $perl_document;
 sub do_weave {
   my( $weaver, $filename ) = @_;
 
-  my $in_pod   = do { local $/; open my $fh, '<', "t/eg/$filename.in.pod"; <$fh> };
-  my $expected = do { local $/; open my $fh, '<', "t/eg/$filename.out.pod"; <$fh> };
+  my $in_pod   = do { local $/; open my $fh, '<:encoding(UTF-8)', "t/eg/$filename.in.pod"; <$fh> };
+  my $expected = do { local $/; open my $fh, '<:encoding(UTF-8)', "t/eg/$filename.out.pod"; <$fh> };
   my $document = Pod::Elemental->read_string($in_pod);
 
   $perl_document = do { local $/; <DATA> } if ! defined $perl_document;
