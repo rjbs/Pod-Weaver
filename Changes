@@ -2,6 +2,11 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+4.000     2013-10-19 17:20:59 America/New_York
+        [ THIS MIGHT BREAK YOUR CODE ]
+        - the SingleEncoding plugin to force one consistent =encoding
+        - ...is now enabled, for UTF-8, in the default configuration
+
 3.101640  2013-09-17 08:57:41 Asia/Tokyo
         - fix repository links! argh, oops
 
