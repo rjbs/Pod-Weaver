@@ -47,9 +47,10 @@ sub _exp { Pod::Weaver::Config::Assembler->expand_package($_[0]) }
 
 sub mvp_bundle_config {
   return (
-    [ '@Default/CorePrep',  _exp('@CorePrep'), {} ],
-    [ '@Default/Name',      _exp('Name'),      {} ],
-    [ '@Default/Version',   _exp('Version'),   {} ],
+    [ '@Default/CorePrep',        _exp('@CorePrep'), {} ],
+    [ '@Default/SingleEncoding',  _exp('-SingleEncoding'), {} ],
+    [ '@Default/Name',            _exp('Name'),      {} ],
+    [ '@Default/Version',         _exp('Version'),   {} ],
 
     [ '@Default/prelude',   _exp('Region'),    { region_name => 'prelude'  } ],
     [ 'SYNOPSIS',           _exp('Generic'),   {} ],
