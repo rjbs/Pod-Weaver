@@ -2,6 +2,10 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+4.001     2013-10-20 10:50:50 America/New_York
+        - SingleEncoding now accepts found =encodings as long as they match,
+          unless the plugin's encoding attribute was set explicitly
+
 4.000     2013-10-19 17:20:59 America/New_York
         [ THIS MIGHT BREAK YOUR CODE ]
         - the SingleEncoding plugin to force one consistent =encoding
