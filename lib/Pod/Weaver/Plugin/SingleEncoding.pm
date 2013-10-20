@@ -59,6 +59,7 @@ sub translate_dialect {
             || lc $have eq 'utf8' && lc $want eq 'utf-8';
       confess "expected only $want encoding but found $have" unless $ok;
     } else {
+      $have = 'UTF-8' if lc $have eq 'utf8';
       $self->_set_encoding($have);
       $want = $have;
     }
