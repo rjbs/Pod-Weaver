@@ -13,31 +13,55 @@ use Pod::Elemental::Selectors -all;
 
 =head1 OVERVIEW
 
-I dunno, man, I just wrote this thing.
+The SingleEncoding plugin is a Dialect and a Finalizer.
+
+During dialect translation, it will look for C<=encoding> directives.  If it
+finds them, it will ensure that they all agree on one encoding and remove them.
+
+During document finalization, it will insert an C<=encoding> directive at the
+top of the output, using the encoding previously detected.  If no encoding was
+detected, the plugin's C<encoding> attribute will be used instead.  That
+defaults to UTF-8.
+
+If you want to reject any C<=encoding> directive that doesn't match your
+expectations, set the C<encoding> attribute by hand.
+
+No actual validation of the encoding is done.  Pod::Weaver, after all, deals in
+text rather than bytes.
 
 =cut
 
 has encoding => (
-  is  => 'ro',
-  isa => 'Str',
-  default => 'UTF-8',
+  reader => 'encoding',
+  writer => '_set_encoding',
+  isa    => 'Str',
+  lazy   => 1,
+  default   => 'UTF-8',
+  predicate => '_has_encoding',
 );
 
 sub translate_dialect {
   my ($self, $document) = @_;
 
+  my $want;
+  $want = $self->encoding if $self->_has_encoding;
+
   my $childs = $document->children;
   my $is_enc = s_command([ qw(encoding) ]);
-  my $want   = $self->encoding;
 
   for (reverse 0 .. $#$childs) {
     next unless $is_enc->( $childs->[ $_ ] );
     my $have = $childs->[$_]->content;
     $have =~ s/\s+\z//;
-    my $ok = lc $have eq lc $want
-          || lc $have eq 'utf8' && lc $want eq 'utf-8';
 
-    confess "expected only $want encoding but found $have" unless $ok;
+    if (defined $want) {
+      my $ok = lc $have eq lc $want
+            || lc $have eq 'utf8' && lc $want eq 'utf-8';
+      confess "expected only $want encoding but found $have" unless $ok;
+    } else {
+      $self->_set_encoding($have);
+      $want = $have;
+    }
 
     splice @$childs, $_, 1;
   }
