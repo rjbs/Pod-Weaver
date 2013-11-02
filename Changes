@@ -1,6 +1,18 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+        [ THIS MIGHT BREAK YOUR CODE ]
+        - stable release of previous v4 changes
+
+4.001     2013-10-20 10:50:50 America/New_York (TRIAL RELEASE)
+        [ THIS MIGHT BREAK YOUR CODE ]
+        - SingleEncoding now accepts found =encodings as long as they match,
+          unless the plugin's encoding attribute was set explicitly
+
+4.000     2013-10-19 17:20:59 America/New_York (TRIAL RELEASE)
+        [ THIS MIGHT BREAK YOUR CODE ]
+        - the SingleEncoding plugin to force one consistent =encoding
+        - ...is now enabled, for UTF-8, in the default configuration
 
 3.101640  2013-09-17 08:57:41 Asia/Tokyo
         - fix repository links! argh, oops
