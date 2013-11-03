@@ -12,6 +12,8 @@ fairly conservative and straightforward.
 It is nearly equivalent to the following:
 
   [@CorePrep]
+  
+  [-SingleEncoding]
 
   [Name]
   [Version]
