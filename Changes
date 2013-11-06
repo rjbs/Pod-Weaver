@@ -1,9 +1,13 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
-        - allow multi-line formats for VERSION plugin
+
+4.004     2013-11-05 21:50:13 America/New_York
+        - allow multi-line formats for VERSION plugin (thanks, Alex Peters)
         - ...including the %T-prefix for lines only included in
           trial releases
+        - look for PODNAME more consistently (thanks, Chris Weyl)
+        - put license filename in F<> formatting (thanks, Alex Peters)
 
 4.003     2013-11-02 22:58:43 America/New_York
         - note that [@Default] contains [-SingleEncoding] (thanks, Caleb
