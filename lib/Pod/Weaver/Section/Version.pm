@@ -1,6 +1,7 @@
 package Pod::Weaver::Section::Version;
 use Moose;
 with 'Pod::Weaver::Role::Section';
+with 'Pod::Weaver::Role::StringFromComment';
 # ABSTRACT: add a VERSION pod section
 
 use Module::Runtime qw(use_module);
@@ -132,7 +133,11 @@ sub build_content {
 
   if ( exists $input->{ppi_document} ) {
     my $pkg_node = $input->{ppi_document}->find_first('PPI::Statement::Package');
-    $args{module} = $pkg_node->namespace if $pkg_node;
+    $args{module}
+        = $pkg_node
+        ? $pkg_node->namespace
+        : $self->_extract_comment_content($input->{ppi_document}, 'PODNAME')
+        ;
   }
 
   my $content = _format_version($self->format, \%args);
