@@ -19,6 +19,8 @@ do_weave( configer( format => "%t%v%t-%t%m", is_verbatim => 1 ), 'version_t4' );
 # In order to test DateTime, we have to avoid touching the time! Hence UTC and the weird CLDR here...
 do_weave( configer( format => "%v - %{ZZZZ G}d", time_zone => 'UTC' ), 'version_t5' );
 
+do_weave( configer( format => ["%v", "FOOBAZ", "", "EXPLANATION"] ), 'version_t6' );
+
 sub configer {
   my %opts = @_;
 
@@ -29,7 +31,12 @@ sub configer {
   $assembler->change_section('Name');
   $assembler->change_section('Version');
   foreach my $k ( keys %opts ) {
-    $assembler->add_value( $k => $opts{ $k } );
+    if (ref $opts{ $k }) {
+      $assembler->add_value( $k => $_ ) for @{ $opts{ $k } };
+    }
+    else {
+      $assembler->add_value( $k => $opts{ $k } );
+    }
   }
   $assembler->change_section('Leftovers');
 
