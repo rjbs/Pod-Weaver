@@ -1,6 +1,9 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+        - allow multi-line formats for VERSION plugin
+        - ...including the %T-prefix for lines only included in
+          trial releases
 
 4.003     2013-11-02 22:58:43 America/New_York
         - note that [@Default] contains [-SingleEncoding] (thanks, Caleb

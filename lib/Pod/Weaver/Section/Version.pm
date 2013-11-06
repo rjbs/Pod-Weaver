@@ -23,6 +23,9 @@ use DateTime;
 use Moose::Autobox;
 use Moose::Util::TypeConstraints;
 
+my $MARKER;
+BEGIN { $MARKER = "\x{2316}" }
+
 use String::Formatter 0.100680 stringf => {
   -as => '_format_version',
 
@@ -30,6 +33,10 @@ use String::Formatter 0.100680 stringf => {
   string_replacer => 'method_replace',
   codes => {
     v => sub { $_[0]->{version} },
+    V => sub { $_[0]->{version}
+                . ($_[0]->{is_trial}
+                   ? (defined $_[1] ? $_[1] : '-TRIAL') : '') },
+
     d => sub {
       use_module( 'DateTime', '0.44' ); # CLDR fixes
       DateTime->from_epoch(epoch => $^T, time_zone => $_[0]->{self}->time_zone)
@@ -43,8 +50,11 @@ use String::Formatter 0.100680 stringf => {
         $_[0]->{filename},
       ]);
     },
-    t => sub { "\t" },
+
+    T => sub { $MARKER },
     n => sub { "\n" },
+    s => sub { q{ } },
+    t => sub { "\t" },
   },
 };
 
@@ -59,21 +69,31 @@ Default: version %v
 
 The following variables are available:
 
-=over 4
+=begin :list
 
-=item * v - the version
+* v - the version
 
-=item * d - the CLDR format for L<DateTime>
+* V - the version, suffixed by "-TRIAL" if a trial release
 
-=item * n - a newline
+* d - the CLDR format for L<DateTime>
 
-=item * t - a tab
+* n - a newline
 
-=item * r - the name of the dist, present only if you use L<Dist::Zilla> to generate the POD!
+* t - a tab
 
-=item * m - the name of the module, present only if L<PPI> parsed the document and it contained a package declaration!
+* s - a space
 
-=back
+* r - the name of the dist, present only if you use L<Dist::Zilla> to generate
+      the POD!
+
+* m - the name of the module, present only if L<PPI> parsed the document and it
+      contained a package declaration!
+
+* T - special: at the beginning of the line, followed by any amount of
+      whitespace, indicates that the line should only be included in trial
+      releases; otherwise, results in a fatal error
+
+=end :list
 
 If multiple strings are supplied as an array ref, a line of POD is
 produced for each string.  Each line will be separated by a newline.
@@ -86,6 +106,8 @@ C<weaver.ini> file, for example:
   format =
   format = This module's version numbers follow the conventions described at
   format = L<semver.org|http://semver.org/>.
+  format = %T
+  format = %T This is a trial release!
 
 =cut
 
@@ -154,12 +176,25 @@ sub build_content {
   );
   $args{zilla} = $input->{zilla} if exists $input->{zilla};
 
+  $args{is_trial} = exists $input->{is_trial} ? $input->{is_trial}
+                  : $args{zilla}              ? $args{zilla}->is_trial
+                  :                             undef;
+
   if ( exists $input->{ppi_document} ) {
     my $pkg_node = $input->{ppi_document}->find_first('PPI::Statement::Package');
     $args{module} = $pkg_node->namespace if $pkg_node;
   }
 
-  my $content = _format_version(join("\n", @{ $self->format }), \%args);
+  my $content = q{};
+  LINE: for my $format (@{ $self->format }) {
+    my $line = _format_version($format, \%args);
+    next if $line =~ s/^$MARKER\s*// and ! $args{is_trial};
+
+    Carp::croak("%T format used inside line") if $line =~ /$MARKER/;
+
+    $content .= "$line\n";
+  }
+
   if ( $self->is_verbatim ) {
     $content = Pod::Elemental::Element::Pod5::Verbatim->new({
       content => "  $content",
