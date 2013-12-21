@@ -2,6 +2,10 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+4.005     2013-12-21 15:01:46-0500 America/New_York
+        - updated tests for the new (fixed, consistent) string behavior in
+          Mixin::Linewise
+
 4.004     2013-11-05 21:50:13 America/New_York
         - allow multi-line formats for VERSION plugin (thanks, Alex Peters)
         - ...including the %T-prefix for lines only included in
