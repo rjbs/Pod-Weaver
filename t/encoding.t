@@ -14,7 +14,7 @@ use Pod::Elemental::Transformer::Nester;
 
 use Pod::Weaver;
 
-my $in_pod   = do { local $/; open my $fh, '<:encoding(UTF-8)', 't/eg/encoding.in.pod'; <$fh> };
+my $in_pod   = do { local $/; open my $fh, '<:raw:bytes', 't/eg/encoding.in.pod'; <$fh> };
 my $expected = do { local $/; open my $fh, '<:encoding(UTF-8)', 't/eg/encoding.out.pod'; <$fh> };
 my $document = Pod::Elemental->read_string($in_pod);
 
