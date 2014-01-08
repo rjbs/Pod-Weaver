@@ -29,7 +29,7 @@ my $perl_document;
 sub woven {
   my $weaver = shift;
 
-  my $in_pod   = do { local $/; open my $fh, '<:encoding(UTF-8)', 't/eg/basic.in.pod'; <$fh> };
+  my $in_pod   = do { local $/; open my $fh, '<:raw:bytes', 't/eg/basic.in.pod'; <$fh> };
   my $document = Pod::Elemental->read_string($in_pod);
 
   $perl_document = do { local $/; <DATA> } if ! defined $perl_document;

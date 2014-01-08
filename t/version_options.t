@@ -84,7 +84,7 @@ sub do_weave {
   $expect_fn ||= $filename;
 
   my $in_pod   = do {
-    local $/; open my $fh, '<:encoding(UTF-8)', "t/eg/$filename.in.pod"; <$fh>;
+    local $/; open my $fh, '<:raw:bytes', "t/eg/$filename.in.pod"; <$fh>;
   };
   my $expected = do {
     local $/; open my $fh, '<:encoding(UTF-8)', "t/eg/$expect_fn.out.pod"; <$fh>;

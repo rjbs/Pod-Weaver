@@ -14,9 +14,9 @@ use Pod::Elemental::Transformer::Nester;
 
 use Pod::Weaver;
 
-my $in_pod   = do { local $/; open my $fh, '<:encoding(UTF-8)', 't/eg/basic.in.pod'; <$fh> };
+my $in_pod   = do { local $/; open my $fh, '<:raw:bytes', 't/eg/basic.in.pod'; <$fh> };
 my $expected = do { local $/; open my $fh, '<:encoding(UTF-8)', 't/eg/basic.out.pod'; <$fh> };
-my $document = Pod::Elemental->read_string($in_pod);
+my $document = Pod::Elemental->read_string($in_pod); # wants octets
 
 my $perl_document = do { local $/; <DATA> };
 my $ppi_document  = PPI::Document->new(\$perl_document);

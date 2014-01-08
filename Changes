@@ -1,6 +1,7 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+        - update tests to pass octets to ->read_string, as is proper
 
 4.005     2013-12-21 15:01:46-0500 America/New_York
         - updated tests for the new (fixed, consistent) string behavior in
