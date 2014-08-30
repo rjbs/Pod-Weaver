@@ -9,14 +9,20 @@ use Moose::Autobox;
 =head1 OVERVIEW
 
 This section will find and include a located hunk of Pod.  In general, it will
-find a region with the specified name.
+find a region with the specified name, such as:
+
+  =begin :myfoo
+
+  =head1 More Pod Here
+
+  =end :myfoo
 
 In other words, if your configuration include:
 
   [Region]
   region_name = myfoo
 
-...then this weaver will look for "=begin myfoo" ( and "=for myfoo" and... ) and include
+...then this weaver will look for "=begin :myfoo" ( and "=for :myfoo" and... ) and include
 it at the appropriate location in your output.
 
 Since you'll probably want to use Region several times, and that will require
@@ -68,6 +74,17 @@ has region_name => (
 
 A boolean value specifying whether nonpod regions are allowed or not. Defaults to false.
 
+C<nonpod> regions are regions I<without> a C<:> prefix as explained in
+L<< perlpodspec|perlpodspec/About Data Paragraphs and "=begin/=end" Regions >>
+
+  # region_name = myregion
+  # is_pod = false
+  =begin myregion
+
+  # region_name = myregion
+  # is_pod = true
+  =begin :myregion
+
 =cut
 
 has allow_nonpod => (
@@ -79,6 +96,16 @@ has allow_nonpod => (
 =attr flatten
 
 A boolean value specifying whether the region's contents should be flattened or not. Defaults to true.
+
+  #unflattened
+  =begin :myregion
+
+  =head1
+
+  =end :myregion
+
+  #flattened
+  =head1
 
 =cut
 
