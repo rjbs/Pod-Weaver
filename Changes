@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+        - Explain Section::Region naming, nonpod, and flattening
+          (Kent Fredric, GH #24)
 
 4.007     2014-10-27 22:21:55-04:00 America/New_York
         - immutabilize ALL THE THINGS!
