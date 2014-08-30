@@ -1,4 +1,5 @@
 package Pod::Weaver::Plugin::Transformer;
+
 use Moose;
 with 'Pod::Weaver::Role::Dialect';
 # ABSTRACT: apply arbitrary transformers

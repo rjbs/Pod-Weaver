@@ -1,4 +1,5 @@
 package Pod::Weaver::Section::Legal;
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
 # ABSTRACT: a section for the copyright and license

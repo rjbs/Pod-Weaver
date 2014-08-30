@@ -1,4 +1,5 @@
 package Pod::Weaver::Role::Transformer;
+
 use Moose::Role;
 with 'Pod::Weaver::Role::Plugin';
 # ABSTRACT: something that restructures a Pod5 document

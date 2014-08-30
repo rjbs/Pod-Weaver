@@ -1,4 +1,5 @@
 package Pod::Weaver::Plugin::H1Nester;
+
 use Moose;
 with 'Pod::Weaver::Role::Transformer';
 # ABSTRACT: structure the input pod document into head1-grouped sections

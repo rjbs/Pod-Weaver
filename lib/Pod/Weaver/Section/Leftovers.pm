@@ -1,4 +1,5 @@
 package Pod::Weaver::Section::Leftovers;
+
 use Moose;
 with(
   'Pod::Weaver::Role::Section',

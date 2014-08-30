@@ -1,4 +1,5 @@
 package Pod::Weaver::Plugin::EnsurePod5;
+
 use Moose;
 with 'Pod::Weaver::Role::Preparer';
 # ABSTRACT: ensure that the Pod5 translator has been run on this document

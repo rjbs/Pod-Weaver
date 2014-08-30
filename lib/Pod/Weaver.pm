@@ -1,4 +1,5 @@
 package Pod::Weaver;
+
 use Moose;
 # ABSTRACT: weave together a Pod document from an outline
 

@@ -1,4 +1,5 @@
 package Pod::Weaver::Plugin::SingleEncoding;
+
 use Moose;
 with(
   'Pod::Weaver::Role::Dialect',
