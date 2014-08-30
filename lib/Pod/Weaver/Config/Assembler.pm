@@ -1,4 +1,5 @@
 package Pod::Weaver::Config::Assembler;
+
 use Moose;
 extends 'Config::MVP::Assembler';
 with 'Config::MVP::Assembler::WithBundles';

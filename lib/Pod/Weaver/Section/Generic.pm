@@ -1,4 +1,5 @@
 package Pod::Weaver::Section::Generic;
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
 # ABSTRACT: a generic section, found by lifting sections
