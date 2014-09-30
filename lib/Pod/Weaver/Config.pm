@@ -1,4 +1,5 @@
 package Pod::Weaver::Config;
+
 use Moose::Role;
 # ABSTRACT: stored configuration loader role
 

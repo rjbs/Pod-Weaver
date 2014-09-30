@@ -1,4 +1,5 @@
 package Pod::Weaver::Section::Name;
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
 with 'Pod::Weaver::Role::StringFromComment';

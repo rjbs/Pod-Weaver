@@ -1,4 +1,5 @@
 package Pod::Weaver::Section::Authors;
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
 # ABSTRACT: a section listing authors

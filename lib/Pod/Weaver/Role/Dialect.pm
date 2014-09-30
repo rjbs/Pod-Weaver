@@ -1,4 +1,5 @@
 package Pod::Weaver::Role::Dialect;
+
 use Moose::Role;
 with 'Pod::Weaver::Role::Plugin';
 # ABSTRACT: something that translates Pod subdialects to standard Pod5
