@@ -1,4 +1,5 @@
 package Pod::Weaver::Section::Region;
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
 # ABSTRACT: find a region and put its contents in place where desired

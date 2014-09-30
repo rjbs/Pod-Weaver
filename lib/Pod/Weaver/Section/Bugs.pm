@@ -1,4 +1,5 @@
 package Pod::Weaver::Section::Bugs;
+
 use Moose;
 use Text::Wrap ();
 with 'Pod::Weaver::Role::Section';

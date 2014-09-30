@@ -66,6 +66,6 @@ done_testing;
 __DATA__
 
 package Module::Name;
-# ABSTRACT: abstract text
+# ABSTRACT: abstract text with UTF-8 paçoca
 
 my $this = 'a test';

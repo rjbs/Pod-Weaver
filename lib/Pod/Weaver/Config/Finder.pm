@@ -1,4 +1,5 @@
 package Pod::Weaver::Config::Finder;
+
 use Moose;
 extends 'Config::MVP::Reader::Finder';
 with 'Pod::Weaver::Config';
