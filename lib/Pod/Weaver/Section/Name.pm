@@ -5,6 +5,7 @@ with 'Pod::Weaver::Role::StringFromComment';
 # ABSTRACT: add a NAME section with abstract (for your Perl module)
 
 use Moose::Autobox;
+use Encode;
 
 =head1 OVERVIEW
 
@@ -75,8 +76,8 @@ sub weave_section {
 
   my $filename = $input->{filename} || 'file';
 
-  my $docname  = $self->_get_docname($input);
-  my $abstract = $self->_get_abstract($input);
+  my $docname  = Encode::decode_utf8($self->_get_docname($input));
+  my $abstract = Encode::decode_utf8($self->_get_abstract($input));
 
   Carp::croak sprintf "couldn't determine document name for %s\nAdd something like this to %s:\n# PODNAME: bobby_tables.pl", $filename, $filename
     unless $docname;
