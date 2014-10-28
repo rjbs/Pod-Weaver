@@ -1,9 +1,8 @@
 package Pod::Weaver::Role::StringFromComment;
+# ABSTRACT: Extract a string from a specially formatted comment
 
 use Moose::Role;
 use namespace::autoclean;
-
-# ABSTRACT: Extract a string from a specially formatted comment
 
 use Moose::Autobox;
 

@@ -1,7 +1,10 @@
 package Pod::Weaver::Role::Finalizer;
+# ABSTRACT: something that goes back and finishes up after main weaving is over
+
 use Moose::Role;
 with 'Pod::Weaver::Role::Plugin';
-# ABSTRACT: something that goes back and finishes up after main weaving is over
+
+use namespace::autoclean;
 
 =head1 IMPLEMENTING
 
@@ -15,5 +18,4 @@ provide a C<finalize_document> method which will be called as follows:
 
 requires 'finalize_document';
 
-no Moose::Role;
 1;

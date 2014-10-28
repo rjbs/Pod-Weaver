@@ -1,7 +1,8 @@
 package Pod::Weaver::Section::Legal;
+# ABSTRACT: a section for the copyright and license
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
-# ABSTRACT: a section for the copyright and license
 
 use Moose::Autobox;
 
@@ -60,5 +61,5 @@ sub weave_section {
   );
 }
 
-no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

@@ -1,7 +1,8 @@
 package Pod::Weaver::Section::Region;
+# ABSTRACT: find a region and put its contents in place where desired
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
-# ABSTRACT: find a region and put its contents in place where desired
 
 use Moose::Autobox;
 
@@ -117,5 +118,4 @@ sub weave_section {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

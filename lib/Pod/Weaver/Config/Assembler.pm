@@ -1,10 +1,13 @@
 package Pod::Weaver::Config::Assembler;
+# ABSTRACT: Pod::Weaver-specific subclass of Config::MVP::Assembler
+
 use Moose;
 extends 'Config::MVP::Assembler';
 with 'Config::MVP::Assembler::WithBundles';
-# ABSTRACT: Pod::Weaver-specific subclass of Config::MVP::Assembler
 
 use String::RewritePrefix;
+
+use namespace::autoclean;
 
 sub expand_package {
   my $str = $_[1];
@@ -20,5 +23,5 @@ sub expand_package {
   );
 }
 
-no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

@@ -1,7 +1,10 @@
 package Pod::Weaver::Role::Section;
+# ABSTRACT: a plugin that will get a section into a woven document
+
 use Moose::Role;
 with 'Pod::Weaver::Role::Plugin';
-# ABSTRACT: a plugin that will get a section into a woven document
+
+use namespace::autoclean;
 
 =head1 IMPLEMENTING
 
@@ -17,5 +20,4 @@ free to behave differently if it's needed to do something really cool.
 
 requires 'weave_section';
 
-no Moose::Role;
 1;

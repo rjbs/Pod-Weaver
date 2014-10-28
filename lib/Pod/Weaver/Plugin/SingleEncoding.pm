@@ -1,10 +1,11 @@
 package Pod::Weaver::Plugin::SingleEncoding;
+# ABSTRACT: ensure that there is exactly one =encoding of known value
+
 use Moose;
 with(
   'Pod::Weaver::Role::Dialect',
   'Pod::Weaver::Role::Finalizer',
 );
-# ABSTRACT: ensure that there is exactly one =encoding of known value
 
 use namespace::autoclean;
 use Moose::Autobox;
@@ -89,5 +90,5 @@ sub finalize_document {
   return;
 }
 
-no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

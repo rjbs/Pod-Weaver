@@ -1,7 +1,8 @@
 package Pod::Weaver::Plugin::Transformer;
+# ABSTRACT: apply arbitrary transformers
+
 use Moose;
 with 'Pod::Weaver::Role::Dialect';
-# ABSTRACT: apply arbitrary transformers
 
 use namespace::autoclean;
 use Moose::Autobox;
@@ -67,4 +68,5 @@ sub translate_dialect {
   $self->transformer->transform_node( $pod_document );
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

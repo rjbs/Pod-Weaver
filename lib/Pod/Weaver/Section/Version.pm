@@ -1,8 +1,9 @@
 package Pod::Weaver::Section::Version;
+# ABSTRACT: add a VERSION pod section
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
 with 'Pod::Weaver::Role::StringFromComment';
-# ABSTRACT: add a VERSION pod section
 
 use Module::Runtime qw(use_module);
 use namespace::autoclean;
@@ -229,5 +230,4 @@ sub weave_section {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

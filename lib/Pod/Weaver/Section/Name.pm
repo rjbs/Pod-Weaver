@@ -1,8 +1,9 @@
 package Pod::Weaver::Section::Name;
+# ABSTRACT: add a NAME section with abstract (for your Perl module)
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
 with 'Pod::Weaver::Role::StringFromComment';
-# ABSTRACT: add a NAME section with abstract (for your Perl module)
 
 use Moose::Autobox;
 
@@ -97,4 +98,5 @@ sub weave_section {
   $document->children->push($name_para);
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

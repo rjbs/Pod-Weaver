@@ -1,8 +1,9 @@
 package Pod::Weaver::Section::Bugs;
+# ABSTRACT: a section for bugtracker info
+
 use Moose;
 use Text::Wrap ();
 with 'Pod::Weaver::Role::Section';
-# ABSTRACT: a section for bugtracker info
 
 use Moose::Autobox;
 
@@ -85,5 +86,5 @@ HERE
   );
 }
 
-no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

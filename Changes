@@ -1,6 +1,7 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+        - immutabilize ALL THE THINGS!
 
 4.006     2014-01-07 20:12:37-05:00 America/New_York
         - update tests to pass octets to ->read_string, as is proper

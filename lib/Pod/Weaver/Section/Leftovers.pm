@@ -1,10 +1,11 @@
 package Pod::Weaver::Section::Leftovers;
+# ABSTRACT: a place to put everything that nothing else used
+
 use Moose;
 with(
   'Pod::Weaver::Role::Section',
   'Pod::Weaver::Role::Finalizer',
 );
-# ABSTRACT: a place to put everything that nothing else used
 
 use Moose::Autobox;
 
@@ -44,7 +45,7 @@ sub weave_section {
     format_name => $self->_marker,
     content     => '',
   });
-  
+
   $document->children->push($placeholder);
 }
 
@@ -65,5 +66,4 @@ sub finalize_document {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

@@ -1,7 +1,10 @@
 package Pod::Weaver::Role::Dialect;
+# ABSTRACT: something that translates Pod subdialects to standard Pod5
+
 use Moose::Role;
 with 'Pod::Weaver::Role::Plugin';
-# ABSTRACT: something that translates Pod subdialects to standard Pod5
+
+use namespace::autoclean;
 
 =head1 IMPLEMENTING
 
@@ -14,5 +17,4 @@ C<pod_document> entry.  It is expected to modify the document in place.
 
 requires 'translate_dialect';
 
-no Moose::Role;
 1;

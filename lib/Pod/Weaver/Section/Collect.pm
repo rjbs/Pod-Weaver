@@ -1,8 +1,9 @@
 package Pod::Weaver::Section::Collect;
+# ABSTRACT: a section that gathers up specific commands
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
 with 'Pod::Weaver::Role::Transformer';
-# ABSTRACT: a section that gathers up specific commands
 
 use Moose::Autobox;
 
@@ -135,5 +136,4 @@ sub weave_section {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

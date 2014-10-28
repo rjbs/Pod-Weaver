@@ -1,6 +1,7 @@
 package Pod::Weaver::Role::Plugin;
-use Moose::Role;
 # ABSTRACT: a Pod::Weaver plugin
+
+use Moose::Role;
 
 use Params::Util qw(_HASHLIKE);
 

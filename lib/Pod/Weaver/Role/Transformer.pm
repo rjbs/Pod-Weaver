@@ -1,7 +1,10 @@
 package Pod::Weaver::Role::Transformer;
+# ABSTRACT: something that restructures a Pod5 document
+
 use Moose::Role;
 with 'Pod::Weaver::Role::Plugin';
-# ABSTRACT: something that restructures a Pod5 document
+
+use namespace::autoclean;
 
 =head1 IMPLEMENTING
 
@@ -14,5 +17,4 @@ It is expected to modify the input in place.
 
 requires 'transform_document';
 
-no Moose::Role;
 1;

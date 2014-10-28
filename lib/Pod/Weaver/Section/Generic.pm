@@ -1,7 +1,8 @@
 package Pod::Weaver::Section::Generic;
+# ABSTRACT: a generic section, found by lifting sections
+
 use Moose;
 with 'Pod::Weaver::Role::Section';
-# ABSTRACT: a generic section, found by lifting sections
 
 use Moose::Autobox;
 
@@ -96,5 +97,4 @@ sub weave_section {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

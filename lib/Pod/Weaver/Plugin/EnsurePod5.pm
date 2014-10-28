@@ -1,7 +1,8 @@
 package Pod::Weaver::Plugin::EnsurePod5;
+# ABSTRACT: ensure that the Pod5 translator has been run on this document
+
 use Moose;
 with 'Pod::Weaver::Role::Preparer';
-# ABSTRACT: ensure that the Pod5 translator has been run on this document
 
 use namespace::autoclean;
 use Moose::Autobox;
@@ -46,5 +47,5 @@ sub prepare_input {
   return;
 }
 
-no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

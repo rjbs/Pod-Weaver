@@ -1,10 +1,12 @@
 package Pod::Weaver::Config;
-use Moose::Role;
 # ABSTRACT: stored configuration loader role
 
-use Config::MVP 2;
+use Moose::Role;
 
+use Config::MVP 2;
 use Pod::Weaver::Config::Assembler;
+
+use namespace::autoclean;
 
 =head1 DESCRIPTION
 
@@ -31,5 +33,4 @@ sub build_assembler {
   return $assembler;
 }
 
-no Moose::Role;
 1;

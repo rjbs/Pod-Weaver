@@ -1,7 +1,8 @@
 package Pod::Weaver::Plugin::H1Nester;
+# ABSTRACT: structure the input pod document into head1-grouped sections
+
 use Moose;
 with 'Pod::Weaver::Role::Transformer';
-# ABSTRACT: structure the input pod document into head1-grouped sections
 
 use namespace::autoclean;
 use Moose::Autobox;
@@ -33,5 +34,5 @@ sub transform_document {
   return;
 }
 
-no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

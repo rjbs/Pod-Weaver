@@ -1,7 +1,7 @@
 package Pod::Weaver;
-use Moose;
 # ABSTRACT: weave together a Pod document from an outline
 
+use Moose;
 use namespace::autoclean;
 
 =head1 SYNOPSIS
@@ -220,5 +220,4 @@ sub new_from_config_sequence {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

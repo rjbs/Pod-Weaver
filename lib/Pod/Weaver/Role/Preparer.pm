@@ -1,7 +1,10 @@
 package Pod::Weaver::Role::Preparer;
+# ABSTRACT: something that mucks about with the input before weaving begins
+
 use Moose::Role;
 with 'Pod::Weaver::Role::Plugin';
-# ABSTRACT: something that mucks about with the input before weaving begins
+
+use namespace::autoclean;
 
 =head1 IMPLEMENTING
 
@@ -14,5 +17,4 @@ the input in place.
 
 requires 'prepare_input';
 
-no Moose::Role;
 1;
