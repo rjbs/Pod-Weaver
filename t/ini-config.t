@@ -52,7 +52,8 @@ my $woven = $weaver->weave_document({
 #   0      Pod5::Ordinary <This is a simpl…g Pod::Weaver.>
 #   1      Pod5::Ordinary <It does not do very much.>
 # 6      =head1 ATTRIBUTES
-#   0      =head2 is_awesome
+#   0      Pod5::Ordinary <This is a heade…tributes list.>
+#   1      =head2 is_awesome
 #     0      Pod5::Ordinary <(This is true by default.)>
 # 7      =head1 BE FOREWARNED
 #   0      Pod5::Ordinary <This is not supported:>

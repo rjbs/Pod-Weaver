@@ -85,7 +85,8 @@ sub transform_document {
 
   my $selector = s_command($self->command);
 
-  return unless $document->children->grep($selector)->length;
+  my $children = $document->children;
+  return unless $children->grep($selector)->length;
 
   my $nester = Pod::Elemental::Transformer::Nester->new({
      top_selector      => $selector,
@@ -95,10 +96,19 @@ sub transform_document {
      ],
   });
 
-  my $container = Pod::Elemental::Element::Nested->new({
-    command => $self->header_command,
-    content => $self->header,
-  });
+  # try and find array position of suitable host
+  my ( $container_id ) = grep {
+    my $c = $children->[$_];
+    $c->isa("Pod::Elemental::Element::Nested")
+      and $c->command eq $self->header_command and $c->content eq $self->header;
+  } 0 .. $#$children;
+
+  my $container = $container_id
+    ? splice @{ $children }, $container_id, 1 # excise host
+    : Pod::Elemental::Element::Nested->new({ # synthesize new host
+        command => $self->header_command,
+        content => $self->header,
+      });
 
   $self->__used_container($container);
 
@@ -108,10 +118,12 @@ sub transform_document {
   });
 
   $nester->transform_node($document);
-  $gatherer->transform_node($document);
+  my @children = @{$container->children}; # rescue children
+  $gatherer->transform_node($document); # insert host at position of first adopt-child and inject it with adopt-children
   $container->children->each_value(sub {
     $_->command( $self->new_command ) if $_->command eq $self->command;
   });
+  unshift @{$container->children}, @children; # give original children back to host
 }
 
 sub weave_section {

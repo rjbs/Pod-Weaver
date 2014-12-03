@@ -10,6 +10,10 @@ This is a simple document meant to be used in testing Pod::Weaver.
 
 It does not do very much.
 
+=head1 ATTRIBUTES
+
+This is a header that should be above the attributes list.
+
 =head1 BE FOREWARNED
 
 This is not supported:
