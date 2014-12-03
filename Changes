@@ -2,6 +2,11 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+4.009     2014-12-02 23:00:37-05:00 America/New_York
+        - when a Collect-worthy header exists (like =head1 METHODS) use it,
+          rather than making a new one *and* leaving the old one around
+          (thanks, Christian Walde)
+
 4.008     2014-11-12 09:37:13-05:00 America/New_York
         - handle UTF-8 data in PODNAME and ABSTRACT (thanks,  Blabos de Blebe)
         - Explain Section::Region naming, nonpod, and flattening
