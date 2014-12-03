@@ -24,6 +24,8 @@ It does not do very much.
 
 =head1 ATTRIBUTES
 
+This is a header that should be above the attributes list.
+
 =head2 is_awesome
 
 (This is true by default.)
