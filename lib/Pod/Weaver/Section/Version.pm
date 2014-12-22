@@ -22,7 +22,6 @@ It will do nothing if there is no C<version> entry in the input.
 =cut
 
 use DateTime;
-use Moose::Autobox;
 use Moose::Util::TypeConstraints;
 
 my $MARKER;
@@ -220,13 +219,12 @@ sub weave_section {
 
   my @content = $self->build_content($input);
 
-  $document->children->push(
+  push @{ $document->children },
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',
       content  => 'VERSION',
       children => \@content,
-    }),
-  );
+    });
 }
 
 __PACKAGE__->meta->make_immutable;

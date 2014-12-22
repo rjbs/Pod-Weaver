@@ -5,7 +5,6 @@ use Moose;
 with 'Pod::Weaver::Role::Preparer';
 
 use namespace::autoclean;
-use Moose::Autobox;
 
 use Pod::Elemental::Transformer::Pod5;
 
@@ -21,8 +20,9 @@ sub _strip_nonpod {
   my ($self, $node) = @_;
 
   # XXX: This is really stupid. -- rjbs, 2009-10-24
-  $node->children->keys->reverse->each_value(sub {
-    my ($i, $para) = ($_, $node->children->[$_]);
+
+  foreach my $i (reverse 0 .. $#{ $node->children }) {
+    my $para = $node->children->[$i];
 
     if ($para->isa('Pod::Elemental::Element::Pod5::Nonpod')) {
       if ($para->content !~ /\S/) {
@@ -33,7 +33,7 @@ sub _strip_nonpod {
     } elsif ($para->does('Pod::Elemental::Node')) {
       $self->_strip_nonpod($para);
     }
-  });
+  }
 }
 
 sub prepare_input {

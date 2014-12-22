@@ -5,7 +5,6 @@ use Moose;
 with 'Pod::Weaver::Role::Transformer';
 
 use namespace::autoclean;
-use Moose::Autobox;
 
 use Pod::Elemental::Selectors -all;
 use Pod::Elemental::Transformer::Nester;

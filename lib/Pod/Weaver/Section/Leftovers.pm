@@ -7,8 +7,6 @@ with(
   'Pod::Weaver::Role::Finalizer',
 );
 
-use Moose::Autobox;
-
 =head1 OVERVIEW
 
 This section plugin is used to designate where in the output sequence all
@@ -46,7 +44,7 @@ sub weave_section {
     content     => '',
   });
 
-  $document->children->push($placeholder);
+  push @{ $document->children }, $placeholder;
 }
 
 sub finalize_document {
@@ -55,7 +53,7 @@ sub finalize_document {
   my $children = $input->{pod_document}->children;
   $input->{pod_document}->children([]);
 
-  INDEX: for my $i (0 .. $document->children->length - 1) {
+  INDEX: for my $i (0 .. @{ $document->children } - 1) {
     my $para = $document->children->[$i];
     next unless $para->isa('Pod::Elemental::Element::Pod5::Region')
          and    $para->format_name eq $self->_marker;

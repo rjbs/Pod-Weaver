@@ -5,8 +5,6 @@ use Moose;
 use Text::Wrap ();
 with 'Pod::Weaver::Role::Section';
 
-use Moose::Autobox;
-
 =head1 OVERVIEW
 
 This section plugin will produce a hunk of Pod giving bug reporting
@@ -75,15 +73,14 @@ patch to an existing test-file that illustrates the bug or desired
 feature.
 HERE
 
-  $document->children->push(
+  push @{ $document->children },
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',
       content  => 'BUGS',
       children => [
         Pod::Elemental::Element::Pod5::Ordinary->new({ content => $text }),
       ],
-    }),
-  );
+    });
 }
 
 __PACKAGE__->meta->make_immutable;
