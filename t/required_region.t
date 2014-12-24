@@ -2,7 +2,6 @@ use strict;
 use warnings;
 
 use Test::More;
-use Moose::Autobox 0.10;
 
 use PPI;
 

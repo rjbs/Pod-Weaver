@@ -29,7 +29,6 @@ information.
 
 use File::Spec;
 use Log::Dispatchouli 1.100710; # proxy
-use Moose::Autobox 0.10;
 use Pod::Elemental 0.100220;
 use Pod::Elemental::Document;
 use Pod::Weaver::Config::Finder;
@@ -87,9 +86,9 @@ sub plugins_with {
   my ($self, $role) = @_;
 
   $role =~ s/^-/Pod::Weaver::Role::/;
-  my $plugins = $self->plugins->grep(sub { $_->does($role) });
+  my @plugins = grep { $_->does($role) } @{ $self->plugins };
 
-  return $plugins;
+  return \@plugins;
 }
 
 =method weave_document
@@ -120,25 +119,25 @@ sub weave_document {
 
   my $document = Pod::Elemental::Document->new;
 
-  $self->plugins_with(-Preparer)->each_value(sub {
+  for (@{ $self->plugins_with(-Preparer) }) {
     $_->prepare_input($input);
-  });
+  }
 
-  $self->plugins_with(-Dialect)->each_value(sub {
+  for (@{ $self->plugins_with(-Dialect) }) {
     $_->translate_dialect($input->{pod_document});
-  });
+  }
 
-  $self->plugins_with(-Transformer)->each_value(sub {
+  for (@{ $self->plugins_with(-Transformer) }) {
     $_->transform_document($input->{pod_document});
-  });
+  }
 
-  $self->plugins_with(-Section)->each_value(sub {
+  for (@{ $self->plugins_with(-Section) }) {
     $_->weave_section($document, $input);
-  });
+  }
 
-  $self->plugins_with(-Finalizer)->each_value(sub {
+  for (@{ $self->plugins_with(-Finalizer) }) {
     $_->finalize_document($document, $input);
-  });
+  }
 
   return $document;
 }
@@ -207,13 +206,12 @@ sub new_from_config_sequence {
     confess "arguments attempted to override 'weaver'"
       if defined $arg->{weaver};
 
-    $self->plugins->push(
+    push @{ $self->plugins },
       $plugin_class->new({
         %$arg,
         plugin_name => $name,
         weaver      => $self,
-      })
-    );
+      });
   }
 
   return $self;

@@ -3,7 +3,6 @@ use warnings;
 
 use Test::More;
 use Test::Differences;
-use Moose::Autobox 0.10;
 
 use PPI;
 
@@ -69,7 +68,7 @@ my $woven = $weaver->weave_document({
 # 10     =head1 COPYRIGHT AND LICENSE
 #   0      Pod5::Ordinary <This software i…ic License 1.0>
 
-is($woven->children->length, 11, "we end up with a 11-paragraph document");
+is(@{ $woven->children }, 11, "we end up with a 11-paragraph document");
 
 for (qw(1 2 4 5 6 7 9 10)) {
   my $para = $woven->children->[ $_ ];

@@ -4,8 +4,6 @@ package Pod::Weaver::Role::StringFromComment;
 use Moose::Role;
 use namespace::autoclean;
 
-use Moose::Autobox;
-
 =head1 OVERVIEW
 
 This role assists L<Pod::Weaver sections|Pod::Weaver::Role::Section> by

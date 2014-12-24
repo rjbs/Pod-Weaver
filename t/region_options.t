@@ -3,7 +3,6 @@ use warnings;
 
 use Test::More;
 use Test::Differences;
-use Moose::Autobox 0.10;
 
 use PPI;
 
@@ -55,7 +54,7 @@ sub do_weave {
     ppi_document => $ppi_document,
   });
 
-  is($woven->children->length, 5, "we end up with a 5-paragraph document");
+  is(@{ $woven->children }, 5, "we end up with a 5-paragraph document");
 
   for (qw(0 2 3 4)) {
     my $para = $woven->children->[ $_ ];

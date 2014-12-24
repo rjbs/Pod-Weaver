@@ -8,7 +8,6 @@ with(
 );
 
 use namespace::autoclean;
-use Moose::Autobox;
 
 use Pod::Elemental::Selectors -all;
 

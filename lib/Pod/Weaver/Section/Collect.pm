@@ -5,8 +5,6 @@ use Moose;
 with 'Pod::Weaver::Role::Section';
 with 'Pod::Weaver::Role::Transformer';
 
-use Moose::Autobox;
-
 =head1 OVERVIEW
 
 Given the configuration:
@@ -24,6 +22,7 @@ in the source document.
 
 use Pod::Elemental::Element::Pod5::Region;
 use Pod::Elemental::Selectors -all;
+use List::Util 1.33 'any';
 
 =attr command
 
@@ -86,7 +85,7 @@ sub transform_document {
   my $selector = s_command($self->command);
 
   my $children = $document->children;
-  return unless $children->grep($selector)->length;
+  return unless any { $selector->($_) } @$children;
 
   my $nester = Pod::Elemental::Transformer::Nester->new({
      top_selector      => $selector,
@@ -120,9 +119,9 @@ sub transform_document {
   $nester->transform_node($document);
   my @children = @{$container->children}; # rescue children
   $gatherer->transform_node($document); # insert host at position of first adopt-child and inject it with adopt-children
-  $container->children->each_value(sub {
-    $_->command( $self->new_command ) if $_->command eq $self->command;
-  });
+  foreach my $child (@{ $container->children }) {
+    $child->command( $self->new_command ) if $child->command eq $self->command;
+  }
   unshift @{$container->children}, @children; # give original children back to host
 }
 
@@ -132,19 +131,14 @@ sub weave_section {
   return unless $self->__used_container;
 
   my $in_node = $input->{pod_document}->children;
-  my @found;
-  $in_node->each(sub {
-    my ($i, $para) = @_;
-    push @found, $i if ($para == $self->__used_container)
-                    && $self->__used_container->children->length;
-  });
 
-  my @to_add;
-  for my $i (reverse @found) {
-    push @to_add, splice @{ $in_node }, $i, 1;
-  }
+  my @found = grep {
+    my ($i, $para) = ($_, $in_node->[$_]);
+    ($para == $self->__used_container)
+      && @{ $self->__used_container->children };
+  } (0 .. $#$in_node);
 
-  $document->children->push(@to_add);
+  push @{ $document->children }, map { splice @$in_node, $_, 1 } reverse @found;
 }
 
 __PACKAGE__->meta->make_immutable;

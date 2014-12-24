@@ -5,7 +5,6 @@ use Moose;
 with 'Pod::Weaver::Role::Dialect';
 
 use namespace::autoclean;
-use Moose::Autobox;
 
 use Module::Runtime qw(use_module);
 use List::MoreUtils qw(part);

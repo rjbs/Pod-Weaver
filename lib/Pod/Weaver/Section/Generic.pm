@@ -4,8 +4,6 @@ package Pod::Weaver::Section::Generic;
 use Moose;
 with 'Pod::Weaver::Role::Section';
 
-use Moose::Autobox;
-
 =head1 OVERVIEW
 
 This section will find and include a located hunk of Pod.  In general, it will
@@ -79,21 +77,15 @@ sub weave_section {
   my ($self, $document, $input) = @_;
 
   my $in_node = $input->{pod_document}->children;
-  my @found;
-  $in_node->each(sub {
-    my ($i, $para) = @_;
-    push @found, $i if $self->selector->($para);
-  });
+
+  my @found = grep {
+    $self->selector->($in_node->[$_]);
+  } (0 .. $#$in_node);
 
   confess "Couldn't find required Generic section for " . $self->header . " in file "
     . (defined $input->{filename} ? $input->{filename} : '') if $self->required and not @found;
 
-  my @to_add;
-  for my $i (reverse @found) {
-    push @to_add, splice @{ $in_node }, $i, 1;
-  }
-
-  $document->children->push(@to_add);
+  push @{ $document->children }, map { splice @$in_node, $_, 1 } reverse @found;
 }
 
 __PACKAGE__->meta->make_immutable;

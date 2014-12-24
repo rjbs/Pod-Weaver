@@ -5,7 +5,6 @@ use Moose;
 with 'Pod::Weaver::Role::Section';
 with 'Pod::Weaver::Role::StringFromComment';
 
-use Moose::Autobox;
 use Encode;
 
 =head1 OVERVIEW
@@ -98,7 +97,7 @@ sub weave_section {
     ],
   });
 
-  $document->children->push($name_para);
+  push @{ $document->children }, $name_para;
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -3,7 +3,6 @@ use warnings;
 
 use Test::More;
 use Test::Differences;
-use Moose::Autobox 0.10;
 
 use PPI;
 

@@ -4,8 +4,6 @@ package Pod::Weaver::Section::Legal;
 use Moose;
 with 'Pod::Weaver::Role::Section';
 
-use Moose::Autobox;
-
 =head1 OVERVIEW
 
 This section plugin will produce a hunk of Pod giving the copyright and license
@@ -50,15 +48,14 @@ sub weave_section {
     $notice .= $self->license_file . "> file included with this distribution.";
   }
 
-  $document->children->push(
+  push @{ $document->children },
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',
       content  => 'COPYRIGHT AND LICENSE',
       children => [
         Pod::Elemental::Element::Pod5::Ordinary->new({ content => $notice }),
       ],
-    }),
-  );
+    });
 }
 
 __PACKAGE__->meta->make_immutable;
