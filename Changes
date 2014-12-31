@@ -2,6 +2,9 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+4.010     2014-12-30 22:02:58-05:00 America/New_York
+        - use of Moose::Autobox has been dropped (thanks Karen Etheridge!)
+
 4.009     2014-12-02 23:00:37-05:00 America/New_York
         - when a Collect-worthy header exists (like =head1 METHODS) use it,
           rather than making a new one *and* leaving the old one around
