@@ -2,6 +2,8 @@ package Pod::Weaver::Section::Name;
 # ABSTRACT: add a NAME section with abstract (for your Perl module)
 
 use Moose;
+use File::Basename;
+
 with 'Pod::Weaver::Role::Section';
 with 'Pod::Weaver::Role::StringFromComment';
 
@@ -25,6 +27,9 @@ must be given.  It looks for comments in the form:
 
 If no C<PODNAME> comment is present, but a package declaration can be found,
 the package name will be used as the document name.
+
+If no C<PODNAME> comment or package declaration is present, for files whose names 
+do not match C<*.pm> the filename will be used as the document name.
 
 =cut
 
@@ -52,7 +57,8 @@ sub _get_docname {
   my $ppi_document = $input->{ppi_document};
 
   my $docname = $self->_get_docname_via_comment($ppi_document)
-             || $self->_get_docname_via_statement($ppi_document);
+             || $self->_get_docname_via_statement($ppi_document)
+             || ($ppi_document->can('filename') && $ppi_document->filename !~ m/.*pm/ && basename($ppi_document->filename));
 
   return $docname;
 }
