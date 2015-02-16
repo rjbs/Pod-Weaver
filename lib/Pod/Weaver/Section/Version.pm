@@ -19,7 +19,18 @@ the document being viewed, like this:
 
 It will do nothing if there is no C<version> entry in the input.
 
+=attr header
+
+The title of the header to be added.
+(default: "VERSION")
+
 =cut
+
+has header => (
+  is      => 'ro',
+  isa     => 'Str',
+  default => 'VERSION',
+);
 
 use DateTime;
 use Moose::Util::TypeConstraints;
@@ -222,7 +233,7 @@ sub weave_section {
   push @{ $document->children },
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',
-      content  => 'VERSION',
+      content  => $self->header,
       children => \@content,
     });
 }

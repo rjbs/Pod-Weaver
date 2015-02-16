@@ -26,7 +26,18 @@ must be given.  It looks for comments in the form:
 If no C<PODNAME> comment is present, but a package declaration can be found,
 the package name will be used as the document name.
 
+=attr header
+
+The title of the header to be added.
+(default: "NAME")
+
 =cut
+
+has header => (
+  is      => 'ro',
+  isa     => 'Str',
+  default => 'NAME',
+);
 
 use Pod::Elemental::Element::Pod5::Command;
 use Pod::Elemental::Element::Pod5::Ordinary;
@@ -91,7 +102,7 @@ sub weave_section {
 
   my $name_para = Pod::Elemental::Element::Nested->new({
     command  => 'head1',
-    content  => 'NAME',
+    content  => $self->header,
     children => [
       Pod::Elemental::Element::Pod5::Ordinary->new({ content => $name }),
     ],

@@ -43,7 +43,18 @@ can add something like the following to C<dist.ini>:
 
   [PodWeaver]
 
+=attr header
+
+The title of the header to be added.
+(default: "BUGS")
+
 =cut
+
+has header => (
+  is      => 'ro',
+  isa     => 'Str',
+  default => 'BUGS',
+);
 
 sub weave_section {
   my ($self, $document, $input) = @_;
@@ -76,7 +87,7 @@ HERE
   push @{ $document->children },
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',
-      content  => 'BUGS',
+      content  => $self->header,
       children => [
         Pod::Elemental::Element::Pod5::Ordinary->new({ content => $text }),
       ],

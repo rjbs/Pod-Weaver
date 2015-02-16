@@ -27,7 +27,18 @@ telling users to check the file for the full text of the license.
 
 Defaults to none.
 
+=attr header
+
+The title of the header to be added.
+(default: "COPYRIGHT AND LICENSE")
+
 =cut
+
+has header => (
+  is      => 'ro',
+  isa     => 'Str',
+  default => 'COPYRIGHT AND LICENSE',
+);
 
 has license_file => (
   is => 'ro',
@@ -51,7 +62,7 @@ sub weave_section {
   push @{ $document->children },
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',
-      content  => 'COPYRIGHT AND LICENSE',
+      content  => $self->header,
       children => [
         Pod::Elemental::Element::Pod5::Ordinary->new({ content => $notice }),
       ],
