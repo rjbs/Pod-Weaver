@@ -37,7 +37,7 @@ sub weave_section {
 
   my $multiple_authors = @{ $input->{authors} } > 1;
 
-  my $name = $self->header || $multiple_authors ? 'AUTHORS' : 'AUTHOR';
+  my $name = $self->header || ($multiple_authors ? 'AUTHORS' : 'AUTHOR');
   my $authors = [ map {
     Pod::Elemental::Element::Pod5::Ordinary->new({
       content => $_,
