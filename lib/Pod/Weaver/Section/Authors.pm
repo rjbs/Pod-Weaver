@@ -37,7 +37,10 @@ sub weave_section {
 
   my $multiple_authors = @{ $input->{authors} } > 1;
 
+  # I think I might like to have header be a callback or something, so that you
+  # can get pluralization for your own custom header. -- rjbs, 2015-03-17
   my $name = $self->header || ($multiple_authors ? 'AUTHORS' : 'AUTHOR');
+
   my $authors = [ map {
     Pod::Elemental::Element::Pod5::Ordinary->new({
       content => $_,
