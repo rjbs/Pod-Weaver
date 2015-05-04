@@ -75,6 +75,7 @@ sub weave_section {
     $text .= "by email to $mailto\.\n";
   }
 
+  local $Text::Wrap::huge = 'overflow';
   $text = Text::Wrap::wrap(q{}, q{}, $text);
 
   $text .= <<'HERE';
