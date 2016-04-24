@@ -56,8 +56,8 @@ is(
 # XXX: This test is extremely risky as things change upstream.
 # -- rjbs, 2009-10-23
 eq_or_diff(
-  $woven->as_pod_string,
-  $expected,
+  [ split /\n/, $woven->as_pod_string ],
+  [ split /\n/, $expected ],
   "exactly the pod string we wanted after weaving!",
 );
 
