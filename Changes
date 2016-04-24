@@ -2,6 +2,9 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+4.013     2016-04-24 23:19:14+01:00 Europe/London
+        - use text for PPI, not octet
+
 4.012     2015-05-05 21:01:33-04:00 America/New_York
         - avoid breaking up words when wrapping text in [Bugs]
 
