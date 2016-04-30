@@ -67,12 +67,12 @@ sub weave_section {
   my $text = "Please report any bugs or feature requests ";
 
   if (defined $web) {
-    $text .= "on the bugtracker website $web";
+    $text .= "on the bugtracker website L<$web>";
     $text .= defined $mailto ? " or " : "\n";
   }
 
   if (defined $mailto) {
-    $text .= "by email to $mailto\.\n";
+    $text .= "by email to L<$mailto|mailto:$mailto>\.\n";
   }
 
   local $Text::Wrap::huge = 'overflow';
