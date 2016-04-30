@@ -75,13 +75,13 @@ sub weave_section {
   my $name = $self->header;
   if (defined $web) {
     $self->log_debug("including $web as bugtracker in $name section");
-    $text .= "on the bugtracker website $web";
+    $text .= "on the bugtracker website L<$web>";
     $text .= defined $mailto ? " or " : "\n";
   }
 
   if (defined $mailto) {
     $self->log_debug("including $mailto as bugtracker in $name section");
-    $text .= "by email to $mailto\.\n";
+    $text .= "by email to L<$mailto|mailto:$mailto>\.\n";
   }
 
   local $Text::Wrap::huge = 'overflow';
