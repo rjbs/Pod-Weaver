@@ -58,6 +58,7 @@ sub finalize_document {
     next unless $para->isa('Pod::Elemental::Element::Pod5::Region')
          and    $para->format_name eq $self->_marker;
 
+    $self->log_debug('splicing leftovers back into pod');
     splice @{ $document->children }, $i, 1, @$children;
     last INDEX;
   }

@@ -45,6 +45,9 @@ sub translate_dialect {
 
   my $want;
   $want = $self->encoding if $self->_has_encoding;
+  if ($want) {
+    $self->log_debug("enforcing encoding of $want in all pod");
+  }
 
   my $childs = $document->children;
   my $is_enc = s_command([ qw(encoding) ]);
@@ -82,6 +85,7 @@ sub finalize_document {
   my $is_pod = s_command([ qw(pod) ]); # ??
   for (0 .. $#$childs) {
     next if $is_pod->( $childs->[ $_ ] );
+    $self->log_debug('setting =encoding to ' . $self->encoding);
     splice @$childs, $_, 0, $encoding;
     last;
   }

@@ -230,6 +230,8 @@ sub weave_section {
 
   my @content = $self->build_content($input);
 
+  $self->log_debug('adding ' . $self->header . ' section to pod');
+
   push @{ $document->children },
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',

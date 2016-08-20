@@ -41,6 +41,9 @@ sub weave_section {
   # can get pluralization for your own custom header. -- rjbs, 2015-03-17
   my $name = $self->header || ($multiple_authors ? 'AUTHORS' : 'AUTHOR');
 
+  $self->log_debug("adding $name section");
+  $self->log_debug("author = $_") for @{ $input->{authors} };
+
   my $authors = [ map {
     Pod::Elemental::Element::Pod5::Ordinary->new({
       content => $_,

@@ -139,6 +139,8 @@ sub weave_section {
   confess "Couldn't find required Region for " . $self->region_name . " in file "
     . (defined $input->{filename} ? $input->{filename} : '') if $self->required and not @to_insert;
 
+  my $verb = $self->flatten ? 'flattening' : 'inserting';
+  $self->log_debug($verb . q{ } . $self->region_name . ' into pod');
   push @{ $document->children }, @to_insert;
 }
 
