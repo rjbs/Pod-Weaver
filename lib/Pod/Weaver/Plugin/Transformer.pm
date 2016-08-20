@@ -64,6 +64,7 @@ sub BUILDARGS {
 sub translate_dialect {
   my ($self, $pod_document) = @_;
 
+  $self->log_debug('applying transform');
   $self->transformer->transform_node( $pod_document );
 }
 

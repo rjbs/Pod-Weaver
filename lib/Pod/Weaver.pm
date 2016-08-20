@@ -198,7 +198,7 @@ sub new_from_config_sequence {
       $section->payload,
     );
 
-    # $self->log("initializing plugin $name ($plugin_class)");
+    $self->log_debug("initializing plugin $name ($plugin_class)");
 
     confess "arguments attempted to override 'plugin_name'"
       if defined $arg->{plugin_name};

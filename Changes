@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+        - added debug level logging to the weaver, plugins, and
+          section. GitHub #42.  (thanks, Dave Rolsky)
 
 4.013     2016-04-24 23:19:14+01:00 Europe/London
         - use text for PPI, not octet

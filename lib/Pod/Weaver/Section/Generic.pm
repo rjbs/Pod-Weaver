@@ -85,6 +85,8 @@ sub weave_section {
   confess "Couldn't find required Generic section for " . $self->header . " in file "
     . (defined $input->{filename} ? $input->{filename} : '') if $self->required and not @found;
 
+  $self->log_debug('adding ' . $self->header . ' back into pod');
+
   push @{ $document->children }, map { splice @$in_node, $_, 1 } reverse @found;
 }
 

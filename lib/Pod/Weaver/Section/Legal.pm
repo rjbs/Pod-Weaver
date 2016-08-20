@@ -49,7 +49,9 @@ has license_file => (
 sub weave_section {
   my ($self, $document, $input) = @_;
 
-  return unless $input->{license};
+  unless ($input->{license}) {
+    $self->log_debug('no license specified, not adding a ' . $self->header . ' section');
+ }
 
   my $notice = $input->{license}->notice;
   chomp $notice;
@@ -58,6 +60,8 @@ sub weave_section {
     $notice .= "\n\nThe full text of the license can be found in the\nF<";
     $notice .= $self->license_file . "> file included with this distribution.";
   }
+
+  $self->log_debug('adding ' . $self->header . ' section');
 
   push @{ $document->children },
     Pod::Elemental::Element::Nested->new({

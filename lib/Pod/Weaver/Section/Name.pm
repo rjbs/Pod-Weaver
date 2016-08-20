@@ -96,6 +96,8 @@ sub weave_section {
   my $name = $docname;
   $name .= " - $abstract" if $abstract;
 
+  $self->log_debug(qq{setting NAME to "$name"});
+
   my $name_para = Pod::Elemental::Element::Nested->new({
     command  => 'head1',
     content  => $self->header,
