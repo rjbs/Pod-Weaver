@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+
+4.014     2016-09-18 22:25:51-04:00 America/New_York
         - make links in [Bugs] use L<> (thanks, David Zurborg!)
         - added debug level logging to the weaver, plugins, and
           section. GitHub #42.  (thanks, Dave Rolsky)
