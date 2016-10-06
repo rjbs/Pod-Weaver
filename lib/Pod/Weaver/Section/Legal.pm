@@ -51,6 +51,7 @@ sub weave_section {
 
   unless ($input->{license}) {
     $self->log_debug('no license specified, not adding a ' . $self->header . ' section');
+    return;
  }
 
   my $notice = $input->{license}->notice;

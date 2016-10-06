@@ -68,6 +68,7 @@ sub weave_section {
 
   unless (defined $web || defined $mailto) {
     $self->log_debug('skipping section because there is no web or mailto key under resources.bugtracker');
+    return;
   }
 
   my $text = "Please report any bugs or feature requests ";
