@@ -2,6 +2,10 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+4.015     2016-10-14 20:48:13-04:00 America/New_York
+        - fix bugs introduced in 4.014 that would cause [Bugs] and [Legal]
+          to run even when they should've skipped
+
 4.014     2016-09-18 22:25:51-04:00 America/New_York
         - make links in [Bugs] use L<> (thanks, David Zurborg!)
         - added debug level logging to the weaver, plugins, and
