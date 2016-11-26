@@ -1,6 +1,7 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+        - H1Nester now also captures =for and =begin tags under =head1
 
 4.015     2016-10-14 20:48:13-04:00 America/New_York
         - fix bugs introduced in 4.014 that would cause [Bugs] and [Legal]
