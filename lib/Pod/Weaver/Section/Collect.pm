@@ -39,6 +39,12 @@ The command to be used in the output instead of the collected command.
 The section command for the section to be added.
 (default: C<head1>)
 
+=attr nested_commands
+
+The commands to include nested below the collected command.
+(default: C<head3>, C<head4>, C<over>, C<item>, C<back>, C<for>, C<begin>,
+C<end>)
+
 =attr header
 
 The title of the section to be added.
@@ -64,6 +70,13 @@ has header_command => (
   isa => 'Str',
   required => 1,
   default  => 'head1',
+);
+
+has nested_commands => (
+  is  => 'ro',
+  isa => 'ArrayRef[Str]',
+  required => 1,
+  default  => sub { [ qw(head3 head4 over item back for begin end) ] },
 );
 
 has header => (
@@ -96,7 +109,7 @@ sub transform_document {
   my $nester = Pod::Elemental::Transformer::Nester->new({
      top_selector      => $selector,
      content_selectors => [
-       s_command([ qw(head3 head4 over item back) ]),
+       s_command( $self->nested_commands ),
        s_flat,
      ],
   });
@@ -146,6 +159,8 @@ sub weave_section {
 
   push @{ $document->children }, map { splice @$in_node, $_, 1 } reverse @found;
 }
+
+sub mvp_multivalue_args { 'nested_commands' }
 
 __PACKAGE__->meta->make_immutable;
 1;
