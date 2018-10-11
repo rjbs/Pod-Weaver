@@ -165,7 +165,7 @@ sub new_with_default_config {
 
 sub new_from_config {
   my ($class, $arg, $new_arg) = @_;
-  
+
   my $root = $arg->{root} || '.';
   my $name = File::Spec->catfile($root, 'weaver');
   my ($sequence) = Pod::Weaver::Config::Finder->new->read_config($name);
