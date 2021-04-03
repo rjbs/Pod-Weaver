@@ -4,6 +4,9 @@ package Pod::Weaver::Section::Generic;
 use Moose;
 with 'Pod::Weaver::Role::Section';
 
+use v5.20.0;
+use experimental 'postderef'; # this experiment succeeded -- rjbs, 2021-04-02
+
 =head1 OVERVIEW
 
 This section will find and include a located hunk of Pod.  In general, it will
@@ -87,7 +90,7 @@ sub weave_section {
 
   $self->log_debug('adding ' . $self->header . ' back into pod');
 
-  push @{ $document->children }, map { splice @$in_node, $_, 1 } reverse @found;
+  push $document->children->@*, map { splice @$in_node, $_, 1 } reverse @found;
 }
 
 __PACKAGE__->meta->make_immutable;
