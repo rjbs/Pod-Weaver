@@ -227,7 +227,3 @@ sub fill_in_string {
 
 __PACKAGE__->meta->make_immutable;
 1;
-
-=head1 AUTHOR
-
-Carnë Draug <cdraug@cpan.org>
