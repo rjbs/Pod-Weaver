@@ -6,15 +6,16 @@ use warnings;
 use utf8;
 
 use Moose;
+
+with 'Pod::Weaver::Role::Section';
+
 use Pod::Elemental::Element::Nested;
 use Pod::Elemental::Element::Pod5::Ordinary;
 use Text::Template;
 
-with (
-  'Pod::Weaver::Role::Section',
-);
 use namespace::autoclean;
 
+# BEGIN CODE IMPORTED FROM Dist::Zilla::Role::TextTemplate
 has delim => (
   is   => 'ro',
   isa  => 'ArrayRef',
@@ -47,6 +48,7 @@ sub fill_in_string {
 
   return $content;
 }
+# END CODE IMPORTED FROM Dist::Zilla::Role::TextTemplate
 
 sub mvp_multivalue_args { return qw(text) }
 has text => (
