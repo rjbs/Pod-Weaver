@@ -53,46 +53,38 @@ sub fill_in_string {
 sub mvp_multivalue_args { return qw(text) }
 has text => (
   is      => 'ro',
-  lazy    => 1,
   isa     => 'ArrayRef',
+  lazy    => 1,
   default => sub { [] },
 );
 
-
-
 has head => (
   is      => 'ro',
-  lazy    => 1,
   isa     => 'Int',
+  lazy    => 1,
   default => 1,
 );
-
 
 has title => (
   is      => 'ro',
-  lazy    => 1,
   isa     => 'Str',
+  lazy    => 1,
   default => sub { $_[0]->plugin_name },
 );
 
-
 has main_module_only => (
   is      => 'ro',
-  lazy    => 1,
   isa     => 'Bool',
+  lazy    => 1,
   default => 0,
 );
 
-
 has is_template => (
   is      => 'ro',
-  lazy    => 1,
   isa     => 'Bool',
+  lazy    => 1,
   default => 1,
 );
-
-
-
 
 sub weave_section {
   my ($self, $document, $input) = @_;
@@ -112,13 +104,13 @@ sub weave_section {
         distmeta  => \($input->{distmeta}),
         plugin    => \($self),
 
-        name        => $input->{distmeta}->{name},
-        version     => $input->{distmeta}->{version},
-        homepage    => $input->{distmeta}->{resources}->{homepage},
-        repository_web   => $input->{distmeta}->{resources}->{repository}->{web},
-        repository_url   => $input->{distmeta}->{resources}->{repository}->{url},
-        bugtracker_web   => $input->{distmeta}->{resources}->{bugtracker}->{web},
-        bugtracker_email => $input->{distmeta}->{resources}->{bugtracker}->{mailto},
+        name        => $input->{distmeta}{name},
+        version     => $input->{distmeta}{version},
+        homepage    => $input->{distmeta}{resources}{homepage},
+        repository_web   => $input->{distmeta}{resources}{repository}{web},
+        repository_url   => $input->{distmeta}{resources}{repository}{url},
+        bugtracker_web   => $input->{distmeta}{resources}{bugtracker}{web},
+        bugtracker_email => $input->{distmeta}{resources}{bugtracker}{mailto},
       );
     }
 
