@@ -6,7 +6,6 @@ use warnings;
 use utf8;
 
 use Moose;
-use MooseX::AttributeShortcuts;
 use MooseX::Types::Moose qw(ArrayRef Bool Int Str);
 use Pod::Elemental::Element::Nested;
 use Pod::Elemental::Element::Pod5::Ordinary;
@@ -52,7 +51,8 @@ sub fill_in_string {
 
 sub mvp_multivalue_args { return qw(text) }
 has text => (
-  is      => 'lazy',
+  is      => 'ro',
+  lazy    => 1,
   isa     => ArrayRef,
   default => sub { [] },
 );
@@ -60,14 +60,16 @@ has text => (
 
 
 has head => (
-  is      => 'lazy',
+  is      => 'ro',
+  lazy    => 1,
   isa     => Int,
   default => 1,
 );
 
 
 has title => (
-  is      => 'lazy',
+  is      => 'ro',
+  lazy    => 1,
   isa     => Str,
   default => sub { $_[0]->plugin_name },
 );
@@ -82,7 +84,8 @@ has main_module_only => (
 
 
 has is_template => (
-  is      => 'lazy',
+  is      => 'ro',
+  lazy    => 1,
   isa     => Bool,
   default => 1,
 );
