@@ -1,40 +1,54 @@
 package Pod::Weaver::Section::GenerateSection;
-$Pod::Weaver::Section::GenerateSection::VERSION = '1.06';
-use utf8;
-
-## Copyright (C) 2013-2017 Carnë Draug <carandraug+dev@gmail.com>
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, see <http://www.gnu.org/licenses/>.
+# ABSTRACT: add pod section from an interpolated piece of text
 
 use strict;
 use warnings;
+use utf8;
 
 use Moose;
 use MooseX::AttributeShortcuts;
 use MooseX::Types::Moose qw(ArrayRef Bool Int Str);
 use Pod::Elemental::Element::Nested;
 use Pod::Elemental::Element::Pod5::Ordinary;
+use Text::Template;
 
 with (
   'Pod::Weaver::Role::Section',
-  'Dist::Zilla::Role::TextTemplate',
 );
 use namespace::autoclean;
 
-# ABSTRACT: add pod section from an interpolated piece of text
+has delim => (
+  is   => 'ro',
+  isa  => 'ArrayRef',
+  lazy => 1,
+  init_arg => undef,
+  default  => sub { [ qw(  {{  }}  ) ] },
+);
 
+sub fill_in_string {
+  my ($self, $string, $stash, $arg) = @_;
 
+  $self->log_fatal("Cannot use undef as a template string")
+    unless defined $string;
+
+  my $tmpl = Text::Template->new(
+    TYPE       => 'STRING',
+    SOURCE     => $string,
+    DELIMITERS => $self->delim,
+    BROKEN     => sub { my %hash = @_; die $hash{error}; },
+    %$arg,
+  );
+
+  $self->log_fatal("Could not create a Text::Template object from:\n$string")
+    unless $tmpl;
+
+  my $content = $tmpl->fill_in(%$arg, HASH => $stash);
+
+  $self->log_fatal("Filling in the template returned undef for:\n$string")
+    unless defined $content;
+
+  return $content;
+}
 
 sub mvp_multivalue_args { return qw(text) }
 has text => (
@@ -84,31 +98,40 @@ sub weave_section {
   }
 
   my $text = join ("\n", @{ $self->text });
-  if ($self->is_template) {
-    $text = $self->fill_in_string($text,
-    {
-      dist      => \($input->{zilla}),
-      distmeta  => \($input->{distmeta}),
-      plugin    => \($self),
 
-      name        => $input->{distmeta}->{name},
-      version     => $input->{distmeta}->{version},
-      homepage    => $input->{distmeta}->{resources}->{homepage},
-      repository_web   => $input->{distmeta}->{resources}->{repository}->{web},
-      repository_url   => $input->{distmeta}->{resources}->{repository}->{url},
-      bugtracker_web   => $input->{distmeta}->{resources}->{bugtracker}->{web},
-      bugtracker_email => $input->{distmeta}->{resources}->{bugtracker}->{mailto},
-    });
+  if ($self->is_template) {
+    my %stash;
+
+    if ($input->{zilla}) {
+      %stash = (
+        dist      => \($input->{zilla}),
+        distmeta  => \($input->{distmeta}),
+        plugin    => \($self),
+
+        name        => $input->{distmeta}->{name},
+        version     => $input->{distmeta}->{version},
+        homepage    => $input->{distmeta}->{resources}->{homepage},
+        repository_web   => $input->{distmeta}->{resources}->{repository}->{web},
+        repository_url   => $input->{distmeta}->{resources}->{repository}->{url},
+        bugtracker_web   => $input->{distmeta}->{resources}->{bugtracker}->{web},
+        bugtracker_email => $input->{distmeta}->{resources}->{bugtracker}->{mailto},
+      );
+    }
+
+    $text = $self->fill_in_string($text, \%stash);
   }
-  $text = Pod::Elemental::Element::Pod5::Ordinary->new({ content => $text });
+
+  my $element = Pod::Elemental::Element::Pod5::Ordinary->new({ content => $text });
+
   if ($self->head) {
-    $text = Pod::Elemental::Element::Nested->new({
+    $element = Pod::Elemental::Element::Nested->new({
       command  => "head" . $self->head,
       content  => $self->title,
-      children => [$text],
+      children => [ $element ],
     });
   }
-  push @{ $document->children }, $text;
+
+  push @{ $document->children }, $element;
 }
 
 __PACKAGE__->meta->make_immutable;
