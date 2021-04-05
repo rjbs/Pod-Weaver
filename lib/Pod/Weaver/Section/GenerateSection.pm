@@ -6,7 +6,6 @@ use warnings;
 use utf8;
 
 use Moose;
-use MooseX::Types::Moose qw(ArrayRef Bool Int Str);
 use Pod::Elemental::Element::Nested;
 use Pod::Elemental::Element::Pod5::Ordinary;
 use Text::Template;
@@ -53,7 +52,7 @@ sub mvp_multivalue_args { return qw(text) }
 has text => (
   is      => 'ro',
   lazy    => 1,
-  isa     => ArrayRef,
+  isa     => 'ArrayRef',
   default => sub { [] },
 );
 
@@ -62,7 +61,7 @@ has text => (
 has head => (
   is      => 'ro',
   lazy    => 1,
-  isa     => Int,
+  isa     => 'Int',
   default => 1,
 );
 
@@ -70,7 +69,7 @@ has head => (
 has title => (
   is      => 'ro',
   lazy    => 1,
-  isa     => Str,
+  isa     => 'Str',
   default => sub { $_[0]->plugin_name },
 );
 
@@ -78,7 +77,7 @@ has title => (
 has main_module_only => (
   is      => 'ro',
   lazy    => 1,
-  isa     => Bool,
+  isa     => 'Bool',
   default => 0,
 );
 
@@ -86,7 +85,7 @@ has main_module_only => (
 has is_template => (
   is      => 'ro',
   lazy    => 1,
-  isa     => Bool,
+  isa     => 'Bool',
   default => 1,
 );
 
