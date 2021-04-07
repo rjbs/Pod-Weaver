@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+
+4.016     2021-04-06 22:22:59-04:00 America/New_York (TRIAL RELEASE)
         - GenerateSection by David Miguel Susano Pinto has been bundled with
           Pod::Weaver.  Although it has been fairly heavily edited, it should
           be entirely compatible with previous versions.  Thanks, David!
