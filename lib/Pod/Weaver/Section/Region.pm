@@ -4,6 +4,14 @@ package Pod::Weaver::Section::Region;
 use Moose;
 with 'Pod::Weaver::Role::Section';
 
+# BEGIN BOILERPLATE
+use v5.20.0;
+use warnings;
+use utf8;
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
+
 =head1 OVERVIEW
 
 This section will find and include a located hunk of Pod.  In general, it will
@@ -126,7 +134,7 @@ sub weave_section {
     next if     !$self->allow_nonpod and !$para->is_pod;
 
     if ( $self->flatten ) {
-      push @to_insert, @{ $para->children };
+      push @to_insert, $para->children->@*;
     } else {
       push @to_insert, $para;
     }
@@ -141,7 +149,7 @@ sub weave_section {
 
   my $verb = $self->flatten ? 'flattening' : 'inserting';
   $self->log_debug($verb . q{ } . $self->region_name . ' into pod');
-  push @{ $document->children }, @to_insert;
+  push $document->children->@*, @to_insert;
 }
 
 __PACKAGE__->meta->make_immutable;

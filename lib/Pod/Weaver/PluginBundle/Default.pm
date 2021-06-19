@@ -3,6 +3,14 @@ use warnings;
 package Pod::Weaver::PluginBundle::Default;
 # ABSTRACT: a bundle for the most commonly-needed prep work for a pod document
 
+# BEGIN BOILERPLATE
+use v5.20.0;
+use warnings;
+use utf8;
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
+
 =head1 OVERVIEW
 
 This is the bundle used by default (specifically by Pod::Weaver's

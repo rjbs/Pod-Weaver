@@ -2,8 +2,16 @@ package Pod::Weaver::Section::Collect;
 # ABSTRACT: a section that gathers up specific commands
 
 use Moose;
-with 'Pod::Weaver::Role::Section';
-with 'Pod::Weaver::Role::Transformer';
+with 'Pod::Weaver::Role::Section',
+     'Pod::Weaver::Role::Transformer';
+
+# BEGIN BOILERPLATE
+use v5.20.0;
+use warnings;
+use utf8;
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
 
 =head1 OVERVIEW
 
@@ -109,7 +117,7 @@ sub transform_document {
   } 0 .. $#$children;
 
   my $container = $container_id
-    ? splice @{ $children }, $container_id, 1 # excise host
+    ? splice @$children, $container_id, 1 # excise host
     : Pod::Elemental::Element::Nested->new({ # synthesize new host
         command => $self->header_command,
         content => $self->header,
@@ -123,12 +131,12 @@ sub transform_document {
   });
 
   $nester->transform_node($document);
-  my @children = @{$container->children}; # rescue children
+  my @children = $container->children->@*; # rescue children
   $gatherer->transform_node($document); # insert host at position of first adopt-child and inject it with adopt-children
-  foreach my $child (@{ $container->children }) {
+  foreach my $child ($container->children->@*) {
     $child->command( $self->new_command ) if $child->command eq $command;
   }
-  unshift @{$container->children}, @children; # give original children back to host
+  unshift $container->children->@*, @children; # give original children back to host
 }
 
 sub weave_section {
@@ -141,10 +149,10 @@ sub weave_section {
   my @found = grep {
     my ($i, $para) = ($_, $in_node->[$_]);
     ($para == $self->__used_container)
-      && @{ $self->__used_container->children };
+      && $self->__used_container->children->@*;
   } (0 .. $#$in_node);
 
-  push @{ $document->children }, map { splice @$in_node, $_, 1 } reverse @found;
+  push $document->children->@*, map { splice @$in_node, $_, 1 } reverse @found;
 }
 
 __PACKAGE__->meta->make_immutable;

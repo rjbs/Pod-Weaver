@@ -4,6 +4,14 @@ package Pod::Weaver::Plugin::Transformer;
 use Moose;
 with 'Pod::Weaver::Role::Dialect';
 
+# BEGIN BOILERPLATE
+use v5.20.0;
+use warnings;
+use utf8;
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
+
 use namespace::autoclean;
 
 use Module::Runtime qw(use_module);
@@ -34,12 +42,12 @@ has transformer => (is => 'ro', required => 1);
 
 sub BUILDARGS {
   my ($class, @arg) = @_;
-  my %copy = ref $arg[0] ? %{$arg[0]} : @arg;
+  my %copy = ref $arg[0] ? $arg[0]->%* : @arg;
 
   my @part = part { /\A\./ ? 0 : 1 } keys %copy;
 
-  my %class_args = map { s/\A\.//; $_ => $copy{ ".$_" } } @{ $part[0] };
-  my %xform_args = map {           $_ => $copy{ $_ }    } @{ $part[1] };
+  my %class_args = map { s/\A\.//; $_ => $copy{ ".$_" } } $part[0]->@*;
+  my %xform_args = map {           $_ => $copy{ $_ }    } $part[1]->@*;
 
   my $xform_class = String::RewritePrefix->rewrite(
     { '' => 'Pod::Elemental::Transformer::', '=' => '' },

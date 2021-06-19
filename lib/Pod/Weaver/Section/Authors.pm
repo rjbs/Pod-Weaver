@@ -4,6 +4,14 @@ package Pod::Weaver::Section::Authors;
 use Moose;
 with 'Pod::Weaver::Role::Section';
 
+# BEGIN BOILERPLATE
+use v5.20.0;
+use warnings;
+use utf8;
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
+
 use Pod::Elemental::Element::Nested;
 use Pod::Elemental::Element::Pod5::Verbatim;
 
@@ -35,20 +43,20 @@ sub weave_section {
 
   return unless $input->{authors};
 
-  my $multiple_authors = @{ $input->{authors} } > 1;
+  my $multiple_authors = $input->{authors}->@* > 1;
 
   # I think I might like to have header be a callback or something, so that you
   # can get pluralization for your own custom header. -- rjbs, 2015-03-17
   my $name = $self->header || ($multiple_authors ? 'AUTHORS' : 'AUTHOR');
 
   $self->log_debug("adding $name section");
-  $self->log_debug("author = $_") for @{ $input->{authors} };
+  $self->log_debug("author = $_") for $input->{authors}->@*;
 
   my $authors = [ map {
     Pod::Elemental::Element::Pod5::Ordinary->new({
       content => $_,
     }),
-  } @{ $input->{authors} } ];
+  } $input->{authors}->@* ];
 
   $authors = [
     Pod::Elemental::Element::Pod5::Command->new({
@@ -65,7 +73,7 @@ sub weave_section {
     }),
   ] if $multiple_authors;
 
-  push @{$document->children },
+  push $document->children->@*,
     Pod::Elemental::Element::Nested->new({
       type     => 'command',
       command  => 'head1',

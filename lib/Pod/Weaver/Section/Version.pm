@@ -2,8 +2,16 @@ package Pod::Weaver::Section::Version;
 # ABSTRACT: add a VERSION pod section
 
 use Moose;
-with 'Pod::Weaver::Role::Section';
-with 'Pod::Weaver::Role::StringFromComment';
+with 'Pod::Weaver::Role::Section',
+     'Pod::Weaver::Role::StringFromComment';
+
+# BEGIN BOILERPLATE
+use v5.20.0;
+use warnings;
+use utf8;
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
 
 use Module::Runtime qw(use_module);
 use namespace::autoclean;
@@ -202,7 +210,7 @@ sub build_content {
   }
 
   my $content = q{};
-  LINE: for my $format (@{ $self->format }) {
+  LINE: for my $format ($self->format->@*) {
     my $line = _format_version($format, \%args);
     next if $line =~ s/^$MARKER\s*// and ! $args{is_trial};
 
@@ -232,7 +240,7 @@ sub weave_section {
 
   $self->log_debug('adding ' . $self->header . ' section to pod');
 
-  push @{ $document->children },
+  push $document->children->@*,
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',
       content  => $self->header,

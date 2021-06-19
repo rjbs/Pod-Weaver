@@ -4,6 +4,14 @@ package Pod::Weaver::Section::Legal;
 use Moose;
 with 'Pod::Weaver::Role::Section';
 
+# BEGIN BOILERPLATE
+use v5.20.0;
+use warnings;
+use utf8;
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
+
 =head1 OVERVIEW
 
 This section plugin will produce a hunk of Pod giving the copyright and license
@@ -64,7 +72,7 @@ sub weave_section {
 
   $self->log_debug('adding ' . $self->header . ' section');
 
-  push @{ $document->children },
+  push $document->children->@*,
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',
       content  => $self->header,

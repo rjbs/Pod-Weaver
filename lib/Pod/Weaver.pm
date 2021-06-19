@@ -4,6 +4,14 @@ package Pod::Weaver;
 use Moose;
 use namespace::autoclean;
 
+# BEGIN BOILERPLATE
+use v5.20.0;
+use warnings;
+use utf8;
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
+
 =head1 SYNOPSIS
 
   my $weaver = Pod::Weaver->new_with_default_config;
@@ -86,7 +94,7 @@ sub plugins_with {
   my ($self, $role) = @_;
 
   $role =~ s/^-/Pod::Weaver::Role::/;
-  my @plugins = grep { $_->does($role) } @{ $self->plugins };
+  my @plugins = grep { $_->does($role) } $self->plugins->@*;
 
   return \@plugins;
 }
@@ -119,23 +127,23 @@ sub weave_document {
 
   my $document = Pod::Elemental::Document->new;
 
-  for (@{ $self->plugins_with(-Preparer) }) {
+  for ($self->plugins_with(-Preparer)->@*) {
     $_->prepare_input($input);
   }
 
-  for (@{ $self->plugins_with(-Dialect) }) {
+  for ($self->plugins_with(-Dialect)->@*) {
     $_->translate_dialect($input->{pod_document});
   }
 
-  for (@{ $self->plugins_with(-Transformer) }) {
+  for ($self->plugins_with(-Transformer)->@*) {
     $_->transform_document($input->{pod_document});
   }
 
-  for (@{ $self->plugins_with(-Section) }) {
+  for ($self->plugins_with(-Section)->@*) {
     $_->weave_section($document, $input);
   }
 
-  for (@{ $self->plugins_with(-Finalizer) }) {
+  for ($self->plugins_with(-Finalizer)->@*) {
     $_->finalize_document($document, $input);
   }
 
@@ -206,7 +214,7 @@ sub new_from_config_sequence {
     confess "arguments attempted to override 'weaver'"
       if defined $arg->{weaver};
 
-    push @{ $self->plugins },
+    push $self->plugins->@*,
       $plugin_class->new({
         %$arg,
         plugin_name => $name,

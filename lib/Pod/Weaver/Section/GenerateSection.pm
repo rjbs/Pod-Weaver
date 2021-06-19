@@ -1,13 +1,16 @@
 package Pod::Weaver::Section::GenerateSection;
 # ABSTRACT: add pod section from an interpolated piece of text
 
-use strict;
+use Moose;
+with 'Pod::Weaver::Role::Section';
+
+# BEGIN BOILERPLATE
+use v5.20.0;
 use warnings;
 use utf8;
-
-use Moose;
-
-with 'Pod::Weaver::Role::Section';
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
 
 use Pod::Elemental::Element::Nested;
 use Pod::Elemental::Element::Pod5::Ordinary;
@@ -145,7 +148,7 @@ sub weave_section {
     return if $input->{zilla}->main_module->name ne $input->{filename};
   }
 
-  my $text = join ("\n", @{ $self->text });
+  my $text = join ("\n", $self->text->@*);
 
   if ($self->is_template) {
     my %stash;
@@ -179,7 +182,7 @@ sub weave_section {
     });
   }
 
-  push @{ $document->children }, $element;
+  push $document->children->@*, $element;
 }
 
 # BEGIN CODE IMPORTED FROM Dist::Zilla::Role::TextTemplate

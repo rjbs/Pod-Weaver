@@ -5,6 +5,14 @@ use Moose;
 use Text::Wrap ();
 with 'Pod::Weaver::Role::Section';
 
+# BEGIN BOILERPLATE
+use v5.20.0;
+use warnings;
+use utf8;
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
+
 =head1 OVERVIEW
 
 This section plugin will produce a hunk of Pod giving bug reporting
@@ -64,7 +72,7 @@ sub weave_section {
     return;
   }
   my $bugtracker = $input->{distmeta}{resources}{bugtracker};
-  my ($web,$mailto) = @{$bugtracker}{qw/web mailto/};
+  my ($web, $mailto) = $bugtracker->@{ qw(web mailto) };
 
   unless (defined $web || defined $mailto) {
     $self->log_debug('skipping section because there is no web or mailto key under resources.bugtracker');
@@ -95,7 +103,7 @@ patch to an existing test-file that illustrates the bug or desired
 feature.
 HERE
 
-  push @{ $document->children },
+  push $document->children->@*,
     Pod::Elemental::Element::Nested->new({
       command  => 'head1',
       content  => $name,

@@ -4,6 +4,14 @@ package Pod::Weaver::Plugin::EnsurePod5;
 use Moose;
 with 'Pod::Weaver::Role::Preparer';
 
+# BEGIN BOILERPLATE
+use v5.20.0;
+use warnings;
+use utf8;
+no feature 'switch';
+use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
+# END BOILERPLATE
+
 use namespace::autoclean;
 
 use Pod::Elemental::Transformer::Pod5;
@@ -21,12 +29,12 @@ sub _strip_nonpod {
 
   # XXX: This is really stupid. -- rjbs, 2009-10-24
 
-  foreach my $i (reverse 0 .. $#{ $node->children }) {
+  foreach my $i (reverse 0 .. $node->children->$#*) {
     my $para = $node->children->[$i];
 
     if ($para->isa('Pod::Elemental::Element::Pod5::Nonpod')) {
       if ($para->content !~ /\S/) {
-        splice @{ $node->children }, $i, 1
+        splice $node->children->@*, $i, 1
       } else {
         confess "can't cope with a Nonpod element with non-whitespace content";
       }
