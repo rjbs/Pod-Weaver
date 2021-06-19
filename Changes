@@ -1,6 +1,9 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+        - update author contact info
+        - use postfix dereferencing, since we already require v5.20.0
+        - add perl support section to docs
 
 4.017     2021-04-17 17:51:31-04:00 America/New_York
         - no changes from previous trial release
