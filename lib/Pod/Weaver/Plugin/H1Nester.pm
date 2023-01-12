@@ -32,7 +32,7 @@ sub transform_document {
     top_selector => s_command([ qw(head1) ]),
     content_selectors => [
       s_flat,
-      s_command( [ qw(head2 head3 head4 over item back) ]),
+      s_command( [ qw(head2 head3 head4 over item for begin back) ]),
     ],
   });
 
