@@ -22,6 +22,8 @@ This is not supported:
 
 Happy hacking!
 
+=head1 METHODS
+
 =head1 SYNOPSIS
 
 This should probably get moved up front.
@@ -30,6 +32,12 @@ This should probably get moved up front.
 
 (This is true by default.)
 
-=for html <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+=method do_something
+
+Does something as a class method.
+
+=head3 This is a leftover
+
+Shouldn't be nested inside of do_something.
 
 =cut

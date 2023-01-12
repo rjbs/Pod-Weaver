@@ -13,8 +13,8 @@ use Pod::Elemental::Transformer::Nester;
 
 use Pod::Weaver;
 
-my $in_pod   = do { local $/; open my $fh, '<:raw:bytes', 't/eg/basic.in.pod'; <$fh> };
-my $expected = do { local $/; open my $fh, '<:encoding(UTF-8)', 't/eg/basic.out.pod'; <$fh> };
+my $in_pod   = do { local $/; open my $fh, '<:raw:bytes', 't/eg/ini-config.in.pod'; <$fh> };
+my $expected = do { local $/; open my $fh, '<:encoding(UTF-8)', 't/eg/ini-config.out.pod'; <$fh> };
 my $document = Pod::Elemental->read_string($in_pod);
 
 my $perl_document = do { local $/; <DATA> };
@@ -54,19 +54,25 @@ my $woven = $weaver->weave_document({
 #   0      Pod5::Ordinary <This is a heade…tributes list.>
 #   1      =head2 is_awesome
 #     0      Pod5::Ordinary <(This is true by default.)>
-# 7      =head1 BE FOREWARNED
+# 7      =head1 METHODS
+# 8      =head2 Class Methods
+#   0      =head3 do_something
+#     0      Pod5::Ordinary <Does something … class method.>
+# 9      =head1 BE FOREWARNED
 #   0      Pod5::Ordinary <This is not supported:>
 #   1      Pod5::Verbatim <  much at all>
 #   2      Pod5::Ordinary <Happy hacking!>
-# 8      Pod5::Ordinary <Thank you for your attention.>
-# 9      =head1 AUTHORS
+# 10     =head3 This is a leftover
+# 11     Pod5::Ordinary <Shouldn't be ne… do_something.>
+# 12     Pod5::Ordinary <Thank you for your attention.>
+# 13     =head1 AUTHORS
 #   0      Pod5::Verbatim <  Ricardo Signe…rs@orbit.tash>>
-# 10     =head1 COPYRIGHT AND LICENSE
+# 14     =head1 COPYRIGHT AND LICENSE
 #   0      Pod5::Ordinary <This software i…ic License 1.0>
 
-is(@{ $woven->children }, 11, "we end up with a 11-paragraph document");
+is(@{ $woven->children }, 15, "we end up with a 15-paragraph document");
 
-for (qw(1 2 4 5 6 7 9 10)) {
+for (qw(1 2 4 5 6 9 13 14)) {
   my $para = $woven->children->[ $_ ];
   isa_ok($para, 'Pod::Elemental::Element::Nested', "element $_");
   is($para->command, 'head1', "... and is =head1");
