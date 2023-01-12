@@ -2,6 +2,11 @@ Revision history for Pod-Weaver
 
 {{$NEXT}}
 
+4.019     2023-01-11 21:59:08-05:00 America/New_York
+        - update dist metadata
+        - update a test to pass under Test2::Harness (even though I'm not sure
+          why I had to!)
+
 4.018     2021-06-19 10:55:10-04:00 America/New_York
         - update author contact info
         - use postfix dereferencing, since we already require v5.20.0
