@@ -18,7 +18,14 @@ my $in_pod   = do { local $/; open my $fh, '<:raw:bytes', 't/eg/encoding.in.pod'
 my $expected = do { local $/; open my $fh, '<:encoding(UTF-8)', 't/eg/encoding.out.pod'; <$fh> };
 my $document = Pod::Elemental->read_string($in_pod);
 
-my $perl_document = do { local $/; <DATA> };
+my $perl_document = <<'END';
+
+package Module::Name;
+# ABSTRACT: abstract text with UTF-8 paçoca
+
+my $this = 'a test';
+END
+
 my $ppi_document  = PPI::Document->new(\$perl_document);
 
 my $weaver = Pod::Weaver->new_with_default_config;
@@ -62,10 +69,3 @@ eq_or_diff(
 );
 
 done_testing;
-
-__DATA__
-
-package Module::Name;
-# ABSTRACT: abstract text with UTF-8 paçoca
-
-my $this = 'a test';
