@@ -41,7 +41,24 @@ has header => (
 );
 
 use DateTime;
-use Moose::Util::TypeConstraints;
+
+{
+  # This is irritating.
+  #
+  # Moose::Util::TypeConstraints will turn on strict and warnings.  This will
+  # undermine the setup that "use experimental" did above.  So I could move
+  # this above my boilerplate pragmata.  But this is annoying too, where the
+  # order of libraries is based on largely invisible factors.  I now believe
+  # that "Moose stuff turns on strict!" was a mistake, even if a
+  # well-intentioned one.  So it goes.
+  #
+  # So, I'm putting it in a block.  Why?  Because the "use strict" that gets
+  # exported is *lexical* and so will be constrained by this block.  The named
+  # subroutines, though, are *global* so they will still work.
+  #
+  # Can't push me around, perl! -- rjbs, 2024-03-21
+  use Moose::Util::TypeConstraints;
+}
 
 my $MARKER;
 BEGIN { $MARKER = "\x{2316}" }

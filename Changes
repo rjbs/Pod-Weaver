@@ -1,6 +1,9 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+        - do not allow Moose::Util::TypeConstraints to turn warnings back on
+          after they were turned off by experimental.pm! (thanks, Karen
+          Etheridge)
 
 4.019     2023-01-11 21:59:08-05:00 America/New_York
         - update dist metadata
