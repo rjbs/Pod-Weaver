@@ -30,7 +30,13 @@ This is a header that should be above the attributes list.
 
 (This is true by default.)
 
-=for html <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+=head1 METHODS
+
+=head2 Class Methods
+
+=head3 do_something
+
+Does something as a class method.
 
 =head1 BE FOREWARNED
 
@@ -39,6 +45,10 @@ This is not supported:
   much at all
 
 Happy hacking!
+
+=head3 This is a leftover
+
+Shouldn't be nested inside of do_something.
 
 Thank you for your attention.
 

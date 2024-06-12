@@ -53,6 +53,8 @@ my $woven = $weaver->weave_document({
 # 6      =head1 ATTRIBUTES
 #   0      =head2 is_awesome
 #     0      Pod5::Ordinary <(This is true by default.)>
+#     1      =begin html
+#       0      Pod5::Data <<i class="fa fa…en="true"></i>>
 # 7      =head1 BE FOREWARNED
 #   0      Pod5::Ordinary <This is not supported:>
 #   1      Pod5::Verbatim <  much at all>
