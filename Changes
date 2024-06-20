@@ -1,6 +1,7 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+        - H1Nester now also captures =for and =begin tags under =head1
 
 4.020     2024-03-21 13:58:33-04:00 America/New_York
         - do not allow Moose::Util::TypeConstraints to turn warnings back on
