@@ -11,7 +11,7 @@ no feature 'switch';
 use experimental qw(postderef postderef_qq); # This experiment gets mainlined.
 # END BOILERPLATE
 
-use Params::Util qw(_HASHLIKE);
+use Params::SomeUtil qw(_HASHLIKE);
 
 use namespace::autoclean;
 
