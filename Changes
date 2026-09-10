@@ -1,6 +1,8 @@
 Revision history for Pod-Weaver
 
 {{$NEXT}}
+
+4.021     2026-09-10 21:46:17+10:00 Australia/Melbourne
         - switch from Params::Util to Params::SomeUtil
 
 4.020     2024-03-21 13:58:33-04:00 America/New_York
