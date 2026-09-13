@@ -6,7 +6,7 @@ use Text::Wrap ();
 with 'Pod::Weaver::Role::Section';
 
 # BEGIN BOILERPLATE
-use v5.20.0;
+use v5.22.0;
 use warnings;
 use utf8;
 no feature 'switch';

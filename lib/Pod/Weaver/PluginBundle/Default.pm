@@ -4,7 +4,7 @@ package Pod::Weaver::PluginBundle::Default;
 # ABSTRACT: a bundle for the most commonly-needed prep work for a pod document
 
 # BEGIN BOILERPLATE
-use v5.20.0;
+use v5.22.0;
 use warnings;
 use utf8;
 no feature 'switch';

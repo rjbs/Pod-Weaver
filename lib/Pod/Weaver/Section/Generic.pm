@@ -4,7 +4,7 @@ package Pod::Weaver::Section::Generic;
 use Moose;
 with 'Pod::Weaver::Role::Section';
 
-use v5.20.0;
+use v5.22.0;
 use experimental 'postderef'; # this experiment succeeded -- rjbs, 2021-04-02
 
 =head1 OVERVIEW
